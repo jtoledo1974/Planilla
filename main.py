@@ -268,7 +268,9 @@ class AlarmScreen(Screen):
 
 
 class PlanillaWidget(RelativeLayout):
-    pass
+
+    def __init__(self, *args, **kwargs):
+        super(RelativeLayout, self).__init__(*args, **kwargs)
 
 
 class PlanillaScreen(Screen):
