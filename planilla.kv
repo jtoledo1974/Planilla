@@ -1,0 +1,172 @@
+#:import V kivy.vector.Vector
+<NucleoPopup>:
+	title: 'Configuracion inicial'
+	size_hint: (None, None)
+	size: (300, 300) 
+	BoxLayout:
+		orientation: 'vertical'
+		Button:
+			id: ruta
+			text: 'Ruta'
+		Button:
+			id: tma
+			text: 'TMA'
+
+
+<AlarmScreen>
+	name: "alarma"
+	on_leave: (app.cancelar_alarma(source="on_leave"), self.anim.stop(self))
+	canvas:
+		Color:
+			rgba: (0.8, 0, 0, self.ca)
+		Ellipse:
+			pos: (self.center_x - self.height*0.015 + self.cd, self.height*.2 - self.height*0.015)
+			size: (self.height*.03, self.height*0.03)
+		Ellipse:
+			pos: (self.center_x - self.height*0.015 - self.cd, self.height*.2 - self.height*0.015)
+			size: (self.height*.03, self.height*0.03)
+		Color:
+			rgba: (1, 0.26, 0.26, self.ra)
+		Line:
+			circle: (self.center_x, self.height*.2, self.r)
+			width: 2.0
+		Line:
+			points: tuple(V(self.center_x, self.height*.2)+V(-self.r/2,0).rotate(-45))+tuple(V(self.center_x, self.height*.2)+V(self.r/2,0).rotate(-45))
+			width: 2.0
+		Line:
+			points: tuple(V(self.center_x, self.height*.2)+V(-self.r/2,0).rotate(45))+tuple(V(self.center_x, self.height*.2)+V(self.r/2,0).rotate(45))
+			width: 2.0
+		Color:
+			rgba: (1, 0.26, 0.26, self.r2a)
+		Line:
+			id: feeback_circle
+			circle: (self.center_x, self.height*.2, self.r2)
+			width: 2.0
+	Label:
+		id: alarmbutton
+		text: 'Alarma!'
+		font_size: '32sp'
+		pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+		size_hint: (None, None)
+		size: self.texture_size
+		# on_release: app.cancelar_alarma(source='user')
+
+
+<PlanillaWidget>
+	canvas:
+		Color:
+			rgb: (.0,.0,.0)
+		Rectangle:
+			pos: self.pos
+			size: self.size
+	Label:
+		text: "%s" % root.horario
+
+
+<PlanillaScreen>:
+	name: "planilla"
+	BoxLayout:
+		orientation: "vertical"
+		BoxLayout:
+			orientation: "horizontal"
+			size_hint_y: None
+			height: "48dp"
+			padding: "5dp"
+			canvas:
+				Rectangle:
+					source: "atlas://data/images/defaulttheme/action_bar"
+					pos: self.pos
+					size: self.size
+			Image:
+				source: 'data/icon.png'
+				#source: "atlas://data/images/defaulttheme/action_bar"
+				mipmap: True
+				size_hint_x: None
+				width: self.height
+			Label:
+				text: 'Detalle'
+				font_size: '16sp'
+				size: self.texture_size
+			Button:
+				text: 'Cancelar'
+				size_hint_x: None
+				on_press: app.cancelar()
+		BoxLayout:
+			orientation: "horizontal"
+			padding: "15dp"
+			PlanillaWidget:
+				id: pw
+			BoxLayout:
+				orientation: "vertical"
+				Spinner:
+					text: "%s"%root.s1
+					values: root.sectores
+					id: ss1
+				Spinner:
+					text: "%s"%root.s2
+					values: root.sectores
+					id: ss2
+				Label:
+					font_size: "48sp"
+					text: "Nº %s"%root.numero
+
+
+FloatLayout:
+	scmgr: scmgrid
+	ScreenManager:
+		id: scmgrid
+		Screen:
+			name: "principal"
+			BoxLayout:
+				orientation: "vertical"
+				BoxLayout:
+					orientation: "horizontal"
+					size_hint_y: None
+					height: "48dp"
+					padding: "5dp"
+					canvas:
+						Rectangle:
+							source: "atlas://data/images/defaulttheme/action_bar"
+							pos: self.pos
+							size: self.size
+					Image:
+						source: 'data/icon.png'
+						#source: "atlas://data/images/defaulttheme/action_bar"
+						mipmap: True
+						size_hint_x: None
+						width: self.height
+
+					Label:
+						text: 'Planilla'
+						font_size: '16sp'
+						size: self.texture_size
+					Button:
+						text: '+'
+						size_hint_x: None
+						width: self.height
+						on_release: app.open_settings()
+				GridLayout:
+					cols: 3
+					padding: ("25dp")
+					spacing: ("5dp")
+					MainButton:
+						text: "1"
+					MainButton:
+						text: "2"
+					MainButton:
+						text: "3"
+					MainButton:
+						text: "4"
+					MainButton:
+						text: "5"
+					MainButton:
+						text: "6"
+					MainButton:
+						text: "7"
+					MainButton:
+						text: "8"
+#	Label:
+#		text: "%s"%(self.size)
+
+<MainButton>:
+	on_press: app.asigna_numero(self.text)

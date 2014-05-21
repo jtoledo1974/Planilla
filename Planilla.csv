@@ -1,0 +1,31 @@
+TMA,FINAL,T1,T2,T3,T4,DDI,XAL,DDN,DDS,,,,,,,,,,,,,,,,,,,,,
+Numero,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado
+1,15:00,15:37,AS2,15:37,16:15,ES2,16:15,16:52,AS2,16:52,17:30,Libre,17:30,18:45,ES2,18:45,19:22,AS2,19:22,20:00,Libre,20:00,21:15,ES1,21:15,21:52,AS1,21:52,22:30,Libre
+2,15:00,16:15,ES1,16:15,16:52,AS1,16:52,17:30,Libre,17:30,18:45,ES2,18:45,19:22,AS2,19:22,20:00,Libre,20:00,21:52,AS2,21:52,22:30,Libre,,,,,,
+3,15:00,16:15,ES2,16:15,16:52,Libre,16:52,18:45,AS1,18:45,19:22,Libre,19:22,20:00,AS2,20:00,21:15,ES2,21:15,21:52,Libre,21:52,22:30,AS2,,,,,,
+4,15:00,15:37,ES2,15:37,16:15,AS2,16:15,16:52,Libre,16:52,17:30,AS2,17:30,18:45,ES1,18:45,19:22,Libre,19:22,20:00,AS2,20:00,21:15,ES2,21:15,21:52,Libre,21:52,22:30,AS1
+5,15:00,15:37,AS1,15:37,16:15,Libre,16:15,17:30,ES2,17:30,18:07,AS2,18:07,18:45,Libre,18:45,20:00,ES1,20:00,20:37,AS2,20:37,21:15,Libre,21:15,21:52,AS2,21:52,22:30,ES2
+6,15:00,15:37,AS2,15:37,16:15,Libre,16:15,17:30,ES2,17:30,18:07,AS2,18:07,18:45,Libre,18:45,20:37,AS1,20:37,21:15,Libre,21:15,22:30,ES2,,,,,,
+7,15:00,15:37,Libre,15:37,17:30,AS2,17:30,18:07,Libre,18:07,18:45,AS2,18:45,20:00,ES2,20:00,20:37,Libre,20:37,21:15,AS1,21:15,22:30,ES1,,,,,,
+8,15:00,15:37,Libre,15:37,16:15,AS1,16:15,17:30,ES1,17:30,18:07,Libre,18:07,18:45,AS2,18:45,20:00,ES2,20:00,20:37,Libre,20:37,21:15,AS2,21:15,21:52,ES2,21:52,22:30,AS2
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Ruta,P1L,P1U,PPI,PP2,LVL,LGL,LVU,LGU,LVS,CCC,VNI,VVI,MNU,MNL,MNI,MMI,BAS,,,,,,,,,,,,,
+Numero,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,,,
+1,15:00,16:15,ES1,16:15,16:52,AS1,16:52,17:30,Libre,17:30,18:45,ES1,18:45,19:22,AS1,19:22,20:00,Libre,20:00,21:15,AS1,21:15,21:52,ES1,21:52,22:30,Libre,,,
+2,15:00,15:37,AS1,15:37,16:15,Libre,16:15,17:30,ES2,17:30,18:07,AS1,18:07,18:45,Libre,18:45,20:37,AS2,20:37,21:15,Libre,21:15,22:30,ES2,,,,,,
+3,15:00,16:15,ES2,16:15,16:52,Libre,16:52,17:30,AS1,17:30,18:45,AS2,18:45,19:22,Libre,19:22,20:00,AS1,20:00,21:15,ES1,21:15,21:52,Libre,21:52,22:30,ES1,,,
+4,15:00,16:15,AS1,16:15,16:52,Libre,16:52,17:30,AS2,17:30,18:45,ES1,18:45,19:22,Libre,19:22,20:00,AS2,20:00,21:15,ES1,21:15,21:52,Libre,21:52,22:30,AS2,,,
+5,15:00,15:37,Libre,15:37,16:15,AS2,16:15,17:30,ES2,17:30,18:07,Libre,18:07,18:45,AS2,18:45,20:00,ES2,20:00,20:37,Libre,20:37,21:15,ES2,21:15,22:30,AS1,,,
+6,15:00,15:37,AS2,15:37,16:15,Libre,16:15,17:30,AS1,17:30,18:07,AS2,18:07,18:45,Libre,18:45,20:00,ES1,20:00,20:37,AS2,20:37,21:15,Libre,21:15,22:30,ES2,,,
+7,15:00,15:37,Libre,15:37,16:15,AS1,16:15,17:30,ES1,17:30,18:07,Libre,18:07,18:45,AS1,18:45,20:00,ES1,20:00,20:37,Libre,20:37,22:30,AS2,,,,,,
+8,15:00,16:15,ES1,16:15,16:52,AS1,16:52,17:30,Libre,17:30,18:45,ES1,18:45,19:22,AS1,19:22,20:00,Libre,20:00,20:37,ES1,20:37,21:52,AS1,21:52,22:30,Libre,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+"Estado es ES1, AS1, ES2, AS2 o Libre (Ejecutivo o ayudandante del sector 1 o 2)",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+"Sector 1 y sector 2 la primera y la segunda columna donde trabaje, creo que coincide con lo que tenemos en la hoja de firmas",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+"La idea es que en la hoja de firmas pone número 8, DDI, XAL",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+"Si no me equivoco el primer sector que pone es la primera columna donde trabajas, y el segundo la segunda columna",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+"Sólo tendremos que poner el número y los dos sectores, sin tener ni que mirar a la plantilla",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

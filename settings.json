@@ -1,0 +1,30 @@
+[
+    {
+        "type": "title",
+        "title": "General"
+    },
+    {
+        "type": "options",
+        "title": "Nucleo",
+        "desc": "Usar la planilla de Ruta o TMA",
+        "section": "general",
+        "key": "nucleo",
+		"options": ["Ruta", "TMA"]
+    },
+    {
+        "type": "options",
+        "title": "Alarma de Ejecutivo",
+        "desc": "Minutos de preaviso",
+        "section": "general",
+        "key": "margen_ejec",
+		"options": ["15", "10", "5", "3"]
+    },
+    {
+        "type": "options",
+        "title": "Alarma de Ayudante",
+        "desc": "Minutos de preaviso",
+        "section": "general",
+        "key": "margen_ayud",
+			"options": ["15", "10", "5", "3"]
+    }
+]
