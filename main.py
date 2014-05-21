@@ -16,6 +16,8 @@ from kivy.clock import Clock
 from kivy.uix.popup import Popup
 from kivy.animation import Animation
 from kivy.vector import Vector
+from kivy.graphics.context_instructions import BindTexture, Color, PushState, ChangeState, PopState, MatrixInstruction, ApplyContextMatrix, PopMatrix, PushMatrix, Rotate, Scale, Translate, LoadIdentity, UpdateNormalMatrix, gl_init_resources
+from kivy.graphics.vertex_instructions import Bezier, BorderImage, Ellipse, GraphicException, Line, Mesh, Point, Quad, Rectangle, Triangle
 from kivy.uix.screenmanager import Screen, RiseInTransition, FallOutTransition, \
     SlideTransition, NoTransition
 from kivy.uix.relativelayout import RelativeLayout
