@@ -253,7 +253,7 @@ class PlanillaApp(App):
     br = None            # Background Receiver
     en_alarma = False    # La pantalla de alarma está corriendo
 
-    ACS = 5             # Alarm Cancel Seconds - Cancelación automática
+    ACS = 20             # Alarm Cancel Seconds - Cancelación automática
 
     def build(self):
         self.planilla = PlanillaScreen()
