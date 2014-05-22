@@ -273,7 +273,10 @@ class PlanillaWidget(RelativeLayout):
 
     def __init__(self, *args, **kwargs):
         super(RelativeLayout, self).__init__(*args, **kwargs)
-
+        Logger.debug("%s: Pos %s Size %s" % (APP, self.pos, self.size))
+        with self.canvas:
+            Color(1, 0, 0)
+            Rectangle(pos_hint=(1, 1), size_hint=(1, 1))
 
 class PlanillaScreen(Screen):
     pass
