@@ -15,7 +15,6 @@
 
 <AlarmScreen>
 	name: "alarma"
-	on_leave: (app.cancelar_alarma(source="on_leave"), self.anim.stop(self))
 	canvas:
 		Color:
 			rgba: (0.8, 0, 0, self.ca)
@@ -49,7 +48,6 @@
 		pos_hint: {'center_x': 0.5, 'center_y': 0.7}
 		size_hint: (None, None)
 		size: self.texture_size
-		# on_release: app.cancelar_alarma(source='user')
 
 
 <PlanillaWidget>

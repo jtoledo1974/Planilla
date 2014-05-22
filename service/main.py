@@ -71,7 +71,7 @@ def sound_alarm(context=None, intent=None, texto="default"):
     wl.acquire()
 
     intent = activity.getPackageManager().getLaunchIntentForPackage(
-        'org.jtc.planilla')
+        'org.jtc.planilla').putExtra("texto", String(texto))
     Logger.debug("%s: Starting %s" % (APP, intent.toString()))
     activity.startActivity(intent)
 
@@ -83,7 +83,8 @@ def sound_alarm(context=None, intent=None, texto="default"):
     Logger.debug("%s: Broadcasting %s" % (APP, intent.toString()))
     activity.sendBroadcast(intent)
 
-    wl.release()
+    sleep(7)      # Vamos a asegurarnos de que la aplicación arranca bien,
+    wl.release()  # pero menos de 10s o Android nos mata
 
 
 def calculate_alarms():
@@ -126,25 +127,25 @@ def calculate_alarms():
     # Fijar las nuevas alarmas
     i = 0
     now = datetime.now()
-    # for alarma in alarmas:
-    #     intent = Intent(String('org.jtc.planilla.SERVICEALARM')).putExtra(
-    #         "texto", String(alarma['texto']))
-    #     pi = PendingIntent.getBroadcast(
-    #         activity, i, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-    #     ms = (alarma['hora']-now).seconds * 1000
-    #     Logger.debug("Hora: %s - En %s" % (
-    #         alarma['hora'], tdformat(alarma['hora']-now)))
-    #     am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-    #            SystemClock.elapsedRealtime()+ms, pi)
-    #     i += 1
-    for i in range(10):
+    for alarma in alarmas:
         intent = Intent(String('org.jtc.planilla.SERVICEALARM')).putExtra(
-            "texto", String("Alarma n. %s" % str(i)))
+            "texto", String(alarma['texto']))
         pi = PendingIntent.getBroadcast(
             activity, i, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        ms = 60 * i * 1000
+        ms = (alarma['hora']-now).seconds * 1000
+        Logger.debug("Hora: %s - En %s" % (
+            alarma['hora'], tdformat(alarma['hora']-now)))
         am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                SystemClock.elapsedRealtime()+ms, pi)
+        i += 1
+    # for i in range(10):
+    #     intent = Intent(String('org.jtc.planilla.SERVICEALARM')).putExtra(
+    #         "texto", String("Alarma n. %s" % str(i)))
+    #     pi = PendingIntent.getBroadcast(
+    #         activity, i, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    #     ms = 10 * i * 1000
+    #     am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+    #            SystemClock.elapsedRealtime()+ms, pi)
 
 if __name__ == '__main__':
 
@@ -160,7 +161,7 @@ if __name__ == '__main__':
 
     calculate_alarms()
     if len(alarmas):
-        Logger.info("%s: Próxima alarma %s" % (APP, alarmas[0]))
+        Logger.info("%s: Proxima alarma %s" % (APP, alarmas[0]))
 
     while True:
         # osc.readQueue(oscid)

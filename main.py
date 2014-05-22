@@ -178,7 +178,6 @@ class AlarmScreen(Screen):
         self.anim.start(self)
 
     def on_leave(self, *args):
-        self.app.cancelar_alarma(source="on_leave")
         self.anim.stop(self)
         Logger.debug("%s: AlarmScreen.on_leave %s" % (APP, datetime.now()))
 
@@ -194,8 +193,10 @@ class AlarmScreen(Screen):
 
     def on_touch_move(self, touch):
         if touch.uid == self.motion_uid:
-            self.ra = 1-abs(touch.x-touch.ox)*2/self.width
-            if self.ra < 0.15:
+            # Cancelar si de desplaza más de la mitad de la distancia al borde
+            self.ra = 1-2.5*Vector(touch.pos).distance(
+                Vector(self.center_x, self.height*0.2))/self.width
+            if self.ra < 0.05:
                 self.ra = 1
                 self.app.cancelar_alarma(source='user')
 
@@ -219,9 +220,16 @@ class PlanillaScreen(Screen):
     s2 = StringProperty('Sector2')
     sectores = ListProperty(['DDI', 'XAL', 'FINAL'])
     textohorario = StringProperty('')
+    move_to_back = False
 
     def on_enter(self, *args):
         self.ids.pw.horario = self.horario
+        if self.move_to_back:
+            # Si la alarma se ha cancelado automáticamente, esperamos
+            # a que haya desaparecido la pantalla de alarma y enviamos
+            # la aplicación al background para proteger la batería
+            self.move_to_back = False
+            activity.moveTaskToBack(True)
 
     def s1_changed(self, spinner, s1):
         Logger.debug("%s: Nuevo S1 %s" % (APP, s1))
@@ -241,9 +249,11 @@ class PlanillaApp(App):
     horarios = {}
     sectores = {}
     arrancando = False
-    service = None
+    service = None       # Referencia al servicio de Android
     br = None            # Background Receiver
-    en_alarma = False
+    en_alarma = False    # La pantalla de alarma está corriendo
+
+    ACS = 5             # Alarm Cancel Seconds - Cancelación automática
 
     def build(self):
         self.planilla = PlanillaScreen()
@@ -276,21 +286,25 @@ class PlanillaApp(App):
     def build_settings(self, settings):
         settings.add_json_panel('Planilla', self.config, 'settings.json')
 
-    # Estas dos son necesarias para que Android no pare la aplicación cada vez
     def on_pause(self):
-        # self.cancelar_alarma(source='on_pause')
+        if self.en_alarma:
+            self.cancelar_sonido_alarma()
         return True
 
     def on_resume(self):
         Logger.debug("%s: On resume %s" % (APP, datetime.now()))
+        if self.en_alarma:
+            self.reproducir_sonido_alarma()
 
     def on_keypress(self, window, keycode1, keycode2, text, modifiers):
         # Gestión del botón atrás.
-        Logger.debug("%s: En on_keypress %s" % (
-            APP, str((window, keycode1, keycode2, text, modifiers))))
-        if self.en_alarma and keycode1 in (27, 1001, 1002):
+        # Logger.debug("%s: on_keypress k1: %s, k2: %s, text: %s, mod: %s" % (
+        #     APP, keycode1, keycode2, text, modifiers))
+        if self.en_alarma and keycode1 == 27:  # escape
             self.cancelar_alarma(source="on_keypress")
             return True
+        elif self.en_alarma and keycode1 == 1001:  # Back button
+            return True  # Backbutton no hace nada durante la alarma
         elif keycode1 in [27, 1001]:
             Logger.debug("Pulsado el boton BACK")
             if platform == 'android':
@@ -308,6 +322,8 @@ class PlanillaApp(App):
         # self.sonar_alarma(texto='Alarma de prueba on_start')
         # return
         Logger.debug("%s: on_start %s" % (APP, datetime.now()))
+        if platform == 'android':
+            self.set_window_flags()  # Para que la alarma encienda el movil
 
         # Cargamos la planilla del csv
         with open("Planilla.csv", "r") as f:
@@ -327,14 +343,12 @@ class PlanillaApp(App):
             self.pedir_nucleo()
 
         numero = int(self.config.get('general', 'numero'))
-        if numero != 0:
+        if numero != 0:  # 0 indica que no estamos rearrancando
             # Evita que cambiar s1 y s2 arranque el servicio
             self.arrancando = True
-
             self.asigna_numero(numero)
 
         if platform == 'android':
-            android.map_key(android.KEYCODE_POWER, 1002)
             android.map_key(android.KEYCODE_BACK, 1001)
         from kivy.core.window import Window
         Window.bind(on_keyboard=self.on_keypress)
@@ -347,6 +361,13 @@ class PlanillaApp(App):
                 self.br = BroadcastReceiver(
                     self.sonar_alarma, ['org.jtc.planilla.APPALARM'])
             self.br.start()
+
+            intent = activity.getIntent()
+            if intent:
+                bundle = intent.getExtras()
+                if bundle:
+                    self.sonar_alarma(
+                        texto=bundle.getString('texto'))
 
     def on_stop(self):
         if platform == 'android' and self.br:
@@ -396,9 +417,7 @@ class PlanillaApp(App):
             #  Ver el raise en planilla.__init__
             print("No es hora, quillo")
         self.arrancando = False
-        self.fijar_alarmas()
-        if platform == 'android':
-            self.set_window_flags()  # Para que la alarma encienda el movil
+        self.arrancar_servicio()
 
     # Callback cuando cambian sectores
     def horario_cambiado(self, instance, horario):
@@ -406,18 +425,17 @@ class PlanillaApp(App):
             self.config.set('general', 's1', horario.s1)
             self.config.set('general', 's2', horario.s2)
             self.config.write()
-            self.fijar_alarmas()
+            self.arrancar_servicio()
 
-    def borrar_alarmas(self):
-        self.cancelar_alarma(source='borrar_alarmas')
+    def parar_servicio(self):
+        self.cancelar_alarma(source='parar_servicio')
         if platform == 'android' and self.service:
             Logger.debug("%s: Parando el servicio" % APP)
             self.service.stop()
         self.service = None
 
-    def fijar_alarmas(self):
-
-        self.borrar_alarmas()
+    def arrancar_servicio(self):
+        self.parar_servicio()
         margen_ejec = int(self.config.get('general', 'margen_ejec'))
         margen_ayud = int(self.config.get('general', 'margen_ayud'))
         pasadas = self.planilla.horario.pasadas_pendientes(0)
@@ -460,6 +478,21 @@ class PlanillaApp(App):
             self.vibrator = activity.getSystemService(Context.VIBRATOR_SERVICE)
         return self.vibrator
 
+    def reproducir_sonido_alarma(self):
+        # Necesitamos separarar los sonidos de la alarma de la presentación de
+        # la alarma para que la pausa de la aplicación quite los ruidos
+        # sin cancelar la alarma propiamente dicha, puesto que a veces
+        # android nos pausa y despausa sin motivo aparente
+
+        # self._get_ringtone().play()
+        if platform == 'android':
+            self._get_vibrator().vibrate([0, 500.0, 500.0], 1)
+
+    def cancelar_sonido_alarma(self):
+        self._get_ringtone().stop()
+        if platform == 'android':
+            self._get_vibrator().cancel()
+
     def sonar_alarma(self, context=None, intent=None, texto='Alarma'):
         ltext = str(datetime.now())
         if intent:
@@ -476,43 +509,59 @@ class PlanillaApp(App):
         self.scmgr.current = 'alarma'
         self.alarmscreen.ids.alarmbutton.text = texto
 
-        self._get_ringtone().play()
-        if platform == 'android':
-            self._get_vibrator().vibrate([0, 500.0, 500.0], 1)
+        self.reproducir_sonido_alarma()
 
-        self.clock_callback = partial(self.cancelar_alarma, source='Clock')
-        Clock.schedule_once(self.clock_callback, 40)  # segundos
+        self.clock_callback = partial(
+            self.cancelar_alarma, source='Clock', clock_date=datetime.now())
+        Clock.schedule_once(self.clock_callback, self.ACS)  # segundos
 
         self.en_alarma = True
 
-    def cancelar_alarma(self, dt=None, source='Unknown'):
+    def cancelar_alarma(self, dt=None, source='Unknown', clock_date=None):
         # argumento dt viene del Clock
-        Logger.debug("%s: cancelar_alarma - source %s %s" % (
-            APP, source, datetime.now()))
+        now = datetime.now()
+        Logger.debug("%s: cancelar_alarma - source %s %s" % (APP, source, now))
+
         if not self.en_alarma:
             # La cancelación automática se llama aunque el usuario haya
             # cancelado ya. No hacer nada si es el caso
             Logger.debug(
                 "%s: cancelar_alarma - alarma ya apagada." % APP)
             return
-        elif platform == 'android' and dt:
+
+        if source == 'Clock':
             # El usuario no ha cancelado. Debemos evitar que la pantalla
             # se quede encendida. Enviamos la task al background
-            Logger.debug(
-                "%s: cancelar alarma - cancelacion automatica" % APP)
-            activity.moveTaskToBack(True)
-        self._get_ringtone().stop()
-        if platform == 'android':
-            self._get_vibrator().cancel()
+            Logger.debug("%s: cancelar alarma clock_date=%s dt=%s" % (
+                APP, clock_date, dt))
+            if (now-clock_date).seconds < self.ACS:
+                # No sé por qué a veces el Clock llama inmediatamente en
+                # lugar de esperar los segundos que tocan. Si es el caso
+                # volver a intentarlo con lo que falta
+                self.clock_callback = partial(
+                    self.cancelar_alarma, source='Clock',
+                    clock_date=clock_date)
+                Clock.schedule_once(self.clock_callback,
+                                    (clock_date + timedelta(seconds=self.ACS)
+                                     - now).seconds)
+                Logger.debug(
+                    "%s: cancelar_alarma - Clock llamo antes de tiempo")
+                return
+
+        self.cancelar_sonido_alarma()
         self.scmgr.transition = FallOutTransition()
         self.scmgr.current = self.previous_screen
         Clock.unschedule(self.clock_callback)
         self.en_alarma = False
 
+        if platform == 'android' and source == 'Clock':
+            # Para evitar que se gaste la batería si se da el timeout
+            self.planilla.move_to_back = True
+
     def cancelar(self):
         self.scmgr.transition = FallOutTransition()
         self.scmgr.current = "principal"
-        self.borrar_alarmas()
+        self.parar_servicio()
 
         self.config.set('general', 'numero', 0)
         self.config.set('general', 's1', 'Sector1')
