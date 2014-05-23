@@ -29,7 +29,7 @@ source.include_exts = py,png,jpg,kv,atlas,json,csv
 #version.filename = %(source.dir)s/main.py
 
 # (str) Application versioning (method 2)
-version = 0.5
+version = 0.6
 
 # (list) Application requirements
 requirements = kivy,plyer,pyjnius

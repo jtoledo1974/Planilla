@@ -81,6 +81,8 @@ def sound_alarm(context=None, intent=None, texto="default"):
 
 def calculate_alarms():
     global alarmas
+    prev_task = ''
+    prev_sector = ''
     for p in pasadas:
         if p['task'] == 'Ejecutivo':
             alarmas.append({
@@ -90,6 +92,13 @@ def calculate_alarms():
             alarmas.append({
                 'hora': p['inicio']-timedelta(minutes=margen_ayud),
                 'texto': p['task']+' '+p['sector']})
+        elif p['task'] == 'Libre' and prev_task == 'Ayudante':
+            alarmas.append({
+                'hora': p['inicio']-timedelta(minutes=margen_ayud),
+                'texto': "Quitar tarjeta sector %s" % prev_sector})
+        prev_task = p['task']
+        prev_sector = p['sector']
+
     alarmas = [a for a in alarmas if a['hora'] > datetime.now()]
     Logger.info("%s: %s" % (APP, pformat(alarmas)))
 
