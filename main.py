@@ -229,7 +229,9 @@ class PlanillaScreen(Screen):
             # a que haya desaparecido la pantalla de alarma y enviamos
             # la aplicación al background para proteger la batería
             self.move_to_back = False
-            activity.moveTaskToBack(True)
+            if platform == 'android':
+                self.reset_window_flags()  # Permitir apagado automático
+            # activity.moveTaskToBack(True)
 
     def s1_changed(self, spinner, s1):
         Logger.debug("%s: Nuevo S1 %s" % (APP, s1))
@@ -322,8 +324,6 @@ class PlanillaApp(App):
         # self.sonar_alarma(texto='Alarma de prueba on_start')
         # return
         Logger.debug("%s: on_start %s" % (APP, datetime.now()))
-        if platform == 'android':
-            self.set_window_flags()  # Para que la alarma encienda el movil
 
         # Cargamos la planilla del csv
         with open("Planilla.csv", "r") as f:
@@ -362,6 +362,8 @@ class PlanillaApp(App):
                     self.sonar_alarma, ['org.jtc.planilla.APPALARM'])
             self.br.start()
 
+            # Si la aplicación está arrancando de cero verificar si es
+            # porque el servidor quiere que suene la alarma
             intent = activity.getIntent()
             if intent:
                 bundle = intent.getExtras()
@@ -387,6 +389,15 @@ class PlanillaApp(App):
             # en foreground Android no vuelve a encender al llamar a la app
             LayoutParams = autoclass('android.view.WindowManager$LayoutParams')
             activity.getWindow().addFlags(
+                LayoutParams.FLAG_KEEP_SCREEN_ON |
+                LayoutParams.FLAG_DISMISS_KEYGUARD |
+                LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                LayoutParams.FLAG_TURN_SCREEN_ON)
+
+        @run_on_ui_thread
+        def reset_window_flags(self):
+            LayoutParams = autoclass('android.view.WindowManager$LayoutParams')
+            activity.getWindow().clearFlags(
                 LayoutParams.FLAG_KEEP_SCREEN_ON |
                 LayoutParams.FLAG_DISMISS_KEYGUARD |
                 LayoutParams.FLAG_SHOW_WHEN_LOCKED |
@@ -500,6 +511,7 @@ class PlanillaApp(App):
             self._get_vibrator().vibrate([0, 500.0, 500.0], 1)
 
     def cancelar_sonido_alarma(self):
+        assert hasattr(self, 'ringer_mode')
         self._get_ringtone().stop()
         if platform == 'android':
             self._get_audiomanager().setRingerMode(self.ringer_mode)
@@ -511,6 +523,9 @@ class PlanillaApp(App):
             texto = intent.getExtras().getString('texto')
             # ltext = ltext + "\n%s %s" % (context.toString(), intent.toString()
         Logger.debug("%s: sonar_alarma: %s %s" % (APP, texto, ltext))
+
+        if platform == 'android':
+            self.set_window_flags()  # Para que la alarma encienda el movil
 
         if self.en_alarma:
             Logger.debug("%s: Alarma ya activa. Olvidar" % APP)
