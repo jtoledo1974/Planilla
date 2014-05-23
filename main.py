@@ -186,7 +186,7 @@ class AlarmScreen(Screen):
         self.anim.stop(self)
         Logger.debug("%s: AlarmScreen.on_leave %s" % (APP, datetime.now()))
         if platform == 'android':
-            self.reset_window_flags()  # Permitir apagado automático
+            self.app.reset_window_flags()  # Permitir apagado automático
 
 
     def on_touch_down(self, touch):
