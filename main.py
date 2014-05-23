@@ -230,6 +230,8 @@ class PlanillaScreen(Screen):
 
     def on_enter(self, *args):
         self.ids.pw.horario = self.horario
+        self.ids.ss1.bind(text=self.s1_changed)
+        self.ids.ss2.bind(text=self.s2_changed)
 
     def s1_changed(self, spinner, s1):
         Logger.debug("%s: Nuevo S1 %s" % (APP, s1))
@@ -255,23 +257,11 @@ class PlanillaApp(App):
 
     ACS = 20             # Alarm Cancel Seconds - Cancelación automática
 
+    planilla = None
+    alarmscreen = None
+
     def build(self):
-        self.planilla = PlanillaScreen()
-        self.scmgr = self.root.scmgr  # scmgr está identificado con id en el kv
-        self.scmgr.add_widget(self.planilla)
         self.use_kivy_settings = False
-        self.planilla.ids.ss1.bind(text=self.planilla.s1_changed)
-        self.planilla.ids.ss2.bind(text=self.planilla.s2_changed)
-        self.planilla.bind(horario=self.horario_cambiado)
-
-        self.alarmscreen = AlarmScreen()
-        self.alarmscreen.app = self
-        self.scmgr.add_widget(self.alarmscreen)
-
-        if int(self.config.get('general', 'numero')):
-            # Arrancar con la planilla puesta ya
-            self.scmgr.transition = NoTransition()
-            self.scmgr.current = 'planilla'
         return self.root
 
     def build_config(self, config):
@@ -368,6 +358,13 @@ class PlanillaApp(App):
             # arrancada. Para no duplicar código la llamamos desde aquí
             self.on_new_intent(activity.getIntent())
 
+        n = int(self.config.get('general', 'numero'))
+        if n:
+            # Arrancar con la planilla puesta ya
+            # self.scmgr.transition = NoTransition()
+            # self.scmgr.current = 'planilla'
+            self.asigna_numero(n)
+
     def on_stop(self):
         if platform == 'android' and self.br:
             self.br.stop()
@@ -404,6 +401,13 @@ class PlanillaApp(App):
         # self.cancelar_alarma(source="pruebas")
         # self.sonar_alarma(texto="asgina_numero")
         # return
+
+        if not self.planilla:
+            self.planilla = PlanillaScreen()
+            self.scmgr = self.root.scmgr  # scmgr está identificado con id en el kv
+            self.scmgr.add_widget(self.planilla)
+            self.planilla.bind(horario=self.horario_cambiado)
+
         numero = int(numero)
         try:
             self.planilla.numero = numero
@@ -521,6 +525,11 @@ class PlanillaApp(App):
         if self.en_alarma:
             Logger.debug("%s: Alarma ya activa. Olvidar" % APP)
             return
+
+        if not self.alarmscreen:
+            self.alarmscreen = AlarmScreen()
+            self.alarmscreen.app = self
+            self.scmgr.add_widget(self.alarmscreen)
 
         self.previous_screen = self.scmgr.current
         self.scmgr.transition = NoTransition()
