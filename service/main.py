@@ -75,14 +75,6 @@ def sound_alarm(context=None, intent=None, texto="default"):
     Logger.debug("%s: Starting %s" % (APP, intent.toString()))
     activity.startActivity(intent)
 
-    # La implementación de BroadcastReceiver the python for android
-    # nos fuerza a usar uno de los actions standar
-    # Provider changed parece ser el más inocuo
-    intent = Intent(String('org.jtc.planilla.APPALARM')).putExtra(
-        "texto", String(texto))
-    Logger.debug("%s: Broadcasting %s" % (APP, intent.toString()))
-    activity.sendBroadcast(intent)
-
     sleep(7)      # Vamos a asegurarnos de que la aplicación arranca bien,
     wl.release()  # pero menos de 10s o Android nos mata
 

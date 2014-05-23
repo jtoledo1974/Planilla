@@ -25,7 +25,6 @@ if platform == 'android':
     Logger.debug('PLANILLA: Importando %s' % datetime.now())
     import android
     from plyer.platforms.android import activity
-    from android.broadcast import BroadcastReceiver
     from jnius import autoclass
     from android.runnable import run_on_ui_thread
 
@@ -295,8 +294,17 @@ class PlanillaApp(App):
 
     def on_resume(self):
         Logger.debug("%s: On resume %s" % (APP, datetime.now()))
+        if platform == 'android':
+            self.set_window_flags()  # Para que la alarma encienda el movil
         if self.en_alarma:
             self.reproducir_sonido_alarma()
+
+    def on_new_intent(self, intent):
+        if intent:
+            bundle = intent.getExtras()
+            if bundle:
+                self.sonar_alarma(
+                    texto=bundle.getString('texto'))
 
     def on_keypress(self, window, keycode1, keycode2, text, modifiers):
         # Gestión del botón atrás.
@@ -354,14 +362,6 @@ class PlanillaApp(App):
         Window.bind(on_keyboard=self.on_keypress)
 
         if platform == 'android':
-            # La implementación de BroadcastReceiver the python for android
-            # nos fuerza a usar uno de los actions standar
-            # Provider changed parece ser el más inocuo
-            if not self.br:
-                self.br = BroadcastReceiver(
-                    self.sonar_alarma, ['org.jtc.planilla.APPALARM'])
-            self.br.start()
-
             # Si la aplicación está arrancando de cero verificar si es
             # porque el servidor quiere que suene la alarma
             intent = activity.getIntent()
@@ -517,11 +517,8 @@ class PlanillaApp(App):
             self._get_audiomanager().setRingerMode(self.ringer_mode)
             self._get_vibrator().cancel()
 
-    def sonar_alarma(self, context=None, intent=None, texto='Alarma'):
+    def sonar_alarma(self, texto='Alarma'):
         ltext = str(datetime.now())
-        if intent:
-            texto = intent.getExtras().getString('texto')
-            # ltext = ltext + "\n%s %s" % (context.toString(), intent.toString()
         Logger.debug("%s: sonar_alarma: %s %s" % (APP, texto, ltext))
 
         if platform == 'android':
