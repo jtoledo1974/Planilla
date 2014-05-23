@@ -174,10 +174,4 @@ if __name__ == '__main__':
 
         update_notification()
 
-        # if len(alarmas) and now >= alarmas[0]['hora']:
-        #     sound_alarm(alarmas[0]['texto'])
-        #     alarmas.pop(0)
-        #     if len(alarmas):
-        #         Logger.info("%s: Próxima alarma %s" % (APP, alarmas[0]))
-
         sleep(60)
