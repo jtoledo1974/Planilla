@@ -188,7 +188,6 @@ class AlarmScreen(Screen):
         if platform == 'android':
             self.app.reset_window_flags()  # Permitir apagado automático
 
-
     def on_touch_down(self, touch):
         if Vector(touch.pos).distance(
            Vector(self.center_x, self.height*0.2)) < 2*self.r:
@@ -365,14 +364,9 @@ class PlanillaApp(App):
         if platform == 'android':
             import android.activity as python_activity
             python_activity.bind(on_new_intent=self.on_new_intent)
-            # Si la aplicación está arrancando de cero verificar si es
-            # porque el servidor quiere que suene la alarma
-            intent = activity.getIntent()
-            if intent:
-                bundle = intent.getExtras()
-                if bundle:
-                    self.sonar_alarma(
-                        texto=bundle.getString('texto'))
+            # on_new_intent sólo se llama cuando la aplicación ya está
+            # arrancada. Para no duplicar código la llamamos desde aquí
+            self.on_new_intent(activity.getIntent())
 
     def on_stop(self):
         if platform == 'android' and self.br:
