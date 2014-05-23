@@ -176,9 +176,18 @@ class AlarmScreen(Screen):
         self.anim.repeat = True
         self.anim.start(self)
 
+        self.app.reproducir_sonido_alarma()
+        self.app.clock_callback = partial(
+            self.app.cancelar_alarma,
+            source='Clock', clock_date=datetime.now())
+        Clock.schedule_once(self.app.clock_callback, self.app.ACS)  # segundos
+
     def on_leave(self, *args):
         self.anim.stop(self)
         Logger.debug("%s: AlarmScreen.on_leave %s" % (APP, datetime.now()))
+        if platform == 'android':
+            self.reset_window_flags()  # Permitir apagado automático
+
 
     def on_touch_down(self, touch):
         if Vector(touch.pos).distance(
@@ -219,18 +228,9 @@ class PlanillaScreen(Screen):
     s2 = StringProperty('Sector2')
     sectores = ListProperty(['DDI', 'XAL', 'FINAL'])
     textohorario = StringProperty('')
-    move_to_back = False
 
     def on_enter(self, *args):
         self.ids.pw.horario = self.horario
-        if self.move_to_back:
-            # Si la alarma se ha cancelado automáticamente, esperamos
-            # a que haya desaparecido la pantalla de alarma y enviamos
-            # la aplicación al background para proteger la batería
-            self.move_to_back = False
-            if platform == 'android':
-                self.reset_window_flags()  # Permitir apagado automático
-            # activity.moveTaskToBack(True)
 
     def s1_changed(self, spinner, s1):
         Logger.debug("%s: Nuevo S1 %s" % (APP, s1))
@@ -294,15 +294,16 @@ class PlanillaApp(App):
 
     def on_resume(self):
         Logger.debug("%s: On resume %s" % (APP, datetime.now()))
-        if platform == 'android':
-            self.set_window_flags()  # Para que la alarma encienda el movil
         if self.en_alarma:
             self.reproducir_sonido_alarma()
 
     def on_new_intent(self, intent):
+        Logger.debug("%s: on_new_intent %s %s" % (
+            APP, datetime.now(), intent))
         if intent:
             bundle = intent.getExtras()
             if bundle:
+                self.set_window_flags()  # Para que la alarma encienda el movil
                 self.sonar_alarma(
                     texto=bundle.getString('texto'))
 
@@ -362,6 +363,8 @@ class PlanillaApp(App):
         Window.bind(on_keyboard=self.on_keypress)
 
         if platform == 'android':
+            import android.activity as python_activity
+            python_activity.bind(on_new_intent=self.on_new_intent)
             # Si la aplicación está arrancando de cero verificar si es
             # porque el servidor quiere que suene la alarma
             intent = activity.getIntent()
@@ -521,9 +524,6 @@ class PlanillaApp(App):
         ltext = str(datetime.now())
         Logger.debug("%s: sonar_alarma: %s %s" % (APP, texto, ltext))
 
-        if platform == 'android':
-            self.set_window_flags()  # Para que la alarma encienda el movil
-
         if self.en_alarma:
             Logger.debug("%s: Alarma ya activa. Olvidar" % APP)
             return
@@ -533,12 +533,7 @@ class PlanillaApp(App):
         self.scmgr.current = 'alarma'
         self.alarmscreen.ids.alarmbutton.text = texto
 
-        self.reproducir_sonido_alarma()
-
-        self.clock_callback = partial(
-            self.cancelar_alarma, source='Clock', clock_date=datetime.now())
-        Clock.schedule_once(self.clock_callback, self.ACS)  # segundos
-
+        # La alarma propiamente dicha se activa en el on_enter de AlarmScreen
         self.en_alarma = True
 
     def cancelar_alarma(self, dt=None, source='Unknown', clock_date=None):
@@ -577,10 +572,6 @@ class PlanillaApp(App):
         self.scmgr.current = self.previous_screen
         Clock.unschedule(self.clock_callback)
         self.en_alarma = False
-
-        if platform == 'android' and source == 'Clock':
-            # Para evitar que se gaste la batería si se da el timeout
-            self.planilla.move_to_back = True
 
     def cancelar(self):
         self.scmgr.transition = FallOutTransition()
