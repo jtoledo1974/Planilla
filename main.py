@@ -58,16 +58,38 @@ class Horario():
     s1 = 'S1'  # Así es como se carga inicialmente
     s2 = 'S2'
 
-    def __init__(self, text, s1, s2):
+    def __init__(self, nucleo, numero, s1, s2):
+
         self.pasadas = []
         self.s1 = s1
         self.s2 = s2
+        self._horarios = {}
+        self._sectores = {}
+
         now = datetime.now()
+
+        # Cargamos la planilla del csv
+        with open("Planilla.csv", "r") as f:
+            csv = f.readlines()
+        self._horarios['TMA'] = {
+            int(l[0]): [c for c in l[1:].rstrip('\n').split(',') if c != '']
+            for l in csv[2:10]}
+        self._horarios['Ruta'] = {
+            int(l[0]): [c for c in l[1:].rstrip('\n').split(',') if c != '']
+            for l in csv[13:21]}
+        self._sectores['TMA'] = [
+            c for c in csv[0].rstrip('\n').split(',') if c != ''][1:]
+        self._sectores['Ruta'] = [
+            c for c in csv[11].rstrip('\n').split(',') if c != ''][1:]
+
+        numero = int(numero)
+        text = self._horarios[nucleo][numero]
+
         while True:
             if len(text) == 0:
                 break
-            (starth, startm) = [int(f) for f in text[0].split(':')]
-            (finishh, finishm) = [int(f) for f in text[1].split(':')]
+            (starth, startm) = [int(c) for c in text[0].split(':')]
+            (finishh, finishm) = [int(c) for c in text[1].split(':')]
             task = text[2]
             sector = ''
             if task != 'Libre':
@@ -78,6 +100,7 @@ class Horario():
                 'inicio': datetime.combine(now, time(starth, startm)),
                 'final': datetime.combine(now, time(finishh, finishm)),
                 'task': task, 'sector': sector})
+
         # Identificar si vamos a hacer turno de mañana o tarde
         if datetime.combine(now, time(6, 30)) < now < \
                 datetime.combine(now, time(14, 30)):
@@ -132,6 +155,14 @@ class Horario():
         return [p for p in self.pasadas
                 if p['inicio'] > (now+timedelta(minutes=margen))]
 
+    def sectores(self, nucleo=''):
+        assert nucleo
+        return self._sectores[nucleo]
+
+    def n_sectores(self):
+        d = {p['sector']: '' for p in self.pasadas if p['sector'] != ''}
+        return len(d.keys())
+
 
 class NucleoPopup(Popup):
     def __init__(self, **kwargs):
@@ -145,6 +176,13 @@ class NucleoPopup(Popup):
         self.config.set('general', 'nucleo', instance.text)
         self.dismiss()
         self.config.write()
+
+
+class SectoresScreen(Screen):
+    def add_sectors(self, sectores=(), n_sectores=0):
+        assert sectores != () and n_sectores > 0
+        for s in sectores:
+            self.gridlayout.add_widget(Button(text=s))
 
 
 class AlarmScreen(Screen):
@@ -248,8 +286,6 @@ class PlanillaScreen(Screen):
 
 class PlanillaApp(App):
 
-    horarios = {}
-    sectores = {}
     arrancando = False
     service = None       # Referencia al servicio de Android
     br = None            # Background Receiver
@@ -259,6 +295,7 @@ class PlanillaApp(App):
 
     planilla = None
     alarmscreen = None
+    sectoresscreen = None
 
     def build(self):
         self.use_kivy_settings = False
@@ -323,19 +360,7 @@ class PlanillaApp(App):
         # return
         Logger.debug("%s: on_start %s" % (APP, datetime.now()))
 
-        # Cargamos la planilla del csv
-        with open("Planilla.csv", "r") as f:
-            csv = f.readlines()
-        self.horarios['TMA'] = {
-            int(l[0]): [c for c in l[1:].rstrip('\n').split(',') if c != '']
-            for l in csv[2:10]}
-        self.horarios['Ruta'] = {
-            int(l[0]): [c for c in l[1:].rstrip('\n').split(',') if c != '']
-            for l in csv[13:21]}
-        self.sectores['TMA'] = [
-            c for c in csv[0].rstrip('\n').split(',') if c != ''][1:]
-        self.sectores['Ruta'] = [
-            c for c in csv[11].rstrip('\n').split(',') if c != ''][1:]
+        self.scmgr = self.root.scmgr  # scmgr identificado con id en el kv
 
         if self.config.get('general', 'nucleo') not in ('Ruta', 'TMA'):
             self.pedir_nucleo()
@@ -402,9 +427,24 @@ class PlanillaApp(App):
         # self.sonar_alarma(texto="asgina_numero")
         # return
 
+        if not self.sectoresscreen:
+            self.sectoresscreen = SectoresScreen()
+            self.scmgr.add_widget(self.sectoresscreen)
+            self.scmgr.current = 'sectores'
+
+        nucleo = self.config.get('general', 'nucleo')
+        s1 = self.config.get('general', 's1')
+        s2 = self.config.get('general', 's2')
+
+        horario = Horario(nucleo=nucleo, numero=numero, s1=s1, s2=s2)
+        n_sectores = horario.n_sectores()
+        self.sectoresscreen.add_sectors(
+            sectores=horario.sectores(nucleo), n_sectores=n_sectores)
+        self.horario = horario
+        return
+
         if not self.planilla:
             self.planilla = PlanillaScreen()
-            self.scmgr = self.root.scmgr  # scmgr está identificado con id en el kv
             self.scmgr.add_widget(self.planilla)
             self.planilla.bind(horario=self.horario_cambiado)
 
@@ -414,9 +454,8 @@ class PlanillaApp(App):
             nucleo = self.config.get('general', 'nucleo')
             s1 = self.config.get('general', 's1')
             s2 = self.config.get('general', 's2')
-            self.planilla.horario = Horario(
-                text=self.horarios[nucleo][numero], s1=s1, s2=s2)
-            self.planilla.sectores = self.sectores[nucleo]
+            self.planilla.horario = self.horario
+            self.planilla.sectores = self.horario.sectores(nucleo)
             self.planilla.ids.ss1.text = self.config.get('general', 's1')
             self.planilla.ids.ss2.text = self.config.get('general', 's2')
             self.scmgr.transition = RiseInTransition()

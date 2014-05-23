@@ -61,6 +61,12 @@
 		text: "%s" % root.horario
 
 
+<SectoresScreen>:
+	name: "sectores"
+	gridlayout: glid
+	GridLayout:
+		id: glid
+		cols: 3
 <PlanillaScreen>:
 	name: "planilla"
 	BoxLayout:
@@ -133,7 +139,6 @@ FloatLayout:
 						mipmap: True
 						size_hint_x: None
 						width: self.height
-
 					Label:
 						text: 'Planilla'
 						font_size: '16sp'
