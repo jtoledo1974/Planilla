@@ -450,17 +450,19 @@ class PlanillaApp(App):
             self.service.start(arg)
             Logger.debug("%s: Servicio arrancado" % APP)
 
+    def _get_audiomanager(self):
+        if not hasattr(self, 'audiomanager'):
+            if platform == 'android':
+                Context = autoclass('android.content.Context')
+                self.audiomanager = activity.getSystemService(
+                    Context.AUDIO_SERVICE)
+        return self.audiomanager
+
     def _get_ringtone(self):
         if not hasattr(self, 'ringtone'):
             if platform == 'android':
                 RingtoneManager = autoclass('android.media.RingtoneManager')
                 AudioManager = autoclass('android.media.AudioManager')
-                Context = autoclass('android.content.Context')
-
-                am = activity.getSystemService(Context.AUDIO_SERVICE)
-                am.setStreamVolume(
-                    AudioManager.STREAM_ALARM,
-                    am.getStreamMaxVolume(AudioManager.STREAM_ALARM), 0)
 
                 u = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
                 self.ringtone = RingtoneManager.getRingtone(
@@ -483,14 +485,24 @@ class PlanillaApp(App):
         # la alarma para que la pausa de la aplicación quite los ruidos
         # sin cancelar la alarma propiamente dicha, puesto que a veces
         # android nos pausa y despausa sin motivo aparente
+        if platform == 'android':
+                AudioManager = autoclass('android.media.AudioManager')
+                am = self._get_audiomanager()
+                am.setStreamVolume(
+                    AudioManager.STREAM_ALARM,
+                    am.getStreamMaxVolume(AudioManager.STREAM_ALARM), 0)
+                self.ringer_mode = am.getRingerMode()
+                am.setRingerMode(AudioManager.RINGER_MODE_NORMAL)
 
-        # self._get_ringtone().play()
+        self._get_ringtone().play()
+
         if platform == 'android':
             self._get_vibrator().vibrate([0, 500.0, 500.0], 1)
 
     def cancelar_sonido_alarma(self):
         self._get_ringtone().stop()
         if platform == 'android':
+            self._get_audiomanager().setRingerMode(self.ringer_mode)
             self._get_vibrator().cancel()
 
     def sonar_alarma(self, context=None, intent=None, texto='Alarma'):
