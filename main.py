@@ -356,12 +356,12 @@ class PlanillaApp(App):
             self.arrancando = True
             self.asigna_numero(numero)
 
-        if platform == 'android':
-            android.map_key(android.KEYCODE_BACK, 1001)
         from kivy.core.window import Window
         Window.bind(on_keyboard=self.on_keypress)
 
         if platform == 'android':
+            android.map_key(android.KEYCODE_BACK, 1001)
+
             import android.activity as python_activity
             python_activity.bind(on_new_intent=self.on_new_intent)
             # on_new_intent sólo se llama cuando la aplicación ya está
@@ -436,9 +436,10 @@ class PlanillaApp(App):
             self.arrancar_servicio()
 
     def parar_servicio(self):
-        self.cancelar_alarma(source='parar_servicio')
+        if self.en_alarma:
+            self.cancelar_alarma(source='parar_servicio')
         if platform == 'android' and self.service:
-            Logger.debug("%s: Parando el servicio" % APP)
+            Logger.debug("%s: parar_servicio - %s" % (APP, datetime.now()))
             self.service.stop()
         self.service = None
 
