@@ -58,7 +58,7 @@
 			pos: self.pos
 			size: self.size
 	Label:
-		text: "%s" % root.horario
+		text: "%s" % app.horario
 
 
 <SectoresScreen>:
@@ -67,6 +67,8 @@
 	GridLayout:
 		id: glid
 		cols: 3
+
+
 <PlanillaScreen>:
 	name: "planilla"
 	BoxLayout:
@@ -102,17 +104,9 @@
 				id: pw
 			BoxLayout:
 				orientation: "vertical"
-				Spinner:
-					text: "%s"%root.s1
-					values: root.sectores
-					id: ss1
-				Spinner:
-					text: "%s"%root.s2
-					values: root.sectores
-					id: ss2
 				Label:
 					font_size: "48sp"
-					text: "Nº %s"%root.numero
+					text: "Nº %s" % app.numero
 
 
 FloatLayout:

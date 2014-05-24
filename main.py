@@ -268,37 +268,11 @@ class AlarmScreen(Screen):
 
 
 class PlanillaWidget(RelativeLayout):
-
-    horario = ObjectProperty()
-
-    def on_horario(self, widget, horario):
-        pass
+    pass
 
 
 class PlanillaScreen(Screen):
-    numero = NumericProperty(0)
-    horario = ObjectProperty()
-    s1 = StringProperty('Sector1')
-    s2 = StringProperty('Sector2')
-    sectores = ListProperty(['DDI', 'XAL', 'FINAL'])
-    textohorario = StringProperty('')
-
-    def on_enter(self, *args):
-        self.ids.pw.horario = self.horario
-        self.ids.ss1.bind(text=self.s1_changed)
-        self.ids.ss2.bind(text=self.s2_changed)
-
-    def s1_changed(self, spinner, s1):
-        Logger.debug("%s: Nuevo S1 %s" % (APP, s1))
-        self.horario.actualiza_sector('s1', s1)
-        self.ids.pw.horario = copy(self.horario)
-        self.horario = copy(self.horario)
-
-    def s2_changed(self, spinner, s2):
-        Logger.debug("%s: Nuevo S2 %s" % (APP, s2))
-        self.horario.actualiza_sector('s2', s2)
-        self.ids.pw.horario = copy(self.horario)
-        self.horario = copy(self.horario)
+    pass
 
 
 class PlanillaApp(App):
@@ -313,6 +287,8 @@ class PlanillaApp(App):
     planilla = None
     alarmscreen = None
     sectoresscreen = None
+
+    horario = ObjectProperty()
 
     def build(self):
         self.use_kivy_settings = False
@@ -479,18 +455,13 @@ class PlanillaApp(App):
             else:
                 self.horario.actualiza_sector(s, sectores[i])
 
+        # Necesitamos un copy para que los observadores reaccionen
+        self.horario = copy(self.horario)
+
         if not self.planilla:
             self.planilla = PlanillaScreen()
             self.scmgr.add_widget(self.planilla)
-            self.planilla.bind(horario=self.horario_cambiado)
 
-        self.planilla.numero = self.numero
-        nucleo = self.config.get('general', 'nucleo')
-
-        self.planilla.horario = self.horario
-        self.planilla.sectores = self.horario.sectores(nucleo)
-        self.planilla.ids.ss1.text = self.config.get('general', 's1')
-        self.planilla.ids.ss2.text = self.config.get('general', 's2')
         self.scmgr.transition = RiseInTransition()
         self.scmgr.current = 'planilla'
         self.config.set('general', 'numero', self.numero)
@@ -519,7 +490,7 @@ class PlanillaApp(App):
         self.parar_servicio()
         margen_ejec = int(self.config.get('general', 'margen_ejec'))
         margen_ayud = int(self.config.get('general', 'margen_ayud'))
-        pasadas = self.planilla.horario.pasadas_pendientes(0)
+        pasadas = self.horario.pasadas_pendientes(0)
         # Logger.debug("%s: Pasadas pendientes %s" % (APP, pasadas))
         arg = {'margen_ejec': margen_ejec,
                'margen_ayud': margen_ayud, 'pasadas': pasadas}
