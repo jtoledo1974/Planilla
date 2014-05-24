@@ -424,7 +424,6 @@ class PlanillaApp(App):
         self.numero = int(numero)
         self.horario = Horario(nucleo=nucleo, numero=numero)
 
-        Logger.debug("%s: asigna_numero Antes del if %s" % (APP, numero))
         if not self.restarting:
             self.scmgr.current = 'sectores'
             self.sectoresscreen.add_sectors(
@@ -433,7 +432,6 @@ class PlanillaApp(App):
                 cb=self.asigna_sectores)
             return
 
-        Logger.debug("%s: asigna_numero despues del if %s" % (APP, numero))
         self.asigna_sectores()
 
     def asigna_sectores(self, sectores=()):
@@ -447,6 +445,7 @@ class PlanillaApp(App):
                 self.horario.actualiza_sector(s, self.config.get('general', s))
             else:
                 self.horario.actualiza_sector(s, sectores[i])
+                self.config.set('general', s, sectores[i])
 
         # Necesitamos un copy para que los observadores reaccionen
         self.horario = copy(self.horario)
