@@ -58,11 +58,9 @@ class Horario():
     s1 = 'S1'  # Así es como se carga inicialmente
     s2 = 'S2'
 
-    def __init__(self, nucleo, numero, s1, s2):
+    def __init__(self, nucleo, numero):
 
         self.pasadas = []
-        self.s1 = s1
-        self.s2 = s2
         self._horarios = {}
         self._sectores = {}
 
@@ -128,7 +126,7 @@ class Horario():
         self.inicio = (self.pasadas[0])['inicio']
         self.final = (self.pasadas[-1])['final']
 
-    def actualiza_sector(self, new, num_sector):
+    def actualiza_sector(self, num_sector, new):
         old = getattr(self, num_sector)
         self.pasadas = [{
                         'inicio': p['inicio'],
@@ -273,13 +271,13 @@ class PlanillaScreen(Screen):
 
     def s1_changed(self, spinner, s1):
         Logger.debug("%s: Nuevo S1 %s" % (APP, s1))
-        self.horario.actualiza_sector(s1, 's1')
+        self.horario.actualiza_sector('s1', s1)
         self.ids.pw.horario = copy(self.horario)
         self.horario = copy(self.horario)
 
     def s2_changed(self, spinner, s2):
         Logger.debug("%s: Nuevo S2 %s" % (APP, s2))
-        self.horario.actualiza_sector(s2, 's2')
+        self.horario.actualiza_sector('s2', s2)
         self.ids.pw.horario = copy(self.horario)
         self.horario = copy(self.horario)
 
@@ -308,7 +306,8 @@ class PlanillaApp(App):
             'margen_ayud': 5,
             'numero': 0,
             's1': 'Sector1',
-            's2': 'Sector2'})
+            's2': 'Sector2',
+            's3': 'Sector3'})
 
     def build_settings(self, settings):
         settings.add_json_panel('Planilla', self.config, 'settings.json')
