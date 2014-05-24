@@ -18,8 +18,7 @@ from kivy.vector import Vector
 from kivy.uix.screenmanager import Screen, RiseInTransition, FallOutTransition, \
     NoTransition
 from kivy.uix.relativelayout import RelativeLayout
-from kivy.properties import NumericProperty, ObjectProperty, StringProperty, \
-    ListProperty
+from kivy.properties import NumericProperty, ObjectProperty
 
 if platform == 'android':
     Logger.debug('PLANILLA: Importando %s' % datetime.now())
@@ -377,13 +376,6 @@ class PlanillaApp(App):
             # on_new_intent sólo se llama cuando la aplicación ya está
             # arrancada. Para no duplicar código la llamamos desde aquí
             self.on_new_intent(activity.getIntent())
-
-        n = int(self.config.get('general', 'numero'))
-        if n:
-            # Arrancar con la planilla puesta ya
-            # self.scmgr.transition = NoTransition()
-            # self.scmgr.current = 'planilla'
-            self.asigna_numero(n)
 
     def on_stop(self):
         if platform == 'android' and self.br:
