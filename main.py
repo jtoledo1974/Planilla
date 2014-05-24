@@ -177,10 +177,29 @@ class NucleoPopup(Popup):
 
 
 class SectoresScreen(Screen):
-    def add_sectors(self, sectores=(), n_sectores=0):
-        assert sectores != () and n_sectores > 0
+    n_sectores = 0  # Cuantos sectores elegir
+    sectores = []
+    cb = None       # Callbcak cuando hayamos acabado
+
+    def add_sectors(self, sectores=(), n_sectores=0, cb=None):
+        assert sectores != () and n_sectores > 0 and cb is not None
+        self.n_sectores = n_sectores
+        self.cb = cb
         for s in sectores:
-            self.gridlayout.add_widget(Button(text=s))
+            b = Button(text=s, on_release=self.button_presed)
+            self.gridlayout.add_widget(b)
+
+    def button_presed(self, button):
+        self.sectores.append(button.text)
+        button.disabled = True
+        if len(self.sectores) == self.n_sectores:
+            self.reply_and_init()
+
+    def reply_and_init(self):
+        self.gridlayout.clear_widgets()
+        res = self.sectores
+        self.sectores = []
+        self.cb(sectores=res)
 
 
 class AlarmScreen(Screen):
@@ -284,7 +303,7 @@ class PlanillaScreen(Screen):
 
 class PlanillaApp(App):
 
-    arrancando = False
+    restarting = False
     service = None       # Referencia al servicio de Android
     br = None            # Background Receiver
     en_alarma = False    # La pantalla de alarma está corriendo
@@ -367,7 +386,7 @@ class PlanillaApp(App):
         numero = int(self.config.get('general', 'numero'))
         if numero != 0:  # 0 indica que no estamos rearrancando
             # Evita que cambiar s1 y s2 arranque el servicio
-            self.arrancando = True
+            self.restarting = True
             self.asigna_numero(numero)
 
         from kivy.core.window import Window
@@ -425,53 +444,64 @@ class PlanillaApp(App):
         # self.cancelar_alarma(source="pruebas")
         # self.sonar_alarma(texto="asgina_numero")
         # return
+        Logger.debug("%s: asigna_numero %s" % (APP, numero))
 
         if not self.sectoresscreen:
             self.sectoresscreen = SectoresScreen()
             self.scmgr.add_widget(self.sectoresscreen)
-            self.scmgr.current = 'sectores'
 
         nucleo = self.config.get('general', 'nucleo')
-        s1 = self.config.get('general', 's1')
-        s2 = self.config.get('general', 's2')
 
-        horario = Horario(nucleo=nucleo, numero=numero, s1=s1, s2=s2)
-        n_sectores = horario.n_sectores()
-        self.sectoresscreen.add_sectors(
-            sectores=horario.sectores(nucleo), n_sectores=n_sectores)
-        self.horario = horario
-        return
+        self.numero = int(numero)
+        self.horario = Horario(nucleo=nucleo, numero=numero)
+
+        Logger.debug("%s: asigna_numero Antes del if %s" % (APP, numero))
+        if not self.restarting:
+            self.scmgr.current = 'sectores'
+            self.sectoresscreen.add_sectors(
+                sectores=self.horario.sectores(nucleo),
+                n_sectores=self.horario.n_sectores(),
+                cb=self.asigna_sectores)
+            return
+
+        Logger.debug("%s: asigna_numero despues del if %s" % (APP, numero))
+        self.asigna_sectores()
+
+    def asigna_sectores(self, sectores=()):
+        assert not self.restarting and len(sectores)
+        Logger.debug("%s: asigna_sectores %s" % (APP, sectores))
+
+        n_sectores = self.horario.n_sectores()
+        for i in range(0, n_sectores):
+            s = "s%d" % (i + 1)
+            if self.restarting:
+                self.horario.actualiza_sector(s, self.config.get('general', s))
+            else:
+                self.horario.actualiza_sector(s, sectores[i])
 
         if not self.planilla:
             self.planilla = PlanillaScreen()
             self.scmgr.add_widget(self.planilla)
             self.planilla.bind(horario=self.horario_cambiado)
 
-        numero = int(numero)
-        try:
-            self.planilla.numero = numero
-            nucleo = self.config.get('general', 'nucleo')
-            s1 = self.config.get('general', 's1')
-            s2 = self.config.get('general', 's2')
-            self.planilla.horario = self.horario
-            self.planilla.sectores = self.horario.sectores(nucleo)
-            self.planilla.ids.ss1.text = self.config.get('general', 's1')
-            self.planilla.ids.ss2.text = self.config.get('general', 's2')
-            self.scmgr.transition = RiseInTransition()
-            self.scmgr.current = 'planilla'
-            self.config.set('general', 'numero', numero)
-            self.config.write()
-        except KeyError:
-            self.pedir_nucleo()
-        except ValueError:
-            #  Ver el raise en planilla.__init__
-            print("No es hora, quillo")
-        self.arrancando = False
+        self.planilla.numero = self.numero
+        nucleo = self.config.get('general', 'nucleo')
+
+        self.planilla.horario = self.horario
+        self.planilla.sectores = self.horario.sectores(nucleo)
+        self.planilla.ids.ss1.text = self.config.get('general', 's1')
+        self.planilla.ids.ss2.text = self.config.get('general', 's2')
+        self.scmgr.transition = RiseInTransition()
+        self.scmgr.current = 'planilla'
+        self.config.set('general', 'numero', self.numero)
+        self.config.write()
+
+        self.restarting = False
         self.arrancar_servicio()
 
     # Callback cuando cambian sectores
     def horario_cambiado(self, instance, horario):
-        if self.arrancando is False:
+        if self.restarting is False:
             self.config.set('general', 's1', horario.s1)
             self.config.set('general', 's2', horario.s2)
             self.config.write()
