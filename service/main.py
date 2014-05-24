@@ -52,7 +52,7 @@ def update_notification():
 def sound_alarm(context=None, intent=None, texto="default"):
     if intent:
         if intent.getAction() == Intent.ACTION_USER_PRESENT:
-            Logger.debug("%s: ACTION_USER_PRESENT" % APP)
+            Logger.debug("%s: ACTION_USER_PRESENT %s" % (APP, datetime.now()))
             update_notification()
             return
         texto = intent.getExtras().getString('texto')
