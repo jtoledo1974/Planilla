@@ -288,6 +288,7 @@ class PlanillaApp(App):
     alarmscreen = None
     sectoresscreen = None
 
+    numero = NumericProperty(0)
     horario = ObjectProperty()
 
     def build(self):
