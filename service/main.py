@@ -51,6 +51,10 @@ def update_notification():
 
 def sound_alarm(context=None, intent=None, texto="default"):
     if intent:
+        if intent.getAction() == Intent.ACTION_USER_PRESENT:
+            Logger.debug("%s: ACTION_USER_PRESENT" % APP)
+            update_notification()
+            return
         texto = intent.getExtras().getString('texto')
     Logger.info("%s: %s Sonando alarma %s" % (APP, datetime.now(), texto))
 
@@ -113,7 +117,8 @@ def calculate_alarms():
 
     global broadcast_receiver
     broadcast_receiver = BroadcastReceiver(
-        sound_alarm, ['org.jtc.planilla.SERVICEALARM'])
+        sound_alarm,
+        ['org.jtc.planilla.SERVICEALARM', Intent.ACTION_USER_PRESENT])
     broadcast_receiver.context = activity
     broadcast_receiver.start()
 
