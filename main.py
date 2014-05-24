@@ -483,15 +483,14 @@ class PlanillaApp(App):
         self.parar_servicio()
         margen_ejec = int(self.config.get('general', 'margen_ejec'))
         margen_ayud = int(self.config.get('general', 'margen_ayud'))
-        pasadas = self.horario.pasadas_pendientes(0)
-        # Logger.debug("%s: Pasadas pendientes %s" % (APP, pasadas))
         arg = {'margen_ejec': margen_ejec,
-               'margen_ayud': margen_ayud, 'pasadas': pasadas}
+               'margen_ayud': margen_ayud,
+               'pasadas': self.horario.pasadas}
         arg = pickle.dumps(arg)
 
         if platform == 'android':
             self.service = android.AndroidService(
-                'Planilla: activando alarmas', 'Servicio iniciado')
+                'Activando alarmas', 'Servicio iniciado')
             self.service.start(arg)
             Logger.debug("%s: Servicio arrancado" % APP)
 
