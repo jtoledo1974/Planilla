@@ -291,10 +291,12 @@ class PlanillaApp(App):
     horario = ObjectProperty()
 
     def build(self):
+        Logger.debug("%s: build %s " % (APP, datetime.now()))
         self.use_kivy_settings = False
         return self.root
 
     def build_config(self, config):
+        Logger.debug("%s: build_config %s " % (APP, datetime.now()))
         config.setdefaults('general', {
             'nucleo': 'INDEFINIDO',
             'margen_ejec': 10,
@@ -305,6 +307,7 @@ class PlanillaApp(App):
             's3': 'Sector3'})
 
     def build_settings(self, settings):
+        Logger.debug("%s: build_settings %s " % (APP, datetime.now()))
         settings.add_json_panel('Planilla', self.config, 'settings.json')
 
     def on_pause(self):
@@ -426,6 +429,7 @@ class PlanillaApp(App):
 
         if not self.restarting:
             self.scmgr.current = 'sectores'
+            Logger.debug("%s: current 'sectores' - " % APP)
             self.sectoresscreen.add_sectors(
                 sectores=self.horario.sectores(nucleo),
                 n_sectores=self.horario.n_sectores(),
@@ -456,6 +460,7 @@ class PlanillaApp(App):
 
         self.scmgr.transition = RiseInTransition()
         self.scmgr.current = 'planilla'
+        Logger.debug("%s: current 'planilla' - RiseIn" % APP)
         self.config.set('general', 'numero', self.numero)
         self.config.write()
 
@@ -491,7 +496,7 @@ class PlanillaApp(App):
             self.service = android.AndroidService(
                 'Activando alarmas', 'Servicio iniciado')
             self.service.start(arg)
-            Logger.debug("%s: Servicio arrancado" % APP)
+            Logger.debug("%s: Arrancando servicio" % APP)
 
     def _get_audiomanager(self):
         if not hasattr(self, 'audiomanager'):
@@ -565,6 +570,7 @@ class PlanillaApp(App):
         self.previous_screen = self.scmgr.current
         self.scmgr.transition = NoTransition()
         self.scmgr.current = 'alarma'
+        Logger.debug("%s: current 'alarma' - NoTransition" % APP)
         self.alarmscreen.ids.alarmbutton.text = texto
 
         # La alarma propiamente dicha se activa en el on_enter de AlarmScreen
@@ -604,12 +610,15 @@ class PlanillaApp(App):
         self.cancelar_sonido_alarma()
         self.scmgr.transition = FallOutTransition()
         self.scmgr.current = self.previous_screen
+        Logger.debug("%s: current previous '%s' - FallOut" % (
+            APP, self.previous_screen))
         Clock.unschedule(self.clock_callback)
         self.en_alarma = False
 
     def cancelar(self):
         self.scmgr.transition = FallOutTransition()
         self.scmgr.current = "principal"
+        Logger.debug("%s: current 'principal' - FallOut" % APP)
         self.parar_servicio()
 
         self.config.set('general', 'numero', 0)
@@ -633,5 +642,7 @@ class TestApp(App):
         Logger.debug("testlong %s %s" % (l, str(ph.testlong(l))))
 
 if __name__ == '__main__':
+    Logger.debug("%s: End imports. %s PlanillaApp().run()" % (
+        APP, datetime.now()))
     PlanillaApp().run()
     # TestApp().run()
