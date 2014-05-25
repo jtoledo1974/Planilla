@@ -34,5 +34,13 @@
         "section": "general",
         "key": "sound_alarm",
         "true": "auto"
+    },
+    {
+        "type": "bool",
+        "title": "Alarma vibratoria",
+        "desc": "Usar el vibrador del teléfono",
+        "section": "general",
+        "key": "vibration_alarm",
+        "true": "auto"
     }
 ]

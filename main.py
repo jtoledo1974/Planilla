@@ -299,6 +299,7 @@ class PlanillaApp(App):
             'margen_ejec': 10,
             'margen_ayud': 5,
             'sound_alarm': 1,
+            'vibration_alarm': 1,
             'numero': 0,
             's1': 'Sector1',
             's2': 'Sector2',
@@ -546,7 +547,8 @@ class PlanillaApp(App):
         if int(self.config.get('general', 'sound_alarm')):
             self._get_ringtone().play()
 
-        if platform == 'android':
+        if platform == 'android' and \
+           int(self.config.get('general', 'vibration_alarm')):
             self._get_vibrator().vibrate([0, 500.0, 500.0], 1)
 
     def cancelar_sonido_alarma(self):
