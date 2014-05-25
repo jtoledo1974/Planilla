@@ -568,6 +568,13 @@ class PlanillaApp(App):
             self.scmgr.add_widget(self.alarmscreen)
 
         self.previous_screen = self.scmgr.current
+        # Logger.debug("%s: transition %s t_progress %s t_state %s" % (
+        #     APP, self.scmgr.transition,
+        #     self.scmgr.current_screen.transition_progress,
+        #     self.scmgr.current_screen.transition_state))
+        self.scmgr.transition.stop()  # De otro modo si hay una transición en
+        # marcha, como ocurre durante el arranque con alarma, la transición se
+        # bloquea y la pantalla de alarma  queda abajo
         self.scmgr.transition = NoTransition()
         self.scmgr.current = 'alarma'
         Logger.debug("%s: current 'alarma' - NoTransition" % APP)
