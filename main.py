@@ -192,13 +192,11 @@ class SectoresScreen(Screen):
         self.sectores.append(button.text)
         button.disabled = True
         if len(self.sectores) == self.n_sectores:
-            self.reply_and_init()
+            self.cb(sectores=self.sectores)
 
-    def reply_and_init(self):
+    def on_leave(self, *args):
         self.gridlayout.clear_widgets()
-        res = self.sectores
         self.sectores = []
-        self.cb(sectores=res)
 
 
 class AlarmScreen(Screen):
