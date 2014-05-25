@@ -306,7 +306,6 @@ class PlanillaApp(App):
     def build_settings(self, settings):
         Logger.debug("%s: build_settings %s " % (APP, datetime.now()))
         settings.add_json_panel('Planilla', self.config, 'settings.json')
-        settings.bind(on_config_change=self.on_config_change)
 
     def on_pause(self):
         if self.scmgr.current == 'alarma':
@@ -480,7 +479,7 @@ class PlanillaApp(App):
             self.config.write()
             self.arrancar_servicio()
 
-    def on_config_change(self, settings, config, section, key, value):
+    def on_config_change(self, config, section, key, value):
         Logger.debug("%s: on_config_change key %s %s" % (
             APP, key, value))
         if self.service:
