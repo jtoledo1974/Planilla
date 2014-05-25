@@ -130,6 +130,16 @@ def calculate_alarms():
         pi = PendingIntent.getBroadcast(activity, i, intent, 0)
         am.cancel(pi)
 
+    if False:
+        for i in range(10):
+            intent = Intent(String('org.jtc.planilla.SERVICEALARM')).putExtra(
+                "texto", String("Alarma n. %s" % str(i)))
+            pi = PendingIntent.getBroadcast(
+                activity, i, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            ms = 10 * i * 1000
+            am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                   SystemClock.elapsedRealtime()+ms, pi)
+        return
     # Fijar las nuevas alarmas
     i = 0
     now = datetime.now()
@@ -144,14 +154,6 @@ def calculate_alarms():
         am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                SystemClock.elapsedRealtime()+ms, pi)
         i += 1
-    # for i in range(10):
-    #     intent = Intent(String('org.jtc.planilla.SERVICEALARM')).putExtra(
-    #         "texto", String("Alarma n. %s" % str(i)))
-    #     pi = PendingIntent.getBroadcast(
-    #         activity, i, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-    #     ms = 10 * i * 1000
-    #     am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-    #            SystemClock.elapsedRealtime()+ms, pi)
 
 if __name__ == '__main__':
 
