@@ -350,14 +350,6 @@ class PlanillaApp(App):
         return False
 
     def on_start(self):
-        # TEMPORAL!!! QUITAR!!!
-        # if platform == 'android':
-        #     android.map_key(android.KEYCODE_POWER, 1002)
-        #     android.map_key(android.KEYCODE_BACK, 1001)
-        # from kivy.core.window import Window
-        # Window.bind(on_keyboard=self.on_keypress)
-        # self.sonar_alarma(texto='Alarma de prueba on_start')
-        # return
         Logger.debug("%s: on_start %s" % (APP, datetime.now()))
 
         self.scmgr = self.root.scmgr  # scmgr identificado con id en el kv
@@ -416,9 +408,6 @@ class PlanillaApp(App):
                 LayoutParams.FLAG_TURN_SCREEN_ON)
 
     def asigna_numero(self, numero):
-        # self.cancelar_alarma(source="pruebas")
-        # self.sonar_alarma(texto="asgina_numero")
-        # return
         Logger.debug("%s: asigna_numero %s" % (APP, numero))
 
         if not self.sectoresscreen:
@@ -576,10 +565,6 @@ class PlanillaApp(App):
             self.scmgr.add_widget(self.alarmscreen)
 
         self.previous_screen = self.scmgr.current
-        # Logger.debug("%s: transition %s t_progress %s t_state %s" % (
-        #     APP, self.scmgr.transition,
-        #     self.scmgr.current_screen.transition_progress,
-        #     self.scmgr.current_screen.transition_state))
         self.scmgr.transition.stop()  # De otro modo si hay una transición en
         # marcha, como ocurre durante el arranque con alarma, la transición se
         # bloquea y la pantalla de alarma  queda abajo
