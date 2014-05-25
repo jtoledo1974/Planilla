@@ -309,13 +309,13 @@ class PlanillaApp(App):
         settings.bind(on_config_change=self.on_config_change)
 
     def on_pause(self):
-        if self.scmgr.current_screen == 'alarma':
+        if self.scmgr.current == 'alarma':
             self.cancelar_sonido_alarma()
         return True
 
     def on_resume(self):
         Logger.debug("%s: On resume %s" % (APP, datetime.now()))
-        if self.scmgr.current_screen == 'alarma':
+        if self.scmgr.current == 'alarma':
             self.reproducir_sonido_alarma()
 
     def on_new_intent(self, intent):
@@ -332,10 +332,10 @@ class PlanillaApp(App):
         # Gestión del botón atrás.
         # Logger.debug("%s: on_keypress k1: %s, k2: %s, text: %s, mod: %s" % (
         #     APP, keycode1, keycode2, text, modifiers))
-        if self.scmgr.current_screen == 'alarma' and keycode1 == 27:  # escape
+        if self.scmgr.current == 'alarma' and keycode1 == 27:  # escape
             self.cancelar_alarma(source="on_keypress")
             return True
-        elif self.scmgr.current_screen == 'alarma'\
+        elif self.scmgr.current == 'alarma'\
                 and keycode1 == 1001:  # Back button
             return True  # Backbutton no hace nada durante la alarma
         elif keycode1 in [27, 1001]:
@@ -567,7 +567,7 @@ class PlanillaApp(App):
         ltext = str(datetime.now())
         Logger.debug("%s: sonar_alarma: %s %s" % (APP, texto, ltext))
 
-        if self.scmgr.current_screen == 'alarma':
+        if self.scmgr.current == 'alarma':
             Logger.debug("%s: Alarma ya activa. Olvidar" % APP)
             return
 
@@ -594,7 +594,7 @@ class PlanillaApp(App):
         now = datetime.now()
         Logger.debug("%s: cancelar_alarma - source %s %s" % (APP, source, now))
 
-        if not self.scmgr.current_screen == 'alarma':
+        if not self.scmgr.current == 'alarma':
             # La cancelación automática se llama aunque el usuario haya
             # cancelado ya. No hacer nada si es el caso
             Logger.debug(
