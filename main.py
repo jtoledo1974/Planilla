@@ -279,7 +279,6 @@ class PlanillaApp(App):
     restarting = False
     service = None       # Referencia al servicio de Android
     br = None            # Background Receiver
-    en_alarma = False    # La pantalla de alarma está corriendo
 
     ACS = 20             # Alarm Cancel Seconds - Cancelación automática
 
@@ -312,13 +311,13 @@ class PlanillaApp(App):
         settings.bind(on_config_change=self.on_config_change)
 
     def on_pause(self):
-        if self.en_alarma:
+        if self.scmgr.current_screen == 'alarma':
             self.cancelar_sonido_alarma()
         return True
 
     def on_resume(self):
         Logger.debug("%s: On resume %s" % (APP, datetime.now()))
-        if self.en_alarma:
+        if self.scmgr.current_screen == 'alarma':
             self.reproducir_sonido_alarma()
 
     def on_new_intent(self, intent):
@@ -335,10 +334,11 @@ class PlanillaApp(App):
         # Gestión del botón atrás.
         # Logger.debug("%s: on_keypress k1: %s, k2: %s, text: %s, mod: %s" % (
         #     APP, keycode1, keycode2, text, modifiers))
-        if self.en_alarma and keycode1 == 27:  # escape
+        if self.scmgr.current_screen == 'alarma' and keycode1 == 27:  # escape
             self.cancelar_alarma(source="on_keypress")
             return True
-        elif self.en_alarma and keycode1 == 1001:  # Back button
+        elif self.scmgr.current_screen == 'alarma'\
+                and keycode1 == 1001:  # Back button
             return True  # Backbutton no hace nada durante la alarma
         elif keycode1 in [27, 1001]:
             Logger.debug("Pulsado el boton BACK")
@@ -483,8 +483,6 @@ class PlanillaApp(App):
             self.arrancar_servicio()
 
     def parar_servicio(self):
-        if self.en_alarma:
-            self.cancelar_alarma(source='parar_servicio')
         if platform == 'android' and self.service:
             Logger.debug("%s: parar_servicio - %s" % (APP, datetime.now()))
             self.service.stop()
@@ -565,7 +563,7 @@ class PlanillaApp(App):
         ltext = str(datetime.now())
         Logger.debug("%s: sonar_alarma: %s %s" % (APP, texto, ltext))
 
-        if self.en_alarma:
+        if self.scmgr.current_screen == 'alarma':
             Logger.debug("%s: Alarma ya activa. Olvidar" % APP)
             return
 
@@ -587,15 +585,12 @@ class PlanillaApp(App):
         Logger.debug("%s: current 'alarma' - NoTransition" % APP)
         self.alarmscreen.ids.alarmbutton.text = texto
 
-        # La alarma propiamente dicha se activa en el on_enter de AlarmScreen
-        self.en_alarma = True
-
     def cancelar_alarma(self, dt=None, source='Unknown', clock_date=None):
         # argumento dt viene del Clock
         now = datetime.now()
         Logger.debug("%s: cancelar_alarma - source %s %s" % (APP, source, now))
 
-        if not self.en_alarma:
+        if not self.scmgr.current_screen == 'alarma':
             # La cancelación automática se llama aunque el usuario haya
             # cancelado ya. No hacer nada si es el caso
             Logger.debug(
@@ -627,7 +622,6 @@ class PlanillaApp(App):
         Logger.debug("%s: current previous '%s' - FallOut" % (
             APP, self.previous_screen))
         Clock.unschedule(self.clock_callback)
-        self.en_alarma = False
 
     def cancelar(self):
         self.scmgr.transition = FallOutTransition()
