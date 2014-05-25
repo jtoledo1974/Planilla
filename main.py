@@ -16,7 +16,7 @@ from kivy.uix.popup import Popup
 from kivy.animation import Animation
 from kivy.vector import Vector
 from kivy.uix.screenmanager import Screen, RiseInTransition, FallOutTransition, \
-    NoTransition
+    SlideTransition, NoTransition
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.properties import NumericProperty, ObjectProperty
 
@@ -339,10 +339,15 @@ class PlanillaApp(App):
                 and keycode1 == 1001:  # Back button
             return True  # Backbutton no hace nada durante la alarma
         elif keycode1 in [27, 1001]:
-            Logger.debug("Pulsado el boton BACK")
-            if platform == 'android':
-                activity.moveTaskToBack(True)
-            return True
+            if self.scmgr.current == 'sectores':
+                self.scmgr.transition.direction = 'right'
+                self.scmgr.current = 'principal'
+                return True
+            else:
+                Logger.debug("Pulsado el boton BACK")
+                if platform == 'android':
+                    activity.moveTaskToBack(True)
+                return True
         return False
 
     def on_start(self):
@@ -427,6 +432,7 @@ class PlanillaApp(App):
         self.horario = Horario(nucleo=nucleo, numero=numero)
 
         if not self.restarting:
+            self.scmgr.transition = SlideTransition(direction='left')
             self.scmgr.current = 'sectores'
             Logger.debug("%s: current 'sectores' - " % APP)
             self.sectoresscreen.add_sectors(
