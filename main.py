@@ -298,6 +298,7 @@ class PlanillaApp(App):
             'nucleo': 'INDEFINIDO',
             'margen_ejec': 10,
             'margen_ayud': 5,
+            'sound_alarm': 1,
             'numero': 0,
             's1': 'Sector1',
             's2': 'Sector2',
@@ -539,7 +540,8 @@ class PlanillaApp(App):
                 self.ringer_mode = am.getRingerMode()
                 am.setRingerMode(AudioManager.RINGER_MODE_NORMAL)
 
-        self._get_ringtone().play()
+        if int(self.config.get('general', 'sound_alarm')):
+            self._get_ringtone().play()
 
         if platform == 'android':
             self._get_vibrator().vibrate([0, 500.0, 500.0], 1)

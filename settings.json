@@ -26,5 +26,13 @@
         "section": "general",
         "key": "margen_ayud",
 			"options": ["15", "10", "5", "3"]
+    },
+    {
+        "type": "bool",
+        "title": "Alarma sonora",
+        "desc": "Usar el tono de alarma",
+        "section": "general",
+        "key": "sound_alarm",
+        "true": "auto"
     }
 ]
