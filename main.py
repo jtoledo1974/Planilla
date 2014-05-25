@@ -339,7 +339,7 @@ class PlanillaApp(App):
             return True  # Backbutton no hace nada durante la alarma
         elif keycode1 in [27, 1001]:
             if self.scmgr.current == 'sectores':
-                self.scmgr.transition.direction = 'right'
+                self.scmgr.transition.direction = 'up'
                 self.scmgr.current = 'principal'
                 return True
             else:
@@ -431,7 +431,7 @@ class PlanillaApp(App):
         self.horario = Horario(nucleo=nucleo, numero=numero)
 
         if not self.restarting:
-            self.scmgr.transition = SlideTransition(direction='left')
+            self.scmgr.transition = SlideTransition(direction='down')
             self.scmgr.current = 'sectores'
             Logger.debug("%s: current 'sectores' - " % APP)
             self.sectoresscreen.add_sectors(
