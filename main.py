@@ -339,6 +339,9 @@ class PlanillaApp(App):
                 and keycode1 == 1001:  # Back button
             return True  # Backbutton no hace nada durante la alarma
         elif keycode1 in [27, 1001]:
+            if self._app_settings in self._app_window.children:
+                self.close_settings()
+                return True
             if self.scmgr.current == 'sectores':
                 self.scmgr.transition.direction = 'up'
                 self.scmgr.current = 'principal'
