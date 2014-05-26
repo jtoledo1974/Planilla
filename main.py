@@ -38,6 +38,9 @@ if platform == 'win':
     Config.set('graphics', 'height', 756)
 
 
+def ld(s):
+    Logger.debug("%s: %s" % (APP, s))
+
 # Necesito poder cambiar la hora actual con facilidad para poder hacer pruebas
 # durante usando horas arbitrarias.
 odt = datetime
@@ -290,9 +293,14 @@ class PlanillaWidget(Layout):
 
     horario = ObjectProperty()
 
-    def do_layout(self, *args):
-        # super(RelativeLayout, self).do_layout(*args)
-        # self.canvas.clear()
+    def __init__(self, **kwargs):
+        super(PlanillaWidget, self).__init__(**kwargs)
+        Clock.create_trigger(self.update_canvas, -1)()
+        ld(self._trigger_layout)
+
+    def update_canvas(self, *args):
+        ld("En update_canvas")
+        # ld("pasdas_widget %s" % pformat(self.horario.pasadas_widget()))
 
         def calc_y(y):
             return self.y + self.height - y*self.height
@@ -301,15 +309,20 @@ class PlanillaWidget(Layout):
             Color(1, 0, 0)
             for p in self.horario.pasadas_widget():
                 y = calc_y(p['start'])
-                h = calc_y(p['len'])
-                Line(rectangle=(self.x, y, self.width, h))
-                self.add_widget(
-                    Label(text=p['start_t'],
-                          pos_hint=(None, None),
-                          y=calc_y(p['len']),
-                          x=self.x))
-        ld(self.children)
-        # self.canvas.clear()
+                h = p['len']*self.height
+                coords = (self.x, y, self.width, h)
+                ld("Coords %s " % str(coords))
+                Line(rectangle=coords)
+                # self.add_widget(
+                #     Label(text=p['start_t'],
+                #           pos_hint=(None, None),
+                #           y=calc_y(p['len']),
+                #           x=self.x))
+
+    def do_layout(self, *args):
+        super(PlanillaWidget, self).do_layout(*args)
+        ld("En do_layout")
+        self.udpate_canvas()
 
 
 class PlanillaScreen(Screen):
@@ -543,7 +556,7 @@ class PlanillaApp(App):
         if platform == 'android':
             self.service = android.AndroidService(
                 'Activando alarmas', 'Servicio iniciado')
-            self.service.start(arg)
+            # self.service.start(arg)
             Logger.debug("%s: Arrancando servicio" % APP)
 
     def _get_audiomanager(self):
