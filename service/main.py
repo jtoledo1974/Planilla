@@ -143,7 +143,7 @@ def calculate_alarms():
         pi = PendingIntent.getBroadcast(activity, i, intent, 0)
         am.cancel(pi)
 
-    if True:
+    if False:
         for i in range(10):
             intent = Intent(String('org.jtc.planilla.SERVICEALARM')).putExtra(
                 "texto", String("Alarma n. %s" % str(i)))

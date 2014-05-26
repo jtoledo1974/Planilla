@@ -33,9 +33,6 @@ if platform == 'win':
     Config.set('graphics', 'height', 756)
 
 
-def ld(s):
-    Logger.debug("%s: %s" % (APP, s))
-
 # Necesito poder cambiar la hora actual con facilidad para poder hacer pruebas
 # durante usando horas arbitrarias.
 odt = datetime
