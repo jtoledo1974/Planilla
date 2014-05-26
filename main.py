@@ -101,7 +101,7 @@ class Horario():
         # Identificar si vamos a hacer turno de mañana o tarde
         if datetime.combine(now, time(6, 30)) < now < \
                 datetime.combine(now, time(14, 30)):
-            Logger.debug("%s: Turno de mañana" % APP)
+            Logger.debug("%s: Turno de manana" % APP)
             offset = timedelta(hours=7, minutes=30)
         elif datetime.combine(now, time(14, 30)) < now < \
                 datetime.combine(now, time(22, 30)):
@@ -321,13 +321,14 @@ class PlanillaApp(App):
 
     def on_new_intent(self, intent):
         Logger.debug("%s: on_new_intent %s %s" % (
-            APP, datetime.now(), intent))
-        if intent:
-            bundle = intent.getExtras()
-            if bundle:
-                self.set_window_flags()  # Para que la alarma encienda el movil
-                self.sonar_alarma(
-                    texto=bundle.getString('texto'))
+            APP, datetime.now(), intent.toString()))
+        bundle = intent.getExtras()
+        if bundle:
+            Logger.debug("%s: on_new_intent - Bundle: calling sonar_alarma" %
+                         APP)
+            self.set_window_flags()  # Para que la alarma encienda el movil
+            self.sonar_alarma(
+                texto=bundle.getString('texto'))
 
     def on_keypress(self, window, keycode1, keycode2, text, modifiers):
         # Gestión del botón atrás.
