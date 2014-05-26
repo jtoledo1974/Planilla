@@ -10,6 +10,8 @@ from pprint import pformat
 from kivy.app import App
 from kivy.config import Config
 from kivy.uix.button import Button
+from kivy.uix.label import Label
+from kivy.uix.layout import Layout
 from kivy import platform
 from kivy.logger import Logger
 from kivy.clock import Clock
@@ -113,7 +115,7 @@ class Horario():
             Logger.debug("%s: Turno de tarde" % APP)
             offset = timedelta(hours=15)
         else:  # Al día siguiente
-            Logger.debug("%s: Turno de mañana del día siguiente" % APP)
+            Logger.debug("%s: Turno de manana del día siguiente" % APP)
             # TODO pensarse en levantar excepción ValueError, no tiene mucho
             # sentido
             offset = timedelta(hours=31, minutes=30)
@@ -164,6 +166,21 @@ class Horario():
     def n_sectores(self):
         d = {p['sector']: '' for p in self.pasadas if p['sector'] != ''}
         return len(d.keys())
+
+    def pasadas_widget(self):
+        i = self.pasadas[0]['inicio']
+        f = self.pasadas[-1]['final']
+        duracion = (f-i).seconds
+
+        res = copy(self.pasadas)
+        for p in res:
+            p['start_t'] = "%02d:%02d" % (p['inicio'].hour, p['inicio'].minute)
+            p['end_t'] = "%02d:%02d" % (p['final'].hour, p['final'].minute)
+            p['start'] = float((p['inicio']-i).seconds)/duracion
+            p['len'] = float((p['final']-p['inicio']).seconds)/duracion
+            p['end'] = float((p['final']-i).seconds)/duracion
+
+        return res
 
 
 class NucleoPopup(Popup):
@@ -269,14 +286,31 @@ class AlarmScreen(Screen):
             self.ra = 1
 
 
-class PlanillaWidget(RelativeLayout):
+class PlanillaWidget(Layout):
 
-    def __init__(self, *args, **kwargs):
-        super(RelativeLayout, self).__init__(*args, **kwargs)
-        Logger.debug("%s: Pos %s Size %s" % (APP, self.pos, self.size))
+    horario = ObjectProperty()
+
+    def do_layout(self, *args):
+        # super(RelativeLayout, self).do_layout(*args)
+        # self.canvas.clear()
+
+        def calc_y(y):
+            return self.y + self.height - y*self.height
         with self.canvas:
+            Logger.debug("%s: Pos %s Size %s" % (APP, self.pos, self.size))
             Color(1, 0, 0)
-            Rectangle(pos_hint=(1, 1), size_hint=(1, 1))
+            for p in self.horario.pasadas_widget():
+                y = calc_y(p['start'])
+                h = calc_y(p['len'])
+                Line(rectangle=(self.x, y, self.width, h))
+                self.add_widget(
+                    Label(text=p['start_t'],
+                          pos_hint=(None, None),
+                          y=calc_y(p['len']),
+                          x=self.x))
+        ld(self.children)
+        # self.canvas.clear()
+
 
 class PlanillaScreen(Screen):
     pass
