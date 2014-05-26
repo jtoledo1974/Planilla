@@ -12,6 +12,7 @@ from kivy.config import Config
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.layout import Layout
+from kivy.uix.relativelayout import RelativeLayout
 from kivy import platform
 from kivy.logger import Logger
 from kivy.clock import Clock
@@ -289,40 +290,42 @@ class AlarmScreen(Screen):
             self.ra = 1
 
 
-class PlanillaWidget(Layout):
+class PlanillaWidget(RelativeLayout):
 
     horario = ObjectProperty()
 
     def __init__(self, **kwargs):
         super(PlanillaWidget, self).__init__(**kwargs)
-        Clock.create_trigger(self.update_canvas, -1)()
+        Clock.create_trigger(self.add_widgets, -1)()
         ld(self._trigger_layout)
+
+    def add_widgets(self, *args):
+        for p in self.horario.pasadas_widget():
+            self.add_widget(
+                Label(text=p['start_t'],
+                      pos_hint={'x': 0, 'y': 1-p['start']-p['len']},
+                      size_hint=(1, p['len'])))
 
     def update_canvas(self, *args):
         ld("En update_canvas")
         # ld("pasdas_widget %s" % pformat(self.horario.pasadas_widget()))
-
-        def calc_y(y):
-            return self.y + self.height - y*self.height
+        # self.canvas.clear()
+        def calc_y(y, h):
+            return self.y + self.height - y*self.height - h*self.height
         with self.canvas:
             Logger.debug("%s: Pos %s Size %s" % (APP, self.pos, self.size))
             Color(1, 0, 0)
             for p in self.horario.pasadas_widget():
-                y = calc_y(p['start'])
+                y = calc_y(p['start'], p['len'])
                 h = p['len']*self.height
                 coords = (self.x, y, self.width, h)
                 ld("Coords %s " % str(coords))
                 Line(rectangle=coords)
-                # self.add_widget(
-                #     Label(text=p['start_t'],
-                #           pos_hint=(None, None),
-                #           y=calc_y(p['len']),
-                #           x=self.x))
 
     def do_layout(self, *args):
         super(PlanillaWidget, self).do_layout(*args)
         ld("En do_layout")
-        self.udpate_canvas()
+        self.update_canvas()
 
 
 class PlanillaScreen(Screen):
