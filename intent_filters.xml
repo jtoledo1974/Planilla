@@ -1,0 +1,3 @@
+<intent-filter>
+    <action android:name="org.jtc.planilla.ACTION_ALARM" />
+</intent-filter>

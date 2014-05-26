@@ -74,8 +74,10 @@ def sound_alarm(context=None, intent=None, texto="default"):
         0, "My tag")
     wl.acquire()
 
-    intent = activity.getPackageManager().getLaunchIntentForPackage(
-        'org.jtc.planilla').putExtra("texto", String(texto))
+    # intent = activity.getPackageManager().getLaunchIntentForPackage(
+    #     'org.jtc.planilla').putExtra("texto", String(texto))
+    intent = Intent('org.jtc.planilla.ACTION_ALARM').putExtra(
+        "texto", String(texto))
     Logger.debug("%s: Starting %s" % (APP, intent.toString()))
     activity.startActivity(intent)
 
