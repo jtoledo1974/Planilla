@@ -22,6 +22,7 @@ from myandroid import notification
 APP = 'SERVICIO'
 alarmas = []
 broadcast_receiver = None
+pending_alarm = False
 
 
 def tdformat(td):
@@ -49,40 +50,51 @@ def update_notification():
         id=1, priority=PRIORITY_MIN, from_service=True)
 
 
-def sound_alarm(context=None, intent=None, texto="default"):
-    if intent:
-        if intent.getAction() == Intent.ACTION_USER_PRESENT:
-            Logger.debug("%s: ACTION_USER_PRESENT %s" % (APP, datetime.now()))
-            update_notification()
-            return
-        texto = intent.getExtras().getString('texto')
-    Logger.info("%s: %s Sonando alarma %s" % (APP, datetime.now(), texto))
+def wake_app():
+    Logger.info("%s: wake_app %s" % (APP, datetime.now()))
 
-    # Misterios del python for android, sin el cast no funciona
-    android_activity = cast('android.app.Activity', activity)
-    pm = android_activity.getSystemService(Context.POWER_SERVICE)
-
-    # No entiendo por qué no funciona con las tres primeras opciones
-    # El uso de FULL_WAKE_LOCK y SCREEN BRIGHT es deprecated
-    # pero si no no me rula.
-    wl = pm.newWakeLock(
-        # PowerManager.PARTIAL_WAKE_LOCK |
-        PowerManager.ACQUIRE_CAUSES_WAKEUP |
-        PowerManager.ON_AFTER_RELEASE |
-        PowerManager.FULL_WAKE_LOCK |
-        PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
-        0, "My tag")
     wl.acquire()
-
-    # intent = activity.getPackageManager().getLaunchIntentForPackage(
-    #     'org.jtc.planilla').putExtra("texto", String(texto))
-    intent = Intent('org.jtc.planilla.ACTION_ALARM').putExtra(
-        "texto", String(texto))
-    Logger.debug("%s: Starting %s" % (APP, intent.toString()))
+    intent = activity.getPackageManager().getLaunchIntentForPackage(
+        'org.jtc.planilla')
+    Logger.debug("%s: Starting %s %s" % (APP, intent.toString(),
+                 datetime.now()))
     activity.startActivity(intent)
+    wl.release()
 
-    sleep(7)      # Vamos a asegurarnos de que la aplicación arranca bien,
+
+def sound_alarm(texto='default'):
+    Logger.info("%s: sound_alarm %s %s" % (APP, texto, datetime.now()))
+
+    wl.acquire()
+    intent = Intent('org.jtc.planilla.ACTION_ALARM').putExtra(
+        "texto", String(texto)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    Logger.debug("%s: Starting %s %s" % (APP, intent.toString(),
+                 datetime.now()))
+    activity.startActivity(intent)
+    global pending_alarm
+    pending_alarm = ''
     wl.release()  # pero menos de 10s o Android nos mata
+
+
+def process_broadcast(context, intent):
+    Logger.debug("%s: process_broadcast %s %s" % (
+        APP, intent.toString(), datetime.now()))
+
+    if intent.getAction() == Intent.ACTION_USER_PRESENT:
+        Logger.debug("%s: ACTION_USER_PRESENT %s" % (APP, datetime.now()))
+        update_notification()
+        return
+
+    elif intent.getAction() == ('org.jtc.planilla.SERVICEALARM'):
+        texto = intent.getExtras().getString('texto')
+        global pending_alarm
+        pending_alarm = texto
+        wake_app()
+        return
+
+    elif intent.getAction() == ('org.jtc.planilla.APP_AWAKE'):
+        if pending_alarm:
+            sound_alarm(texto=pending_alarm)
 
 
 def calculate_alarms():
@@ -111,16 +123,15 @@ def calculate_alarms():
     from jnius import autoclass
     from android.broadcast import BroadcastReceiver
 
-    Context = autoclass('android.content.Context')
-    Intent = autoclass('android.content.Intent')
     PendingIntent = autoclass('android.app.PendingIntent')
     SystemClock = autoclass('android.os.SystemClock')
     AlarmManager = autoclass('android.app.AlarmManager')
 
     global broadcast_receiver
     broadcast_receiver = BroadcastReceiver(
-        sound_alarm,
-        ['org.jtc.planilla.SERVICEALARM', Intent.ACTION_USER_PRESENT])
+        process_broadcast,
+        ['org.jtc.planilla.SERVICEALARM', Intent.ACTION_USER_PRESENT,
+         'org.jtc.planilla.APP_AWAKE'])
     broadcast_receiver.context = activity
     broadcast_receiver.start()
 
@@ -132,13 +143,13 @@ def calculate_alarms():
         pi = PendingIntent.getBroadcast(activity, i, intent, 0)
         am.cancel(pi)
 
-    if False:
+    if True:
         for i in range(10):
             intent = Intent(String('org.jtc.planilla.SERVICEALARM')).putExtra(
                 "texto", String("Alarma n. %s" % str(i)))
             pi = PendingIntent.getBroadcast(
                 activity, i, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-            ms = 10 * i * 1000
+            ms = 5 * i * 1000
             am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                    SystemClock.elapsedRealtime()+ms, pi)
         return
@@ -168,6 +179,21 @@ if __name__ == '__main__':
     pasadas = arg['pasadas']
     margen_ejec = arg['margen_ejec']
     margen_ayud = arg['margen_ayud']
+
+    # Misterios del python for android, sin el cast no funciona
+    android_activity = cast('android.app.Activity', activity)
+    pm = android_activity.getSystemService(Context.POWER_SERVICE)
+
+    # No entiendo por qué no funciona con las tres primeras opciones
+    # El uso de FULL_WAKE_LOCK y SCREEN BRIGHT es deprecated
+    # pero si no no me rula.
+    wl = pm.newWakeLock(
+        # PowerManager.PARTIAL_WAKE_LOCK |
+        PowerManager.ACQUIRE_CAUSES_WAKEUP |
+        PowerManager.ON_AFTER_RELEASE |
+        PowerManager.FULL_WAKE_LOCK |
+        PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+        0, "My tag")
 
     calculate_alarms()
     if len(alarmas):

@@ -26,10 +26,15 @@ if platform == 'android':
     from plyer.platforms.android import activity
     from jnius import autoclass
     from android.runnable import run_on_ui_thread
+    Intent = autoclass('android.content.Intent')
 
 if platform == 'win':
     Config.set('graphics', 'width', 480)
     Config.set('graphics', 'height', 756)
+
+
+def ld(s):
+    Logger.debug("%s: %s" % (APP, s))
 
 # Necesito poder cambiar la hora actual con facilidad para poder hacer pruebas
 # durante usando horas arbitrarias.
@@ -322,6 +327,7 @@ class PlanillaApp(App):
     def on_new_intent(self, intent):
         Logger.debug("%s: on_new_intent %s %s" % (
             APP, datetime.now(), intent.toString()))
+        activity.sendBroadcast(Intent("org.jtc.planilla.APP_AWAKE"))
         bundle = intent.getExtras()
         if bundle:
             Logger.debug("%s: on_new_intent - Bundle: calling sonar_alarma" %

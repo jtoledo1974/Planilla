@@ -1,3 +1,4 @@
 <intent-filter>
     <action android:name="org.jtc.planilla.ACTION_ALARM" />
+    <category android:name="android.intent.category.DEFAULT" />
 </intent-filter>
