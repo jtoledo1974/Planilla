@@ -336,6 +336,15 @@ class PlanillaWidget(RelativeLayout):
         ld("En do_layout")
         self.update_canvas()
 
+    def on_horario(self, *args):
+        ld("on_horario")
+        self.clear_widgets()
+        self.canvas.clear()
+        self.add_widgets()
+        self.on_height(self, self.height)
+        self.update_canvas()
+
+
 
 class PlanillaScreen(Screen):
     pass
