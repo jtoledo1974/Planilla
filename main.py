@@ -13,6 +13,7 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.layout import Layout
 from kivy.uix.relativelayout import RelativeLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy import platform
 from kivy.logger import Logger
 from kivy.clock import Clock
@@ -293,7 +294,7 @@ class AlarmScreen(Screen):
             self.ra = 1
 
 
-class PlanillaWidget(RelativeLayout):
+class PlanillaWidget(FloatLayout):
 
     horario = ObjectProperty()
     time_labels = []

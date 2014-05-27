@@ -52,8 +52,7 @@
 
 <PlanillaWidget>
 	horario: app.horario
-	# Label:
-	#	text: "%s" % app.horario
+
 
 <SectoresScreen>:
 	name: "sectores"
@@ -93,8 +92,10 @@
 				on_press: app.cancelar()
 		BoxLayout:
 			orientation: "horizontal"
-			PlanillaWidget:
-				id: pw
+			FloatLayout:
+				PlanillaWidget:
+					size_hint: (0.9, 0.9)
+					pos_hint: {'center_x': 0.5, 'center_y': 0.5}
 			BoxLayout:
 				orientation: "vertical"
 				Label:
