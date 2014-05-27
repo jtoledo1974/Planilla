@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# En experimental
 
 import pickle
 from datetime import datetime, time, timedelta
@@ -11,8 +10,6 @@ from kivy.app import App
 from kivy.config import Config
 from kivy.uix.button import Button
 from kivy.uix.label import Label
-from kivy.uix.layout import Layout
-from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy import platform
 from kivy.logger import Logger
@@ -20,11 +17,10 @@ from kivy.clock import Clock
 from kivy.uix.popup import Popup
 from kivy.animation import Animation
 from kivy.vector import Vector
-from kivy.graphics.context_instructions import BindTexture, Color, PushState, ChangeState, PopState, MatrixInstruction, ApplyContextMatrix, PopMatrix, PushMatrix, Rotate, Scale, Translate, LoadIdentity, UpdateNormalMatrix, gl_init_resources
-from kivy.graphics.vertex_instructions import Bezier, BorderImage, Ellipse, GraphicException, Line, Mesh, Point, Quad, Rectangle, Triangle
+from kivy.graphics.context_instructions import Color
+from kivy.graphics.vertex_instructions import Line, Rectangle
 from kivy.uix.screenmanager import Screen, RiseInTransition, FallOutTransition, \
     SlideTransition, NoTransition
-from kivy.uix.relativelayout import RelativeLayout
 from kivy.properties import NumericProperty, ObjectProperty
 
 if platform == 'android':
@@ -39,9 +35,6 @@ if platform == 'win':
     Config.set('graphics', 'width', 480)
     Config.set('graphics', 'height', 756)
 
-
-def ld(s):
-    Logger.debug("%s: %s" % (APP, s))
 
 # Necesito poder cambiar la hora actual con facilidad para poder hacer pruebas
 # durante usando horas arbitrarias.
@@ -320,35 +313,26 @@ class PlanillaWidget(FloatLayout):
             self.add_widget(l)
 
     def update_canvas(self, *args):
-        ld("En update_canvas")
-        # ld("pasdas_widget %s" % pformat(self.horario.pasadas_widget()))
-        # self.canvas.clear()
         self.canvas.after.clear()
+
         def calc_y(y, h):
             return self.y + self.height - y*self.height - h*self.height
         with self.canvas.after:
-            Logger.debug("%s: Pos %s Size %s" % (APP, self.pos, self.size))
-            # Color(1, 0, 0)
             for p in self.horario.pasadas_widget():
                 y = calc_y(p['start'], p['len'])
                 h = p['len']*self.height
                 coords = (self.x, y, self.width, h)
-                # ld("Coords %s " % str(coords))
                 Line(rectangle=coords)
 
     def do_layout(self, *args):
         self.update_canvas()
         super(PlanillaWidget, self).do_layout(*args)
-        ld("En do_layout")
 
     def on_horario(self, *args):
-        ld("on_horario")
         self.clear_widgets()
         self.canvas.clear()
         self.add_widgets()
         self.update_canvas()
-        # self.time_labels = []
-
 
 
 class PlanillaScreen(Screen):
