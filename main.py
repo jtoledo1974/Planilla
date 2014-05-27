@@ -21,6 +21,7 @@ from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Line, Rectangle
 from kivy.uix.screenmanager import Screen, RiseInTransition, FallOutTransition, \
     SlideTransition, NoTransition
+from kivy.utils import get_color_from_hex
 from kivy.properties import NumericProperty, ObjectProperty
 
 if platform == 'android':
@@ -113,7 +114,7 @@ class Horario():
             Logger.debug("%s: Turno de tarde" % APP)
             offset = timedelta(hours=15)
         else:  # Al día siguiente
-            Logger.debug("%s: Turno de manana del día siguiente" % APP)
+            Logger.debug("%s: Turno de manana del dia siguiente" % APP)
             # TODO pensarse en levantar excepción ValueError, no tiene mucho
             # sentido
             offset = timedelta(hours=31, minutes=30)
@@ -177,7 +178,7 @@ class Horario():
             p['start'] = float((p['inicio']-i).seconds)/duracion
             p['len'] = float((p['final']-p['inicio']).seconds)/duracion
             p['end'] = float((p['final']-i).seconds)/duracion
-            p['task'] = "%s%s" % (
+            p['texto'] = "%s%s" % (
                 'Libre' if p['task'] == 'Libre' else p['task'][:4],
                 ' '+p['sector'] if p['sector'] else '')
 
@@ -290,7 +291,8 @@ class AlarmScreen(Screen):
 class PlanillaWidget(FloatLayout):
 
     horario = ObjectProperty()
-    time_labels = []
+    timepos = NumericProperty(0.5)
+    alpha = NumericProperty(.8)
 
     def __init__(self, **kwargs):
         super(PlanillaWidget, self).__init__(**kwargs)
@@ -304,8 +306,7 @@ class PlanillaWidget(FloatLayout):
             l.pos_hint = {'x': 0,
                           'top': 1 - p['start']}
             self.add_widget(l)
-            self.time_labels.append(l)
-            l = Label(text=p['task'], size_hint=(None, None))
+            l = Label(text=p['texto'], size_hint=(None, None))
             l.pos_hint = {'x': 0.4,
                           'center_y': 1 - p['start']-p['len']/2}
             l.texture_update()
@@ -314,15 +315,34 @@ class PlanillaWidget(FloatLayout):
 
     def update_canvas(self, *args):
         self.canvas.after.clear()
-
-        def calc_y(y, h):
-            return self.y + self.height - y*self.height - h*self.height
-        with self.canvas.after:
-            for p in self.horario.pasadas_widget():
-                y = calc_y(p['start'], p['len'])
+        self.canvas.before.clear()
+        for p in self.horario.pasadas_widget():
+            with self.canvas.before:
+                y = self.y + self.height \
+                    - p['start']*self.height - p['len']*self.height
                 h = p['len']*self.height
-                coords = (self.x, y, self.width, h)
-                Line(rectangle=coords)
+                pos = (self.x, y)
+                size = (self.width, h)
+                if p['task'] == 'Ejecutivo':
+                    # color = get_color_from_hex('#FF880088')
+                    color = get_color_from_hex('#888888')
+                elif p['task'] == 'Ayudante':
+                    # color = get_color_from_hex('#CC000088')
+                    color = get_color_from_hex('#444444')
+                if p['task'] != 'Libre':
+                    Color(*color)
+                    Rectangle(pos=pos, size=size)
+            with self.canvas.after:
+                Color(1, 1, 1)
+                Line(rectangle=pos+size)
+        with self.canvas.before:
+            h = 10
+            pos = (self.x,
+                   self.y + self.height - self.timepos*self.height - h/2)
+            size = (self.width, h)
+            # Color(1, .1, .1, self.alpha)
+            # Color(self.alpha, self.alpha, self.alpha, 1)
+            # Rectangle(pos=pos, size=size)
 
     def do_layout(self, *args):
         self.update_canvas()
