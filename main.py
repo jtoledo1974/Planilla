@@ -305,13 +305,17 @@ class PlanillaWidget(RelativeLayout):
     def add_widgets(self, *args):
         for p in self.horario.pasadas_widget():
             l = Label(text=p['start_t'], size_hint=(None, None))
+            l.texture_update()
+            l.size = l.texture_size
             l.pos_hint = {'x': 0,
                           'top': 1 - p['start']}
             self.add_widget(l)
             self.time_labels.append(l)
             l = Label(text=p['task'], size_hint=(None, None))
-            l.pos_hint = {'x': 0.5,
+            l.pos_hint = {'x': 0.4,
                           'center_y': 1 - p['start']-p['len']/2}
+            l.texture_update()
+            l.size = l.texture_size
             self.add_widget(l)
 
     def update_canvas(self, *args):
