@@ -586,7 +586,7 @@ class PlanillaApp(App):
         if platform == 'android':
             self.service = android.AndroidService(
                 'Activando alarmas', 'Servicio iniciado')
-            # self.service.start(arg)
+            self.service.start(arg)
             Logger.debug("%s: Arrancando servicio" % APP)
 
     def _get_audiomanager(self):
