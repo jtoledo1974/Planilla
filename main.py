@@ -167,21 +167,22 @@ class Horario():
         return len(d.keys())
 
     def pasadas_widget(self):
-        i = self.pasadas[0]['inicio']
-        f = self.pasadas[-1]['final']
-        duracion = (f-i).seconds
-
+        duracion = (self.final-self.inicio).seconds
         res = copy(self.pasadas)
         for p in res:
             p['start_t'] = "%02d:%02d" % (p['inicio'].hour, p['inicio'].minute)
             p['end_t'] = "%02d:%02d" % (p['final'].hour, p['final'].minute)
-            p['start'] = float((p['inicio']-i).seconds)/duracion
+            p['start'] = float((p['inicio']-self.inicio).seconds)/duracion
             p['len'] = float((p['final']-p['inicio']).seconds)/duracion
-            p['end'] = float((p['final']-i).seconds)/duracion
+            p['end'] = float((p['final']-self.inicio).seconds)/duracion
             p['texto'] = "%s%s" % (
                 'Libre' if p['task'] == 'Libre' else p['task'][:4],
                 ' '+p['sector'] if p['sector'] else '')
+        return res
 
+    def get_timepos(self):
+        now = datetime.now()
+        res = float((now-self.inicio).seconds)/(self.final-self.inicio).seconds
         return res
 
 
@@ -341,12 +342,15 @@ class PlanillaWidget(FloatLayout):
                    self.y + self.height - self.timepos*self.height - h/2)
             size = (self.width, h)
             # Color(1, .1, .1, self.alpha)
-            # Color(self.alpha, self.alpha, self.alpha, 1)
-            # Rectangle(pos=pos, size=size)
+            Color(self.alpha, self.alpha, self.alpha, 1)
+            Rectangle(pos=pos, size=size)
 
     def do_layout(self, *args):
         self.update_canvas()
         super(PlanillaWidget, self).do_layout(*args)
+
+    def on_timepos(self, *args):
+        self.update_canvas()
 
     def on_horario(self, *args):
         self.clear_widgets()
@@ -356,7 +360,18 @@ class PlanillaWidget(FloatLayout):
 
 
 class PlanillaScreen(Screen):
-    pass
+
+    def update_timepos(self, *args):
+        timepos = self.pw.horario.get_timepos()
+        Logger.debug("%s: update_timepos timepos=%s" % (APP, timepos))
+        self.pw.timepos = timepos
+
+    def on_enter(self, *args):
+        self.update_timepos()
+        Clock.schedule_interval(self.update_timepos, 60)
+
+    def on_leave(self, *args):
+        Clock.unschedule(self.update_timepos)
 
 
 class PlanillaApp(App):

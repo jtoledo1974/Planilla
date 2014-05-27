@@ -64,6 +64,7 @@
 
 <PlanillaScreen>:
 	name: "planilla"
+	pw: pw
 	BoxLayout:
 		orientation: "vertical"
 		BoxLayout:
@@ -95,6 +96,7 @@
 			FloatLayout:
 				size_hint_x: 1.6
 				PlanillaWidget:
+					id: pw
 					size_hint: (0.9, 0.9)
 					pos_hint: {'center_x': 0.5, 'center_y': 0.5}
 			BoxLayout:
