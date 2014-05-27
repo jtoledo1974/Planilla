@@ -301,40 +301,29 @@ class PlanillaWidget(RelativeLayout):
     def __init__(self, **kwargs):
         super(PlanillaWidget, self).__init__(**kwargs)
         Clock.create_trigger(self.add_widgets, -1)()
-        ld(self._trigger_layout)
 
     def add_widgets(self, *args):
         for p in self.horario.pasadas_widget():
             l = Label(text=p['start_t'], size_hint=(None, None))
             l.pos_hint = {'x': 0,
-                          'y': 1 - p['start']}
+                          'top': 1 - p['start']}
             self.add_widget(l)
             self.time_labels.append(l)
             l = Label(text=p['task'], size_hint=(None, None))
             l.pos_hint = {'x': 0.5,
-                          'y': 1 - p['start']}
+                          'center_y': 1 - p['start']-p['len']/2}
             self.add_widget(l)
-
-    def on_height(self, widget, height):
-        ld("on_height")
-        if self.height == 0:
-            return
-        for l in self.children:
-            # ld("ts: %s %s" % (l.texture_size, l.pos_hint['y']))
-            l.pos_hint['y'] = l.pos_hint['y'] - 1.3*l.texture_size[1]/height
-            # l.pos_hint['x'] = 1
-            # ld("ts: %s %s" % (l.texture_size, l.pos_hint['y']))
-        self._trigger_layout()
 
     def update_canvas(self, *args):
         ld("En update_canvas")
         # ld("pasdas_widget %s" % pformat(self.horario.pasadas_widget()))
         # self.canvas.clear()
+        self.canvas.after.clear()
         def calc_y(y, h):
             return self.y + self.height - y*self.height - h*self.height
-        with self.canvas:
+        with self.canvas.after:
             Logger.debug("%s: Pos %s Size %s" % (APP, self.pos, self.size))
-            Color(1, 0, 0)
+            # Color(1, 0, 0)
             for p in self.horario.pasadas_widget():
                 y = calc_y(p['start'], p['len'])
                 h = p['len']*self.height
@@ -343,16 +332,15 @@ class PlanillaWidget(RelativeLayout):
                 Line(rectangle=coords)
 
     def do_layout(self, *args):
+        self.update_canvas()
         super(PlanillaWidget, self).do_layout(*args)
         ld("En do_layout")
-        self.update_canvas()
 
     def on_horario(self, *args):
         ld("on_horario")
         self.clear_widgets()
         self.canvas.clear()
         self.add_widgets()
-        self.on_height(self, self.height)
         self.update_canvas()
         # self.time_labels = []
 
