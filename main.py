@@ -183,6 +183,9 @@ class Horario():
             p['start'] = float((p['inicio']-i).seconds)/duracion
             p['len'] = float((p['final']-p['inicio']).seconds)/duracion
             p['end'] = float((p['final']-i).seconds)/duracion
+            p['task'] = "%s%s" % (
+                'Libre' if p['task'] == 'Libre' else p['task'][:4],
+                ' '+p['sector'] if p['sector'] else '')
 
         return res
 
@@ -293,6 +296,7 @@ class AlarmScreen(Screen):
 class PlanillaWidget(RelativeLayout):
 
     horario = ObjectProperty()
+    time_labels = []
 
     def __init__(self, **kwargs):
         super(PlanillaWidget, self).__init__(**kwargs)
@@ -305,15 +309,22 @@ class PlanillaWidget(RelativeLayout):
             l.pos_hint = {'x': 0,
                           'y': 1 - p['start']}
             self.add_widget(l)
+            self.time_labels.append(l)
+            l = Label(text=p['task'], size_hint=(None, None))
+            l.pos_hint = {'x': 0.5,
+                          'y': 1 - p['start']}
+            self.add_widget(l)
 
     def on_height(self, widget, height):
+        ld("on_height")
         if self.height == 0:
             return
         for l in self.children:
-            ld("ts: %s %s" % (l.texture_size, l.pos_hint['y']))
+            # ld("ts: %s %s" % (l.texture_size, l.pos_hint['y']))
             l.pos_hint['y'] = l.pos_hint['y'] - 1.3*l.texture_size[1]/height
             # l.pos_hint['x'] = 1
-            ld("ts: %s %s" % (l.texture_size, l.pos_hint['y']))
+            # ld("ts: %s %s" % (l.texture_size, l.pos_hint['y']))
+        self._trigger_layout()
 
     def update_canvas(self, *args):
         ld("En update_canvas")
@@ -343,6 +354,7 @@ class PlanillaWidget(RelativeLayout):
         self.add_widgets()
         self.on_height(self, self.height)
         self.update_canvas()
+        # self.time_labels = []
 
 
 
