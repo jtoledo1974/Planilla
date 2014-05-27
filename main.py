@@ -301,10 +301,19 @@ class PlanillaWidget(RelativeLayout):
 
     def add_widgets(self, *args):
         for p in self.horario.pasadas_widget():
-            self.add_widget(
-                Label(text=p['start_t'],
-                      pos_hint={'x': 0, 'y': 1-p['start']-p['len']},
-                      size_hint=(1, p['len'])))
+            l = Label(text=p['start_t'], size_hint=(None, None))
+            l.pos_hint = {'x': 0,
+                          'y': 1 - p['start']}
+            self.add_widget(l)
+
+    def on_height(self, widget, height):
+        if self.height == 0:
+            return
+        for l in self.children:
+            ld("ts: %s %s" % (l.texture_size, l.pos_hint['y']))
+            l.pos_hint['y'] = l.pos_hint['y'] - 1.3*l.texture_size[1]/height
+            # l.pos_hint['x'] = 1
+            ld("ts: %s %s" % (l.texture_size, l.pos_hint['y']))
 
     def update_canvas(self, *args):
         ld("En update_canvas")
@@ -319,7 +328,7 @@ class PlanillaWidget(RelativeLayout):
                 y = calc_y(p['start'], p['len'])
                 h = p['len']*self.height
                 coords = (self.x, y, self.width, h)
-                ld("Coords %s " % str(coords))
+                # ld("Coords %s " % str(coords))
                 Line(rectangle=coords)
 
     def do_layout(self, *args):
