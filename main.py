@@ -315,7 +315,7 @@ class PlanillaWidget(FloatLayout):
             self.add_widget(l)
 
     def update_canvas(self, *args):
-        self.canvas.after.clear()
+        self.canvas.after.clear()  # TODO mirar si es necesario si no pintamos
         self.canvas.before.clear()
         for p in self.horario.pasadas_widget():
             with self.canvas.before:
@@ -352,6 +352,9 @@ class PlanillaWidget(FloatLayout):
     def on_timepos(self, *args):
         self.update_canvas()
 
+    def on_alpha(self, *args):
+        self.update_canvas()
+
     def on_horario(self, *args):
         self.clear_widgets()
         self.canvas.clear()
@@ -369,9 +372,13 @@ class PlanillaScreen(Screen):
     def on_enter(self, *args):
         self.update_timepos()
         Clock.schedule_interval(self.update_timepos, 60)
+        self.anim = Animation(alpha=0.7, d=1) + Animation(alpha=0.2, d=1)
+        self.anim.repeat = True
+        self.anim.start(self.pw)
 
     def on_leave(self, *args):
         Clock.unschedule(self.update_timepos)
+        self.anim.stop(self.pw)
 
 
 class PlanillaApp(App):
