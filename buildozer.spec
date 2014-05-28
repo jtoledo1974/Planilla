@@ -55,7 +55,7 @@ fullscreen = 0
 #
 
 # (list) Permissions
-android.permissions = INTERNET,VIBRATE,WAKE_LOCK,DISABLE_KEYGUARD,DEVICE_POWER
+android.permissions = VIBRATE,WAKE_LOCK
 
 # (int) Android API to use
 #android.api = 14
