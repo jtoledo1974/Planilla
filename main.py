@@ -769,12 +769,10 @@ class PlanillaApp(App):
 
         text = ""
         for fn in fnl:
+            text += ("---------- %s ---------\n" % fn)
             with open(fn) as f:
-                text.join("---------- %s ---------\n" % fn)
-                text.join(f.readlines())
-                text.join("\n\n")
-
-        Logger.debug(text)
+                text += "".join(f.readlines())
+            text += ("\n\n")
 
 
 class TestApp(App):
