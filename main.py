@@ -335,7 +335,7 @@ class PlanillaWidget(FloatLayout):
                     Rectangle(pos=pos, size=size)
             with self.canvas.after:
                 Color(1, 1, 1)
-                Line(rectangle=pos+size)
+                # Line(rectangle=pos+size)
         with self.canvas.before:
             h = 10
             pos = (self.x,
