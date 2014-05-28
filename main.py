@@ -759,28 +759,15 @@ class PlanillaApp(App):
 
     def send_log(self):
         Logger.debug("%s: send_log %s" % (APP, datetime.now()))
-        # import glob
-
-        # now = datetime.now()
-        # f = "%s-%02d-%02d" % (str(now.year)[-2:], now.month, now.day)
-        # f = '.kivy/logs/*%s*.txt' % f
-        # fnl = glob.glob(f) + glob.glob('service/' + f)
-        # Logger.debug("%s: send_log %s %s" % (APP, f, fnl))
-
-        # text = ""
-        # for fn in fnl:
-        #     text += ("---------- %s ---------\n" % fn)
-        #     with open(fn) as f:
-        #         text += "".join(f.readlines())
-        #     text += ("\n\n")
-        from subprocess import Popen, PIPE
+        from subprocess import Popen
         f = open("log.txt", "w")
-        p1 = Popen(["/system/bin/logcat", "-d"], stdout=PIPE)
-        Logger.debug("p1 %s\n\n----------------\n\n" % str(p1))
-        p1.stdout.seek(0, 2)
-        Logger.debug("%s: len After seek %s" % (APP, 0))
-        Logger.debug("%s: len %s" % (APP, p1.tell()))
-        Logger.debug("%s: len %s" % (APP, "".join(p1.stdout)))
+        p1 = Popen(["/system/bin/logcat", "-d"], stdout=f)
+        p1.wait()
+        f.close()
+        f = open("log.txt", "r")
+        # Logger.debug("%s: len %s" % (APP, "".join(f.readlines())))
+        texto = "".join(f.readlines())
+        f.close()
 
 
 class TestApp(App):
