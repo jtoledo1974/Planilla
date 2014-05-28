@@ -67,6 +67,8 @@ class Horario():
         self.pasadas = []
         self._horarios = {}
         self._sectores = {}
+        self.nucleo = nucleo
+        self.numero = numero
 
         now = datetime.now()
 
@@ -382,7 +384,8 @@ class PlanillaScreen(Screen):
 
 class ImageScreen(Screen):
 
-    def load(self, path="data/tma.png"):
+    def load(self, path=''):
+        assert path
         self.clear_widgets()
         img = AsyncImage(source=path)
         self.add_widget(img)
@@ -590,7 +593,10 @@ class PlanillaApp(App):
             self.imagescreen = ImageScreen()
             self.scmgr.add_widget(self.imagescreen)
 
-        self.imagescreen.load("data/tma.png")
+        if self.horario.nucleo == 'TMA':
+            self.imagescreen.load("data/tma.png")
+        elif self.horario.nucleo == 'Ruta':
+            self.imagescreen.load("data/ruta.png")
 
         self.scmgr.transition = RiseInTransition()
         self.scmgr.current = 'planilla'
