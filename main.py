@@ -604,8 +604,9 @@ class PlanillaApp(App):
 
     def show_image(self, widget, touch):
         Logger.debug("%s: show_image" % APP)
-        self.scmgr.transition = RiseInTransition()
-        self.scmgr.current = 'image'
+        if self.planilla.pw.collide_point(*touch.pos):
+            self.scmgr.transition = RiseInTransition()
+            self.scmgr.current = 'image'
 
     # Callback cuando cambian sectores
     def horario_cambiado(self, instance, horario):
