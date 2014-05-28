@@ -745,11 +745,15 @@ class PlanillaApp(App):
     if platform == 'android':
         @run_on_ui_thread
         def toast(self, text="texto", short=True):
-            Logger.debug("%s: texto %s, short %s" % (APP, text, short))
+            Logger.debug("%s: texto %s, short %s" % (
+                APP, text.encode('ascii', 'ignore'), short))
             Toast = autoclass('android.widget.Toast')
+            Gravity = autoclass('android.view.Gravity')
             String = autoclass('java.lang.String')
             duration = Toast.LENGTH_SHORT if short else Toast.LENGTH_LONG
-            Toast.makeText(activity, String(text), duration).show()
+            t = Toast.makeText(activity, String(text), duration)
+            t.setGravity(Gravity.BOTTOM, 0, 0)
+            t.show()
     else:
         def toast(*args):
             pass
