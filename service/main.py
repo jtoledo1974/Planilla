@@ -59,13 +59,11 @@ def wake_app():
     Logger.debug("%s: Starting %s %s" % (APP, intent.toString(),
                  datetime.now()))
     activity.startActivity(intent)
-    wl.release()
 
 
 def sound_alarm(texto='default'):
     Logger.info("%s: sound_alarm %s %s" % (APP, texto, datetime.now()))
 
-    wl.acquire()
     intent = Intent('org.jtc.planilla.ACTION_ALARM').putExtra(
         "texto", String(texto)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     Logger.debug("%s: Starting %s %s" % (APP, intent.toString(),
@@ -73,7 +71,8 @@ def sound_alarm(texto='default'):
     activity.startActivity(intent)
     global pending_alarm
     pending_alarm = ''
-    wl.release()  # pero menos de 10s o Android nos mata
+    sleep(5)
+    wl.release()
 
 
 def process_broadcast(context, intent):
