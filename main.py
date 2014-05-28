@@ -10,6 +10,8 @@ from kivy.app import App
 from kivy.config import Config
 from kivy.uix.button import Button
 from kivy.uix.label import Label
+from kivy.uix.image import Image
+from kivy.uix.image import AsyncImage
 from kivy.uix.floatlayout import FloatLayout
 from kivy import platform
 from kivy.logger import Logger
@@ -50,10 +52,6 @@ class datetime(odt):
 #       return odt.now()-timedelta(hours=11)
 
 APP = 'PLANILLA'
-
-
-class MainButton(Button):
-    pass
 
 
 class Horario():
@@ -382,6 +380,18 @@ class PlanillaScreen(Screen):
         self.anim.stop(self.pw)
 
 
+class ImageScreen(Screen):
+
+    def load(self, path="data/tma.png"):
+        self.clear_widgets()
+        img = AsyncImage(source=path)
+        self.add_widget(img)
+
+
+class MainButton(Button):
+    pass
+
+
 class PlanillaApp(App):
 
     restarting = False
@@ -393,6 +403,7 @@ class PlanillaApp(App):
     planilla = None
     alarmscreen = None
     sectoresscreen = None
+    imagescreen = None
 
     numero = NumericProperty(0)
     horario = ObjectProperty()
@@ -459,6 +470,10 @@ class PlanillaApp(App):
                 self.scmgr.transition.direction = 'up'
                 self.scmgr.current = 'principal'
                 return True
+            elif self.scmgr.current == 'image':
+                self.scmgr.transition = FallOutTransition()
+                self.scmgr.current = 'planilla'
+                return True
             else:
                 Logger.debug("Pulsado el boton BACK")
                 if platform == 'android':
@@ -492,7 +507,8 @@ class PlanillaApp(App):
             # arrancada. Para no duplicar código la llamamos desde aquí
             self.on_new_intent(activity.getIntent())
 
-        self.toast(u"Escoge tu número de planilla")
+        if not self.restarting:
+            self.toast(u"Escoge tu número de planilla")
 
     def on_stop(self):
         if platform == 'android' and self.br:
@@ -568,15 +584,28 @@ class PlanillaApp(App):
         if not self.planilla:
             self.planilla = PlanillaScreen()
             self.scmgr.add_widget(self.planilla)
+            self.planilla.pw.bind(on_touch_down=self.show_image)
+
+        if not self.imagescreen:
+            self.imagescreen = ImageScreen()
+            self.scmgr.add_widget(self.imagescreen)
+
+        self.imagescreen.load("data/tma.png")
 
         self.scmgr.transition = RiseInTransition()
         self.scmgr.current = 'planilla'
+
         Logger.debug("%s: current 'planilla' - RiseIn" % APP)
         self.config.set('general', 'numero', self.numero)
         self.config.write()
 
         self.restarting = False
         self.arrancar_servicio()
+
+    def show_image(self, widget, touch):
+        Logger.debug("%s: show_image" % APP)
+        self.scmgr.transition = RiseInTransition()
+        self.scmgr.current = 'image'
 
     # Callback cuando cambian sectores
     def horario_cambiado(self, instance, horario):
