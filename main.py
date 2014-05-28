@@ -31,6 +31,7 @@ if platform == 'android':
     from jnius import autoclass
     from android.runnable import run_on_ui_thread
     Intent = autoclass('android.content.Intent')
+    String = autoclass('java.lang.String')
 
 if platform == 'win':
     Config.set('graphics', 'width', 480)
@@ -748,7 +749,6 @@ class PlanillaApp(App):
                 APP, text.encode('ascii', 'ignore'), short))
             Toast = autoclass('android.widget.Toast')
             Gravity = autoclass('android.view.Gravity')
-            String = autoclass('java.lang.String')
             duration = Toast.LENGTH_SHORT if short else Toast.LENGTH_LONG
             t = Toast.makeText(activity, String(text), duration)
             t.setGravity(Gravity.BOTTOM, 0, 0)
@@ -758,6 +758,8 @@ class PlanillaApp(App):
             pass
 
     def send_log(self):
+        if platform != 'android':
+            return
         Logger.debug("%s: send_log %s" % (APP, datetime.now()))
         from subprocess import Popen
         f = open("log.txt", "w")
@@ -765,9 +767,13 @@ class PlanillaApp(App):
         p1.wait()
         f.close()
         f = open("log.txt", "r")
-        # Logger.debug("%s: len %s" % (APP, "".join(f.readlines())))
         texto = "".join(f.readlines())
         f.close()
+
+        intent = Intent(Intent.ACTION_SEND).setType('text/plain')
+        intent = intent.putExtra(Intent.EXTRA_TEXT, String(texto))
+        activity.startActivity(Intent.createChooser(
+            intent, String("Enviar log a:")))
 
 
 class TestApp(App):
