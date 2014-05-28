@@ -259,9 +259,9 @@ class AlarmScreen(Screen):
             source='Clock', clock_date=datetime.now())
         Clock.schedule_once(self.app.clock_callback, self.app.ACS)  # segundos
 
-    def on_leave(self, *args):
+    def on_pre_leave(self, *args):
         self.anim.stop(self)
-        Logger.debug("%s: AlarmScreen.on_leave %s" % (APP, datetime.now()))
+        Logger.debug("%s: AlarmScreen.on_pre_leave %s" % (APP, datetime.now()))
         if platform == 'android':
             self.app.reset_window_flags()  # Permitir apagado automático
 
@@ -376,7 +376,7 @@ class PlanillaScreen(Screen):
         self.anim.repeat = True
         self.anim.start(self.pw)
 
-    def on_leave(self, *args):
+    def on_pre_leave(self, *args):
         Clock.unschedule(self.update_timepos)
         self.anim.stop(self.pw)
 
