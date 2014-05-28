@@ -474,8 +474,7 @@ class PlanillaApp(App):
                 self.scmgr.current = 'principal'
                 return True
             elif self.scmgr.current == 'image':
-                self.scmgr.transition = FallOutTransition()
-                self.scmgr.current = 'planilla'
+                self.hide_image()
                 return True
             else:
                 Logger.debug("Pulsado el boton BACK")
@@ -613,6 +612,11 @@ class PlanillaApp(App):
         if self.planilla.pw.collide_point(*touch.pos):
             self.scmgr.transition = RiseInTransition()
             self.scmgr.current = 'image'
+
+    def hide_image(self, widget=None, touch=None):
+        Logger.debug("%s: hide_image" % APP)
+        self.scmgr.transition = FallOutTransition()
+        self.scmgr.current = 'planilla'
 
     # Callback cuando cambian sectores
     def horario_cambiado(self, instance, horario):

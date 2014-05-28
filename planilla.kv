@@ -64,6 +64,7 @@
 
 <ImageScreen>:
 	name: "image"
+	on_touch_down: app.hide_image()
 
 
 <PlanillaScreen>:
@@ -97,7 +98,7 @@
 				size_hint_x: None
 				on_press: app.send_log()
 			Button:
-				text: 'Cancelar'
+				text: '  Cancelar  '
 				size: self.texture_size
 				size_hint_x: None
 				on_press: app.cancelar()
