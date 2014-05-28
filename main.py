@@ -816,22 +816,7 @@ class PlanillaApp(App):
             intent, String("Enviar log a:")))
 
 
-class TestApp(App):
-    def build(self):
-        return Button(text='hello world 2')
-
-    def on_start(self):
-        Logger.debug("on_start TestApp")
-        ph = autoclass('org.jtc.planilla.PlanillaHelper')()
-        S = autoclass('java.lang.System')
-        l = S.currentTimeMillis()
-        import sys
-        l = sys.maxint*2
-        # Logger.debug("%s"%dir(ph))
-        Logger.debug("testlong %s %s" % (l, str(ph.testlong(l))))
-
 if __name__ == '__main__':
     Logger.debug("%s: End imports. %s PlanillaApp().run()" % (
         APP, datetime.now()))
     PlanillaApp().run()
-    # TestApp().run()
