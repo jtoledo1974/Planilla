@@ -550,7 +550,6 @@ class PlanillaApp(App):
         self.asigna_sectores()
 
     def asigna_sectores(self, sectores=()):
-        assert not self.restarting and len(sectores)
         Logger.debug("%s: asigna_sectores %s" % (APP, sectores))
 
         n_sectores = self.horario.n_sectores()
@@ -757,6 +756,25 @@ class PlanillaApp(App):
     else:
         def toast(*args):
             pass
+
+    def send_log(self):
+        Logger.debug("%s: send_log %s" % (APP, datetime.now()))
+        import glob
+
+        now = datetime.now()
+        f = "%s-%02d-%02d" % (str(now.year)[-2:], now.month, now.day)
+        f = '.kivy/logs/*%s*.txt' % f
+        fnl = glob.glob(f) + glob.glob('service/' + f)
+        Logger.debug("%s: send_log %s %s" % (APP, f, fnl))
+
+        text = ""
+        for fn in fnl:
+            with open(fn) as f:
+                text.join("---------- %s ---------\n" % fn)
+                text.join(f.readlines())
+                text.join("\n\n")
+
+        Logger.debug(text)
 
 
 class TestApp(App):
