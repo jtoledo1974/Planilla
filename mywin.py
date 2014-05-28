@@ -5,6 +5,10 @@ from plyer import notification
 APP = 'PLANILLA'
 
 
+def toast(*args):
+    pass
+
+
 def fija_alarma(hora, texto):
     Logger.info("%s:Fijando alarma %s %s" % (APP, hora, texto))
     notification.notify(

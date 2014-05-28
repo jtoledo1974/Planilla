@@ -77,6 +77,12 @@ class Notification():
 notification = Notification()
 
 
+def toast(text="texto", duration=1):
+        Toast = autoclass('android.widget.Toast')
+        toast = Toast(activity)
+        toast.makeText(activity, text, duration).show()
+
+
 def fija_alarma(hora, texto):
     Logger.info("%s:Fijando alarma %s %s" % (APP, hora, texto))
     notification.notify(

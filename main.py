@@ -491,6 +491,8 @@ class PlanillaApp(App):
             # arrancada. Para no duplicar código la llamamos desde aquí
             self.on_new_intent(activity.getIntent())
 
+        self.toast(u"Escoge tu número de planilla")
+
     def on_stop(self):
         if platform == 'android' and self.br:
             self.br.stop()
@@ -607,7 +609,7 @@ class PlanillaApp(App):
 
         if platform == 'android':
             self.service = android.AndroidService(
-                'Activando alarmas', 'Servicio iniciado')
+                'Planilla', 'Alarmas activas')
             self.service.start(arg)
             Logger.debug("%s: Arrancando servicio" % APP)
 
@@ -739,6 +741,18 @@ class PlanillaApp(App):
         self.config.set('general', 's1', 'Sector1')
         self.config.set('general', 's2', 'Sector2')
         self.config.write()
+
+    if platform == 'android':
+        @run_on_ui_thread
+        def toast(self, text="texto", short=True):
+            Logger.debug("%s: texto %s, short %s" % (APP, text, short))
+            Toast = autoclass('android.widget.Toast')
+            String = autoclass('java.lang.String')
+            duration = Toast.LENGTH_SHORT if short else Toast.LENGTH_LONG
+            Toast.makeText(activity, String(text), duration).show()
+    else:
+        def toast(*args):
+            pass
 
 
 class TestApp(App):
