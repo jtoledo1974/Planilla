@@ -1,4 +1,6 @@
 #:import V kivy.vector.Vector
+#:import dp kivy.metrics.dp
+
 <NucleoPopup>:
 	title: 'Configuracion inicial'
 	size_hint: (None, None)
@@ -120,8 +122,9 @@
 FloatLayout:
 	scmgr: scmgrid
     ActionBar:
-        id: _action
-        size_hint: 1,0.08
+        id: ab
+        size_hint: 1, None
+        size: self.width, "48dp"
         pos_hint: {'top':1}
         ActionView:
             use_separator: True
@@ -139,8 +142,10 @@ FloatLayout:
             		on_release: app.send_log()
 	ScreenManager:
 		id: scmgrid
-        pos_hint: {'top':0.92}
-        size_hint: (1, 0.92)
+        # pos_hint: {'top': 0.92}
+        size_hint: None, None
+        pos: (0, 0)
+        size: root.width, root.height - dp(48)
 		Screen:
 			name: "principal"
 			GridLayout:
