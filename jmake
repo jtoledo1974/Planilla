@@ -8,8 +8,8 @@ set -x
 # javac -classpath $CLASSPATH  org/jtc/planilla/*.java
 # jar -cf PlanillaHelper.jar org/jtc/planilla/*.class
 
-cd ~/kivy/JTC/; cp /media/JTC/*.{py,kv,csv,json,xml} .
-cp /media/JTC/service/*.py service
+cd ~/kivy/JTC/; cp /media/JTC/planilla/*.{py,kv,csv,json,xml} .
+cp /media/planilla/JTC/service/*.py service
 # cp /media/JTC/java/*.jar java
 
 python -OO -m compileall -f -l . service
