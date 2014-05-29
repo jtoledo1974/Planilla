@@ -119,57 +119,50 @@
 
 FloatLayout:
 	scmgr: scmgrid
+    ActionBar:
+        id: _action
+        size_hint: 1,0.08
+        pos_hint: {'top':1}
+        ActionView:
+            use_separator: True
+            ActionPrevious:
+	        	app_icon: 'data/icon.png'
+                title: 'Planilla'
+                with_previous: False
+                # on_release: root.manager.current = root.manager.previous()
+            ActionOverflow:
+            	ActionButton:
+            		text: "Preferencias"
+            		on_release: app.open_settings()
+            	ActionButton:
+            		text: "Log"
+            		on_release: app.send_log()
 	ScreenManager:
 		id: scmgrid
+        pos_hint: {'top':0.92}
+        size_hint: (1, 0.92)
 		Screen:
 			name: "principal"
-			BoxLayout:
-				orientation: "vertical"
-				BoxLayout:
-					orientation: "horizontal"
-					size_hint_y: None
-					height: "48dp"
-					padding: "5dp"
-					canvas:
-						Rectangle:
-							source: "atlas://data/images/defaulttheme/action_bar"
-							pos: self.pos
-							size: self.size
-					Image:
-						source: 'data/icon.png'
-						#source: "atlas://data/images/defaulttheme/action_bar"
-						mipmap: True
-						size_hint_x: None
-						width: self.height
-					Label:
-						text: 'Planilla'
-						font_size: '16sp'
-						size: self.texture_size
-					Button:
-						text: '+'
-						size_hint_x: None
-						width: self.height
-						on_release: app.open_settings()
-				GridLayout:
-					cols: 3
-					# padding: ("25dp")
-					# spacing: ("5dp")
-					MainButton:
-						text: "1"
-					MainButton:
-						text: "2"
-					MainButton:
-						text: "3"
-					MainButton:
-						text: "4"
-					MainButton:
-						text: "5"
-					MainButton:
-						text: "6"
-					MainButton:
-						text: "7"
-					MainButton:
-						text: "8"
+			GridLayout:
+				cols: 3
+				# padding: ("25dp")
+				# spacing: ("5dp")
+				MainButton:
+					text: "1"
+				MainButton:
+					text: "2"
+				MainButton:
+					text: "3"
+				MainButton:
+					text: "4"
+				MainButton:
+					text: "5"
+				MainButton:
+					text: "6"
+				MainButton:
+					text: "7"
+				MainButton:
+					text: "8"
 #	Label:
 #		text: "%s"%(self.size)
 
