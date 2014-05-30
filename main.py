@@ -804,40 +804,33 @@ class PlanillaApp(App):
             return
         Logger.debug("%s: send_log %s" % (APP, datetime.now()))
 
-        import os
         from subprocess import Popen, PIPE
-
         Uri = autoclass('android.net.Uri')
         File = autoclass('java.io.File')
         FileOutputStream = autoclass('java.io.FileOutputStream')
+        Build = autoclass('android.os.Build')
+        BV = autoclass('android.os.Build$VERSION')
 
         fa = File(activity.getExternalFilesDir(None), "log.txt")
         fos = FileOutputStream(fa)
-
-        f = open("log.txt", "w")
-        p1 = Popen(["/system/bin/logcat", "-d"], stdout=f)
+        p1 = Popen(["/system/bin/logcat", "-d"], stdout=PIPE)
         p1.wait()
-        f.close()
-        os.chmod("log.txt", 0666)
-        path = os.path.abspath("log.txt")
-        Logger.debug("%s: path %s" % (APP, path))
-
-        f = open("log.txt", "r")
-        texto = "".join(f.readlines())
-
-        fos.write(texto)
+        fos.write("".join(p1.stdout.readlines()))
         fos.close()
 
-        intent = Intent(Intent.ACTION_SEND).setType('text/plain')
-        # intent = intent.putExtra(Intent.EXTRA_TEXT, String(texto2))
-        intent = intent.putExtra(Intent.EXTRA_EMAIL, "toledo+planilla@lazaro.es")
-        intent = intent.putExtra(Intent.EXTRA_SUBJECT, "Log de Planilla")
-        uri = Uri.fromFile(fa)
-        Logger.debug("uri %s" % uri.toString())
-        intent = intent.putExtra(Intent.EXTRA_STREAM, cast('android.os.Parcelable', uri))
+        texto = "%s\n%s\n%s\n\n" % (
+            Build.MANUFACTURER, Build.MODEL, BV.RELEASE)
+
+        intent = Intent(Intent.ACTION_SEND).setType('message/rfc822')
+        intent = intent.putExtra(Intent.EXTRA_TEXT, String(texto))
+        intent = intent.putExtra(Intent.EXTRA_EMAIL, ["toledo+planilla@lazaro.es"])
+        intent = intent.putExtra(Intent.EXTRA_SUBJECT, String("Log de Planilla"))
+        intent = intent.putExtra(
+            Intent.EXTRA_STREAM,
+            cast('android.os.Parcelable', Uri.fromFile(fa)))
 
         activity.startActivity(Intent.createChooser(
-            intent, String("Enviar log a:")))
+            intent, String("Enviar log con:")))
 
 
 if __name__ == '__main__':
