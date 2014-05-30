@@ -247,8 +247,7 @@ class AlarmScreen(Screen):
             width = 480  # No debería hacer falta, pero la primera vez falla
         else:
             width = self.width
-        self.cd = 0
-        self.ca = 0
+        self.r2a = self.ca = self.cd = 0
         self.anim = Animation(cd=width/2, ca=1, d=1, t='in_quad') \
             + Animation(cd=0, ca=0, d=0)
         self.anim.repeat = True
