@@ -1,5 +1,4 @@
 #:import V kivy.vector.Vector
-#:import dp kivy.metrics.dp
 
 <NucleoPopup>:
     title: 'Configuracion inicial'
@@ -74,36 +73,24 @@
     pw: pw
     BoxLayout:
         orientation: "vertical"
-        BoxLayout:
-            orientation: "horizontal"
-            size_hint_y: None
+        ActionBar:
             height: "48dp"
-            padding: "5dp"
-            canvas:
-                Rectangle:
-                    source: "atlas://data/images/defaulttheme/action_bar"
-                    pos: self.pos
-                    size: self.size
-            Image:
-                source: 'data/icon.png'
-                #source: "atlas://data/images/defaulttheme/action_bar"
-                mipmap: True
-                size_hint_x: None
-                width: self.height
-            Label:
-                text: 'Detalle'
-                font_size: '16sp'
-                size: self.texture_size
-            Button:
-                text: '  Log  '
-                size: self.texture_size
-                size_hint_x: None
-                on_press: app.send_log()
-            Button:
-                text: '  Cancelar  '
-                size: self.texture_size
-                size_hint_x: None
-                on_press: app.cancelar()
+            ActionView:
+                use_separator: True
+                ActionPrevious:
+                    app_icon: 'data/icon.png'
+                    title: 'Planilla'
+                    with_previous: False
+                ActionButton:
+                    text: "Cancelar"
+                    on_release: app.cancelar()
+                ActionOverflow:
+                    ActionButton:
+                        text: "Preferencias"
+                        on_release: app.open_settings()
+                    ActionButton:
+                        text: "Log"
+                        on_release: app.send_log()
         BoxLayout:
             orientation: "horizontal"
             FloatLayout:
@@ -119,55 +106,46 @@
                     text: "Nº %s" % app.numero
 
 
-FloatLayout:
+ScreenManager:
     scmgr: scmgrid
-    ScreenManager:
-        id: scmgrid
-        Screen:
-            name: "principal"
-            FloatLayout:
-                GridLayout:
-                    size_hint: None, None
-                    pos: (0, 0)
-                    size: root.width, root.height - dp(48)
-                    cols: 3
-                    # padding: ("25dp")
-                    # spacing: ("5dp")
-                    MainButton:
-                        text: "1"
-                    MainButton:
-                        text: "2"
-                    MainButton:
-                        text: "3"
-                    MainButton:
-                        text: "4"
-                    MainButton:
-                        text: "5"
-                    MainButton:
-                        text: "6"
-                    MainButton:
-                        text: "7"
-                    MainButton:
-                        text: "8"
-                ActionBar:
-                    id: ab
-                    size_hint: 1, None
-                    size: self.width, "48dp"
-                    pos_hint: {'top':1}
-                    ActionView:
-                        use_separator: True
-                        ActionPrevious:
-                            app_icon: 'data/icon.png'
-                            title: 'Planilla'
-                            with_previous: False
-                            # on_release: root.manager.current = root.manager.previous()
-                        ActionOverflow:
-                            ActionButton:
-                                text: "Preferencias"
-                                on_release: app.open_settings()
-                            ActionButton:
-                                text: "Log"
-                                on_release: app.send_log()
+    id: scmgrid
+    Screen:
+        name: "principal"
+        BoxLayout:
+            orientation: "vertical"
+            ActionBar:
+                height: "48dp"
+                ActionView:
+                    use_separator: True
+                    ActionPrevious:
+                        app_icon: 'data/icon.png'
+                        title: 'Planilla'
+                        with_previous: False
+                    ActionOverflow:
+                        ActionButton:
+                            text: "Preferencias"
+                            on_release: app.open_settings()
+                        ActionButton:
+                            text: "Log"
+                            on_release: app.send_log()
+            GridLayout:
+                cols: 3
+                MainButton:
+                    text: "1"
+                MainButton:
+                    text: "2"
+                MainButton:
+                    text: "3"
+                MainButton:
+                    text: "4"
+                MainButton:
+                    text: "5"
+                MainButton:
+                    text: "6"
+                MainButton:
+                    text: "7"
+                MainButton:
+                    text: "8"
 
 <MainButton>:
     on_press: app.asigna_numero(self.text)
