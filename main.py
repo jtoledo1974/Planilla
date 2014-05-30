@@ -805,18 +805,13 @@ class PlanillaApp(App):
         Logger.debug("%s: send_log %s" % (APP, datetime.now()))
 
         import os
-        from subprocess import Popen
-        import zlib
-        import base64
-        Environment = autoclass('android.os.Environment')
+        from subprocess import Popen, PIPE
+
         Uri = autoclass('android.net.Uri')
         File = autoclass('java.io.File')
         FileOutputStream = autoclass('java.io.FileOutputStream')
-        root = Environment.getExternalStorageDirectory().getPath()
-        root = activity.getExternalFilesDir(None)
-        Logger.debug("%s: root %s" % (APP, root.getPath()))
-        fa = File(root, "log.txt")
-        Logger.debug("%s: file %s" % (APP, fa.toString()))
+
+        fa = File(activity.getExternalFilesDir(None), "log.txt")
         fos = FileOutputStream(fa)
 
         f = open("log.txt", "w")
@@ -829,22 +824,18 @@ class PlanillaApp(App):
 
         f = open("log.txt", "r")
         texto = "".join(f.readlines())
-        # texto2 = base64.encodestring(zlib.compress(texto, 9))
-        # f.close()
-        # Logger.debug("%s: Len original %s, Len comprimido %s" % (
-        #     APP, len(texto), len(texto2)))
 
         fos.write(texto)
         fos.close()
 
         intent = Intent(Intent.ACTION_SEND).setType('text/plain')
         # intent = intent.putExtra(Intent.EXTRA_TEXT, String(texto2))
-        # intent = intent.putExtra(Intent.EXTRA_SUBJECT, "Log de Planilla")
-        # uri = Uri.parse('file://'+path)
+        intent = intent.putExtra(Intent.EXTRA_EMAIL, "toledo+planilla@lazaro.es")
+        intent = intent.putExtra(Intent.EXTRA_SUBJECT, "Log de Planilla")
         uri = Uri.fromFile(fa)
         Logger.debug("uri %s" % uri.toString())
         intent = intent.putExtra(Intent.EXTRA_STREAM, cast('android.os.Parcelable', uri))
-        #   Intent.EXTRA_STREAM, Uri.parse("file://"+path))
+
         activity.startActivity(Intent.createChooser(
             intent, String("Enviar log a:")))
 
