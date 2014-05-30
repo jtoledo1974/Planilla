@@ -30,7 +30,7 @@ if platform == 'android':
     Logger.debug('PLANILLA: Importando %s' % datetime.now())
     import android
     from plyer.platforms.android import activity
-    from jnius import autoclass
+    from jnius import autoclass, cast
     from android.runnable import run_on_ui_thread
     Intent = autoclass('android.content.Intent')
     String = autoclass('java.lang.String')
@@ -803,17 +803,48 @@ class PlanillaApp(App):
         if platform != 'android':
             return
         Logger.debug("%s: send_log %s" % (APP, datetime.now()))
+
+        import os
         from subprocess import Popen
+        import zlib
+        import base64
+        Environment = autoclass('android.os.Environment')
+        Uri = autoclass('android.net.Uri')
+        File = autoclass('java.io.File')
+        FileOutputStream = autoclass('java.io.FileOutputStream')
+        root = Environment.getExternalStorageDirectory().getPath()
+        root = activity.getExternalFilesDir(None)
+        Logger.debug("%s: root %s" % (APP, root.getPath()))
+        fa = File(root, "log.txt")
+        Logger.debug("%s: file %s" % (APP, fa.toString()))
+        fos = FileOutputStream(fa)
+
         f = open("log.txt", "w")
         p1 = Popen(["/system/bin/logcat", "-d"], stdout=f)
         p1.wait()
         f.close()
+        os.chmod("log.txt", 0666)
+        path = os.path.abspath("log.txt")
+        Logger.debug("%s: path %s" % (APP, path))
+
         f = open("log.txt", "r")
         texto = "".join(f.readlines())
-        f.close()
+        # texto2 = base64.encodestring(zlib.compress(texto, 9))
+        # f.close()
+        # Logger.debug("%s: Len original %s, Len comprimido %s" % (
+        #     APP, len(texto), len(texto2)))
+
+        fos.write(texto)
+        fos.close()
 
         intent = Intent(Intent.ACTION_SEND).setType('text/plain')
-        intent = intent.putExtra(Intent.EXTRA_TEXT, String(texto))
+        # intent = intent.putExtra(Intent.EXTRA_TEXT, String(texto2))
+        # intent = intent.putExtra(Intent.EXTRA_SUBJECT, "Log de Planilla")
+        # uri = Uri.parse('file://'+path)
+        uri = Uri.fromFile(fa)
+        Logger.debug("uri %s" % uri.toString())
+        intent = intent.putExtra(Intent.EXTRA_STREAM, cast('android.os.Parcelable', uri))
+        #   Intent.EXTRA_STREAM, Uri.parse("file://"+path))
         activity.startActivity(Intent.createChooser(
             intent, String("Enviar log a:")))
 
