@@ -726,6 +726,7 @@ class PlanillaApp(App):
             self.scmgr.add_widget(self.alarmscreen)
 
         self.previous_screen = self.scmgr.current
+        self.planilla.anim.stop(self.planilla.pw)
         self.scmgr.transition.stop()  # De otro modo si hay una transición en
         # marcha, como ocurre durante el arranque con alarma, la transición se
         # bloquea y la pantalla de alarma  queda abajo
