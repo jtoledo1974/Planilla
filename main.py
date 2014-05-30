@@ -270,17 +270,18 @@ class AlarmScreen(Screen):
         if Vector(touch.pos).distance(
            Vector(self.center_x, self.height*0.2)) < 2*self.r:
             self.motion_uid = touch.uid
-            self.r2a = 1.0
+            self.r2a = .2
             self.r2 = self.height*self.R
             anim = Animation(
-                r2=self.height*self.R*2, r2a=0, t='in_quad', d=0.6)
+                r2=self.height*self.R*2.3, t='in_quad', d=0.3)
             anim.start(self)
 
     def on_touch_move(self, touch):
         if touch.uid == self.motion_uid:
             # Cancelar si de desplaza más de la mitad de la distancia al borde
-            self.ra = 1-2.5*Vector(touch.pos).distance(
+            self.ra = 1-3.3*Vector(touch.pos).distance(
                 Vector(self.center_x, self.height*0.2))/self.width
+            self.r2a = 1 - self.ra * 0.8
             if self.ra < 0.05:
                 self.ra = 1
                 self.app.cancelar_alarma(source='user')
@@ -288,6 +289,7 @@ class AlarmScreen(Screen):
     def on_touch_up(self, touch):
         if touch.uid == self.motion_uid:
             self.ra = 1
+            self.r2a = 0
 
 
 class PlanillaWidget(FloatLayout):
