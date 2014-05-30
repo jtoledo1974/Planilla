@@ -2,174 +2,172 @@
 #:import dp kivy.metrics.dp
 
 <NucleoPopup>:
-	title: 'Configuracion inicial'
-	size_hint: (None, None)
-	size: (300, 300) 
-	BoxLayout:
-		orientation: 'vertical'
-		Button:
-			id: ruta
-			text: 'Ruta'
-		Button:
-			id: tma
-			text: 'TMA'
+    title: 'Configuracion inicial'
+    size_hint: (None, None)
+    size: (300, 300) 
+    BoxLayout:
+        orientation: 'vertical'
+        Button:
+            id: ruta
+            text: 'Ruta'
+        Button:
+            id: tma
+            text: 'TMA'
 
 
 <AlarmScreen>
-	name: "alarma"
-	canvas:
-		Color:
-			rgba: (0.8, 0, 0, self.ca)
-		Ellipse:
-			pos: (self.center_x - self.height*0.015 + self.cd, self.height*.2 - self.height*0.015)
-			size: (self.height*.03, self.height*0.03)
-		Ellipse:
-			pos: (self.center_x - self.height*0.015 - self.cd, self.height*.2 - self.height*0.015)
-			size: (self.height*.03, self.height*0.03)
-		Color:
-			rgba: (1, 0.26, 0.26, self.ra)
-		Line:
-			circle: (self.center_x, self.height*.2, self.r)
-			width: 2.0
-		Line:
-			points: tuple(V(self.center_x, self.height*.2)+V(-self.r/2,0).rotate(-45))+tuple(V(self.center_x, self.height*.2)+V(self.r/2,0).rotate(-45))
-			width: 2.0
-		Line:
-			points: tuple(V(self.center_x, self.height*.2)+V(-self.r/2,0).rotate(45))+tuple(V(self.center_x, self.height*.2)+V(self.r/2,0).rotate(45))
-			width: 2.0
-		Color:
-			rgba: (1, 0.26, 0.26, self.r2a)
-		Line:
-			id: feeback_circle
-			circle: (self.center_x, self.height*.2, self.r2)
-			width: 2.0
-	Label:
-		id: alarmbutton
-		text: 'Alarma!'
-		font_size: '32sp'
-		pos_hint: {'center_x': 0.5, 'center_y': 0.7}
-		size_hint: (None, None)
-		size: self.texture_size
+    name: "alarma"
+    canvas:
+        Color:
+            rgba: (0.8, 0, 0, self.ca)
+        Ellipse:
+            pos: (self.center_x - self.height*0.015 + self.cd, self.height*.2 - self.height*0.015)
+            size: (self.height*.03, self.height*0.03)
+        Ellipse:
+            pos: (self.center_x - self.height*0.015 - self.cd, self.height*.2 - self.height*0.015)
+            size: (self.height*.03, self.height*0.03)
+        Color:
+            rgba: (1, 0.26, 0.26, self.ra)
+        Line:
+            circle: (self.center_x, self.height*.2, self.r)
+            width: 2.0
+        Line:
+            points: tuple(V(self.center_x, self.height*.2)+V(-self.r/2,0).rotate(-45))+tuple(V(self.center_x, self.height*.2)+V(self.r/2,0).rotate(-45))
+            width: 2.0
+        Line:
+            points: tuple(V(self.center_x, self.height*.2)+V(-self.r/2,0).rotate(45))+tuple(V(self.center_x, self.height*.2)+V(self.r/2,0).rotate(45))
+            width: 2.0
+        Color:
+            rgba: (1, 0.26, 0.26, self.r2a)
+        Line:
+            id: feeback_circle
+            circle: (self.center_x, self.height*.2, self.r2)
+            width: 2.0
+    Label:
+        id: alarmbutton
+        text: 'Alarma!'
+        font_size: '32sp'
+        pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+        size_hint: (None, None)
+        size: self.texture_size
 
 
 <PlanillaWidget>
-	horario: app.horario
+    horario: app.horario
 
 
 <SectoresScreen>:
-	name: "sectores"
-	on_enter: app.toast("Escoge sector/sectores")
-	gridlayout: glid
-	GridLayout:
-		id: glid
-		cols: 3
+    name: "sectores"
+    on_enter: app.toast("Escoge sector/sectores")
+    gridlayout: glid
+    GridLayout:
+        id: glid
+        cols: 3
 
 <ImageScreen>:
-	name: "image"
-	on_touch_down: app.hide_image()
+    name: "image"
+    on_touch_down: app.hide_image()
 
 
 <PlanillaScreen>:
-	name: "planilla"
-	pw: pw
-	BoxLayout:
-		orientation: "vertical"
-		BoxLayout:
-			orientation: "horizontal"
-			size_hint_y: None
-			height: "48dp"
-			padding: "5dp"
-			canvas:
-				Rectangle:
-					source: "atlas://data/images/defaulttheme/action_bar"
-					pos: self.pos
-					size: self.size
-			Image:
-				source: 'data/icon.png'
-				#source: "atlas://data/images/defaulttheme/action_bar"
-				mipmap: True
-				size_hint_x: None
-				width: self.height
-			Label:
-				text: 'Detalle'
-				font_size: '16sp'
-				size: self.texture_size
-			Button:
-				text: '  Log  '
-				size: self.texture_size
-				size_hint_x: None
-				on_press: app.send_log()
-			Button:
-				text: '  Cancelar  '
-				size: self.texture_size
-				size_hint_x: None
-				on_press: app.cancelar()
-		BoxLayout:
-			orientation: "horizontal"
-			FloatLayout:
-				size_hint_x: 1.6
-				PlanillaWidget:
-					id: pw
-					size_hint: (0.9, 0.9)
-					pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-			BoxLayout:
-				orientation: "vertical"
-				Label:
-					font_size: "48sp"
-					text: "Nº %s" % app.numero
+    name: "planilla"
+    pw: pw
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint_y: None
+            height: "48dp"
+            padding: "5dp"
+            canvas:
+                Rectangle:
+                    source: "atlas://data/images/defaulttheme/action_bar"
+                    pos: self.pos
+                    size: self.size
+            Image:
+                source: 'data/icon.png'
+                #source: "atlas://data/images/defaulttheme/action_bar"
+                mipmap: True
+                size_hint_x: None
+                width: self.height
+            Label:
+                text: 'Detalle'
+                font_size: '16sp'
+                size: self.texture_size
+            Button:
+                text: '  Log  '
+                size: self.texture_size
+                size_hint_x: None
+                on_press: app.send_log()
+            Button:
+                text: '  Cancelar  '
+                size: self.texture_size
+                size_hint_x: None
+                on_press: app.cancelar()
+        BoxLayout:
+            orientation: "horizontal"
+            FloatLayout:
+                size_hint_x: 1.6
+                PlanillaWidget:
+                    id: pw
+                    size_hint: (0.9, 0.9)
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            BoxLayout:
+                orientation: "vertical"
+                Label:
+                    font_size: "48sp"
+                    text: "Nº %s" % app.numero
 
 
 FloatLayout:
-	scmgr: scmgrid
-    ActionBar:
-        id: ab
-        size_hint: 1, None
-        size: self.width, "48dp"
-        pos_hint: {'top':1}
-        ActionView:
-            use_separator: True
-            ActionPrevious:
-	        	app_icon: 'data/icon.png'
-                title: 'Planilla'
-                with_previous: False
-                # on_release: root.manager.current = root.manager.previous()
-            ActionOverflow:
-            	ActionButton:
-            		text: "Preferencias"
-            		on_release: app.open_settings()
-            	ActionButton:
-            		text: "Log"
-            		on_release: app.send_log()
-	ScreenManager:
-		id: scmgrid
-        # pos_hint: {'top': 0.92}
-        size_hint: None, None
-        pos: (0, 0)
-        size: root.width, root.height - dp(48)
-		Screen:
-			name: "principal"
-			GridLayout:
-				cols: 3
-				# padding: ("25dp")
-				# spacing: ("5dp")
-				MainButton:
-					text: "1"
-				MainButton:
-					text: "2"
-				MainButton:
-					text: "3"
-				MainButton:
-					text: "4"
-				MainButton:
-					text: "5"
-				MainButton:
-					text: "6"
-				MainButton:
-					text: "7"
-				MainButton:
-					text: "8"
-#	Label:
-#		text: "%s"%(self.size)
+    scmgr: scmgrid
+    ScreenManager:
+        id: scmgrid
+        Screen:
+            name: "principal"
+            FloatLayout:
+                GridLayout:
+                    size_hint: None, None
+                    pos: (0, 0)
+                    size: root.width, root.height - dp(48)
+                    cols: 3
+                    # padding: ("25dp")
+                    # spacing: ("5dp")
+                    MainButton:
+                        text: "1"
+                    MainButton:
+                        text: "2"
+                    MainButton:
+                        text: "3"
+                    MainButton:
+                        text: "4"
+                    MainButton:
+                        text: "5"
+                    MainButton:
+                        text: "6"
+                    MainButton:
+                        text: "7"
+                    MainButton:
+                        text: "8"
+                ActionBar:
+                    id: ab
+                    size_hint: 1, None
+                    size: self.width, "48dp"
+                    pos_hint: {'top':1}
+                    ActionView:
+                        use_separator: True
+                        ActionPrevious:
+                            app_icon: 'data/icon.png'
+                            title: 'Planilla'
+                            with_previous: False
+                            # on_release: root.manager.current = root.manager.previous()
+                        ActionOverflow:
+                            ActionButton:
+                                text: "Preferencias"
+                                on_release: app.open_settings()
+                            ActionButton:
+                                text: "Log"
+                                on_release: app.send_log()
 
 <MainButton>:
-	on_press: app.asigna_numero(self.text)
+    on_press: app.asigna_numero(self.text)
