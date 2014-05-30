@@ -25,7 +25,7 @@
         "desc": "Minutos de preaviso",
         "section": "general",
         "key": "margen_ayud",
-			"options": ["15", "10", "5", "3"]
+			"options": ["10", "5", "3", "1"]
     },
     {
         "type": "bool",
