@@ -389,7 +389,7 @@ class ImageScreen(Screen):
     def load(self, path=''):
         assert path
         self.clear_widgets()
-        img = AsyncImage(source=path)
+        img = AsyncImage(source=path, keep_ratio=False, allow_stretch=True)
         self.add_widget(img)
 
 
