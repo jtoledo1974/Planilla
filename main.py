@@ -497,6 +497,8 @@ class PlanillaApp(App):
             # Evita que cambiar s1 y s2 arranque el servicio
             self.restarting = True
             self.asigna_numero(numero)
+        else:
+            self.toast(u"Escoge tu número de planilla")
 
         from kivy.core.window import Window
         Window.bind(on_keyboard=self.on_keypress)
@@ -509,9 +511,6 @@ class PlanillaApp(App):
             # on_new_intent sólo se llama cuando la aplicación ya está
             # arrancada. Para no duplicar código la llamamos desde aquí
             self.on_new_intent(activity.getIntent())
-
-        if not self.restarting:
-            self.toast(u"Escoge tu número de planilla")
 
     def on_stop(self):
         if platform == 'android' and self.br:
