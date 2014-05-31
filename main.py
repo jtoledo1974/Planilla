@@ -804,19 +804,29 @@ class PlanillaApp(App):
             return
         Logger.debug("%s: send_log %s" % (APP, datetime.now()))
 
-        from subprocess import Popen, PIPE
+        from subprocess import Popen
         Uri = autoclass('android.net.Uri')
         File = autoclass('java.io.File')
         FileOutputStream = autoclass('java.io.FileOutputStream')
+        BufferedOutputStream = autoclass('java.io.BufferedOutputStream')
         Build = autoclass('android.os.Build')
         BV = autoclass('android.os.Build$VERSION')
 
-        fa = File(activity.getExternalFilesDir(None), "log.txt")
-        fos = FileOutputStream(fa)
-        p1 = Popen(["/system/bin/logcat", "-d"], stdout=PIPE)
-        p1.wait()
-        fos.write("".join(p1.stdout.readlines()))
-        fos.close()
+        try:
+            f = open("log.txt", "w")
+            fa = File(activity.getExternalFilesDir(None), "log.txt")
+            p1 = Popen(["/system/bin/logcat", "-d"], stdout=f)
+            p1.wait()
+            out = BufferedOutputStream(FileOutputStream(fa))
+            f.close()
+            f = open("log.txt", "r")
+            for l in f.readlines():
+                out.write(l)
+        except Exception as e:
+            Logger.debug("%s: Log creation failed %s" % (APP, str(e)))
+        finally:
+            f.close()
+            out.close()
 
         texto = "%s\n%s\n%s\n\n" % (
             Build.MANUFACTURER, Build.MODEL, BV.RELEASE)
@@ -825,12 +835,15 @@ class PlanillaApp(App):
         intent = intent.putExtra(Intent.EXTRA_TEXT, String(texto))
         intent = intent.putExtra(Intent.EXTRA_EMAIL, ["toledo+planilla@lazaro.es"])
         intent = intent.putExtra(Intent.EXTRA_SUBJECT, String("Log de Planilla"))
-        intent = intent.putExtra(
-            Intent.EXTRA_STREAM,
-            cast('android.os.Parcelable', Uri.fromFile(fa)))
+        try:
+            intent = intent.putExtra(
+                Intent.EXTRA_STREAM,
+                cast('android.os.Parcelable', Uri.fromFile(fa)))
 
-        activity.startActivity(Intent.createChooser(
-            intent, String("Enviar log con:")))
+            activity.startActivity(Intent.createChooser(
+                intent, String("Enviar log con:")))
+        except Exception as e:
+            Logger.debug("%s: Log delivery failed %s" % (APP, str(e)))
 
 
 if __name__ == '__main__':
