@@ -106,7 +106,7 @@ class Horario():
                 'task': task, 'sector': sector})
 
         # Identificar si vamos a hacer turno de mañana o tarde
-        if datetime.combine(now, time(6, 30)) < now < \
+        if datetime.combine(now, time(0, 0)) < now < \
                 datetime.combine(now, time(14, 30)):
             Logger.debug("%s: Turno de manana" % APP)
             offset = timedelta(hours=7, minutes=30)
@@ -437,6 +437,8 @@ class PlanillaApp(App):
     def on_pause(self):
         if self.scmgr.current == 'alarma':
             self.cancelar_sonido_alarma()
+        if self.horario and self.horario.final < datetime.now():
+            self.cancelar()
         return True
 
     def on_resume(self):
@@ -495,7 +497,14 @@ class PlanillaApp(App):
             self.pedir_nucleo()
 
         numero = int(self.config.get('general', 'numero'))
-        if numero != 0:  # 0 indica que no estamos rearrancando
+        try:
+            final = datetime.strptime(
+                self.config.get('general', 'final'), "%d/%m/%y %H:%M")
+        except Exception:
+            final = None
+        Logger.debug("Final %s" % final)
+        if numero != 0 and final and final > datetime.now():
+            # 0 indica que no estamos rearrancando
             # Evita que cambiar s1 y s2 arranque el servicio
             self.restarting = True
             self.asigna_numero(numero)
@@ -604,6 +613,8 @@ class PlanillaApp(App):
 
         Logger.debug("%s: current 'planilla' - RiseIn" % APP)
         self.config.set('general', 'numero', self.numero)
+        self.config.set(
+            'general', 'final', self.horario.final.strftime("%d/%m/%y %H:%M"))
         self.config.write()
 
         self.restarting = False
