@@ -343,8 +343,8 @@ class PlanillaWidget(FloatLayout):
             pos = (self.x,
                    self.y + self.height - self.timepos*self.height - h/2)
             size = (self.width, h)
-            # Color(1, .1, .1, self.alpha)
-            Color(self.alpha, self.alpha, self.alpha, 1)
+            Color(1, .1, .1, self.alpha)
+            # Color(self.alpha, self.alpha, self.alpha, 1)
             Rectangle(pos=pos, size=size)
 
     def do_layout(self, *args):
