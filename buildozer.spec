@@ -29,7 +29,7 @@ source.include_exts = py,png,jpg,kv,atlas,json,csv
 #version.filename = %(source.dir)s/main.py
 
 # (str) Application versioning (method 2)
-version = 0.9
+version = 0.9.1
 
 # (list) Application requirements
 requirements = kivy,plyer,pyjnius
@@ -38,7 +38,7 @@ requirements = kivy,plyer,pyjnius
 #garden_requirements =
 
 # (str) Presplash of the application
-#presplash.filename = %(source.dir)s/data/presplash.png
+presplash.filename = %(source.dir)s/data/presplash.png
 
 # (str) Icon of the application
 icon.filename = %(source.dir)s/data/icon.png

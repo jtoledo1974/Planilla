@@ -4,6 +4,7 @@
 *.kv.bak
 *.txt
 *.txt.gz
+*.psd
 planilla.ini
 .kivy
 
