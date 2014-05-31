@@ -808,7 +808,6 @@ class PlanillaApp(App):
         Uri = autoclass('android.net.Uri')
         File = autoclass('java.io.File')
         FileOutputStream = autoclass('java.io.FileOutputStream')
-        BufferedOutputStream = autoclass('java.io.BufferedOutputStream')
         Build = autoclass('android.os.Build')
         BV = autoclass('android.os.Build$VERSION')
 
@@ -817,11 +816,10 @@ class PlanillaApp(App):
             fa = File(activity.getExternalFilesDir(None), "log.txt")
             p1 = Popen(["/system/bin/logcat", "-d"], stdout=f)
             p1.wait()
-            out = BufferedOutputStream(FileOutputStream(fa))
+            out = FileOutputStream(fa)
             f.close()
             f = open("log.txt", "r")
-            for l in f.readlines():
-                out.write(l)
+            out.write("".join(f.readlines()))
         except Exception as e:
             Logger.debug("%s: Log creation failed %s" % (APP, str(e)))
         finally:
