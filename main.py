@@ -480,6 +480,8 @@ class PlanillaApp(App):
             else:
                 Logger.debug("Pulsado el boton BACK")
                 if platform == 'android':
+                    if self.service is not None:
+                        self.toast(text="Alarmas activas")
                     activity.moveTaskToBack(True)
                 return True
         return False
