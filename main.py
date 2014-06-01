@@ -437,12 +437,14 @@ class PlanillaApp(App):
     def on_pause(self):
         if self.scmgr.current == 'alarma':
             self.cancelar_sonido_alarma()
-        if self.horario and self.horario.final < datetime.now():
-            self.cancelar()
         return True
 
     def on_resume(self):
         Logger.debug("%s: On resume %s" % (APP, datetime.now()))
+        if self.horario and self.horario.final < datetime.now():
+            Logger.debug("%s: Final %s - Cancelando" % (
+                APP, self.horario.final))
+            self.cancelar()
         if self.scmgr.current == 'alarma':
             self.reproducir_sonido_alarma()
 
