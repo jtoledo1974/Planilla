@@ -6,12 +6,13 @@ from android.broadcast import BroadcastReceiver
 
 APP = 'PLANILLA'
 
-Context = autoclass('android.content.Context')
 AndroidString = autoclass('java.lang.String')
-NotificationBuilder = autoclass('android.app.Notification$Builder')
-Drawable = autoclass("{}.R$drawable".format(activity.getPackageName()))
+Context = autoclass('android.content.Context')
 Intent = autoclass('android.content.Intent')
 PendingIntent = autoclass('android.app.PendingIntent')
+Drawable = autoclass("{}.R$drawable".format(activity.getPackageName()))
+NotificationBuilder = autoclass(
+    'android.support.v4.app.NotificationCompat$Builder')
 
 
 class Vibrator():

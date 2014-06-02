@@ -88,8 +88,9 @@ android.permissions = VIBRATE,WAKE_LOCK
 # their classes. Don't add jars that you do not need, since extra jars can slow
 # down the build process. Allows wildcards matching, for example:
 # OUYA-ODK/libs/*.jar
-#android.add_jars = foo.jar,bar.jar,path/to/more/*.jar
-android.add_jars = java/PlanillaHelper.jar
+# android.add_jars = foo.jar,bar.jar,path/to/more/*.jar
+# android.add_jars = java/PlanillaHelper.jar
+android.add_jars = lib/*.jar
 
 # (list) List of Java files to add to the android project (can be java or a
 # directory containing the files)
