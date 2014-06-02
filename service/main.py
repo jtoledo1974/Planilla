@@ -25,22 +25,6 @@ broadcast_receiver = None
 pending_alarm = False
 
 
-def _get_notification_service():
-    if '_ns' not in globals().keys():
-        global _ns
-        _ns = activity.getSystemService(Context.NOTIFICATION_SERVICE)
-    return _ns
-
-
-def _get_pintend():
-    if '_pi' not in globals().keys():
-        global _pi
-        intent = activity.getPackageManager().getLaunchIntentForPackage(
-            'org.jtc.planilla')
-        _pi = PendingIntent.getActivity(activity, 0, intent, 0)
-    return _pi
-
-
 def notify(title='', message='', id=0, timeout=10,
            priority=None, defaults=False):
 
@@ -56,14 +40,12 @@ def notify(title='', message='', id=0, timeout=10,
     if priority is not None:
         noti.setPriority(priority)
 
-    # Logger.debug("Notification: %s" % pformat(
-    #     (title, message, priority,  str(mainact), activity.toString())))
-    noti.setContentIntent(_get_pintend())
-    # Logger.debug("Notification: %s" % pformat(
-    #     (title, message, priority,  mainact.toString(),
-    #         activity.toString())))
+    intent = activity.getPackageManager().getLaunchIntentForPackage(
+        'org.jtc.planilla')
+    noti.setContentIntent(PendingIntent.getActivity(activity, 0, intent, 0))
 
-    _get_notification_service().notify(id, noti.build())
+    activity.getSystemService(Context.NOTIFICATION_SERVICE).notify(
+        id, noti.build())
 
 
 def tdformat(td):
