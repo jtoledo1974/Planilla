@@ -12,17 +12,58 @@ from plyer.platforms.android import activity
 String = autoclass('java.lang.String')
 Context = autoclass('android.content.Context')
 Intent = autoclass('android.content.Intent')
+PendingIntent = autoclass('android.app.PendingIntent')
 PowerManager = autoclass('android.os.PowerManager')
+Drawable = autoclass("{}.R$drawable".format(activity.getPackageName()))
+NotificationBuilder = autoclass(
+    'android.support.v4.app.NotificationCompat$Builder')
 PRIORITY_MIN = autoclass('android.app.Notification').PRIORITY_MIN
-
-import sys
-sys.path = ['..']+sys.path
-from myandroid import notification
 
 APP = 'SERVICIO'
 alarmas = []
 broadcast_receiver = None
 pending_alarm = False
+
+
+def _get_notification_service():
+    if '_ns' not in globals().keys():
+        global _ns
+        _ns = activity.getSystemService(Context.NOTIFICATION_SERVICE)
+    return _ns
+
+
+def _get_pintend():
+    if '_pi' not in globals().keys():
+        global _pi
+        intent = activity.getPackageManager().getLaunchIntentForPackage(
+            'org.jtc.planilla')
+        _pi = PendingIntent.getActivity(activity, 0, intent, 0)
+    return _pi
+
+
+def notify(title='', message='', id=0, timeout=10,
+           priority=None, defaults=False):
+
+    icon = getattr(Drawable, 'icon')
+    noti = NotificationBuilder(activity)
+    if defaults:
+        noti.setDefaults(autoclass('android.app.Notification').DEFAULT_ALL)
+    noti.setContentTitle(String(title.encode('utf-8')))
+    noti.setContentText(String(message.encode('utf-8')))
+    noti.setSmallIcon(icon)
+    noti.setAutoCancel(True)
+
+    if priority is not None:
+        noti.setPriority(priority)
+
+    # Logger.debug("Notification: %s" % pformat(
+    #     (title, message, priority,  str(mainact), activity.toString())))
+    noti.setContentIntent(_get_pintend())
+    # Logger.debug("Notification: %s" % pformat(
+    #     (title, message, priority,  mainact.toString(),
+    #         activity.toString())))
+
+    _get_notification_service().notify(id, noti.build())
 
 
 def tdformat(td):
@@ -45,9 +86,7 @@ def update_notification():
 
     # Darle una id diferente de la por defecto para actualizar siempre la misma
     # y diferente de si ponemos otra notificación
-    notification.notify(
-        title=title, message=message, icon='icon',
-        id=1, priority=PRIORITY_MIN, from_service=True)
+    notify(title=title, message=message, id=1, priority=PRIORITY_MIN)
 
 
 def wake_app():
@@ -122,7 +161,6 @@ def calculate_alarms():
     from jnius import autoclass
     from android.broadcast import BroadcastReceiver
 
-    PendingIntent = autoclass('android.app.PendingIntent')
     SystemClock = autoclass('android.os.SystemClock')
     AlarmManager = autoclass('android.app.AlarmManager')
 
@@ -199,19 +237,15 @@ if __name__ == '__main__':
         Logger.info("%s: Proxima alarma %s" % (APP, alarmas[0]))
 
     while True:
-        # osc.readQueue(oscid)
-        # send_date()
         now = datetime.now()
         Logger.debug("%s: %s" % (APP, asctime(localtime())))
 
         pasadas = [p for p in pasadas if p['inicio'] > now]
         if not len(pasadas):
             Logger.info("No quedan pasadas. Paramos el servicio")
-            # notification.notify(
-            #     title='Parando el servicio', message='no quedan pasadas',
-            #     icon='icon', id=0,
-            #     priority=autoclass('android.app.Notification').PRIORITY_MIN,
-            #     from_service=True)
+            # notify(title='Parando el servicio', message='no quedan pasadas',
+            #        id=0,
+            #        priority=autoclass('android.app.Notification').PRIORITY_MIN)
             activity.stopSelf()
             break
 
