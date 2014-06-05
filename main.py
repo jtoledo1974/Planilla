@@ -633,14 +633,6 @@ class PlanillaApp(App):
         self.scmgr.transition = FallOutTransition()
         self.scmgr.current = 'planilla'
 
-    # Callback cuando cambian sectores
-    def horario_cambiado(self, instance, horario):
-        if self.restarting is False:
-            self.config.set('general', 's1', horario.s1)
-            self.config.set('general', 's2', horario.s2)
-            self.config.write()
-            self.arrancar_servicio()
-
     def on_config_change(self, config, section, key, value):
         Logger.debug("%s: on_config_change key %s %s" % (
             APP, key, value))
