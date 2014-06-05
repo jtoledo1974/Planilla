@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 from pickle import loads
-from base64 import b64decode
 from pprint import pformat
 from time import localtime, asctime, sleep
 from datetime import datetime, timedelta
@@ -172,7 +171,7 @@ if __name__ == '__main__':
     # Por defecto se arranca foreground. Lo dejamos para que se no muera el
     # servicio activity.stopForeground(False)
 
-    arg = loads(b64decode(os.getenv('PYTHON_SERVICE_ARGUMENT')))
+    arg = loads(os.getenv('PYTHON_SERVICE_ARGUMENT'))
     Logger.debug("%s: PYTHON_SERVICE_ARGUMENT %s" % (APP, pformat(arg)))
 
     pasadas = arg['pasadas']

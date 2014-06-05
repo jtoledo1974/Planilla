@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-
+from pickle import dumps
+from base64 import b64encode, b64decode
 from datetime import datetime, time, timedelta
 from copy import copy
 from functools import partial
@@ -429,7 +430,8 @@ class PlanillaApp(App):
             'numero': 0,
             's1': 'Sector1',
             's2': 'Sector2',
-            's3': 'Sector3'})
+            's3': 'Sector3',
+            'alarmas': b64encode(dumps([]))})
 
     def build_settings(self, settings):
         Logger.debug("%s: build_settings %s " % (APP, datetime.now()))
@@ -526,6 +528,8 @@ class PlanillaApp(App):
             # arrancada. Para no duplicar código la llamamos desde aquí
             self.on_new_intent(activity.getIntent())
 
+        self.restarting = False
+
     def on_stop(self):
         if platform == 'android' and self.br:
             self.br.stop()
@@ -583,6 +587,7 @@ class PlanillaApp(App):
         self.asigna_sectores()
 
     def asigna_sectores(self, sectores=()):
+        from pickle import loads
         Logger.debug("%s: asigna_sectores %s" % (APP, sectores))
 
         n_sectores = self.horario.n_sectores()
@@ -593,6 +598,18 @@ class PlanillaApp(App):
             else:
                 self.horario.actualiza_sector(s, sectores[i])
                 self.config.set('general', s, sectores[i])
+
+        if self.restarting:
+            # Pickle parece que tiene un bug con la lista al guardar
+            # en el archivo. Utilizamos la codifiación en base64 para evitarlo
+            string = self.config.get('general', 'alarmas')
+            # Logger.debug("%s: String %s" % (APP, str(string)))
+            self.alarmas = loads(b64decode(string))
+        else:
+            self.alarmas = self.calculate_alarms()
+            self.config.set('general', 'alarmas', b64encode(
+                dumps(self.alarmas)))
+        Logger.debug("%s: alarmas: %s" % (APP, pformat(self.alarmas)))
 
         # Necesitamos un copy para que los observadores reaccionen
         self.horario = copy(self.horario)
@@ -620,7 +637,6 @@ class PlanillaApp(App):
             'general', 'final', self.horario.final.strftime("%d/%m/%y %H:%M"))
         self.config.write()
 
-        self.restarting = False
         self.arrancar_servicio()
 
     def show_image(self, widget, touch):
@@ -642,27 +658,32 @@ class PlanillaApp(App):
 
     def calculate_alarms(self):
         alarmas = []
-        prev_task = ''
-        prev_sector = ''
+        prev_sector = prev_task = ''
+        i = 0
         margen_ejec = int(self.config.get('general', 'margen_ejec'))
         margen_ayud = int(self.config.get('general', 'margen_ayud'))
         for p in self.horario.pasadas:
             if p['task'] == 'Ejecutivo':
-                alarmas.append({
+                a = {
                     'hora': p['inicio']-timedelta(minutes=margen_ejec),
-                    'texto': p['task']+' '+p['sector']})
+                    'texto': p['task']+' '+p['sector']}
             elif p['task'] == 'Ayudante':
-                alarmas.append({
+                a = {
                     'hora': p['inicio']-timedelta(minutes=margen_ayud),
-                    'texto': p['task']+' '+p['sector']})
+                    'texto': p['task']+' '+p['sector']}
             elif p['task'] == 'Libre' and prev_task == 'Ayudante':
-                alarmas.append({
+                a = {
                     'hora': p['inicio']-timedelta(minutes=margen_ayud),
-                    'texto': "Quitar tarjeta sector %s" % prev_sector})
+                    'texto': "Quitar tarjeta sector %s" % prev_sector}
+            else:
+                continue
+            a.update({'id': i, 'sector': p["sector"], 'task': p['task']})
+            alarmas.append(a)
+            i += 1
             prev_task = p['task']
             prev_sector = p['sector']
 
-        alarmas = [a for a in alarmas if a['hora'] > datetime.now()]
+        alarmas = [a2 for a2 in alarmas if a2['hora'] > datetime.now()]
         Logger.info("%s: %s" % (APP, pformat(alarmas)))
         return alarmas
 
@@ -673,13 +694,14 @@ class PlanillaApp(App):
         self.service = None
 
     def arrancar_servicio(self):
-        from pickle import dumps
-        from base64 import b64encode
+        # Si el servicio ya estaba arrancado cuando la aplicación arranca,
+        # volver a arrancarlo no tiene efecto, así que la lista de
+        # alarmas del servicio sigue siendo la de la primera vez
 
         self.parar_servicio()
         arg = {'pasadas': self.horario.pasadas,
-               'alarmas': self.calculate_alarms()}
-        arg = b64encode(dumps(arg))
+               'alarmas': self.alarmas}
+        arg = dumps(arg)
 
         if platform == 'android':
             self.service = android.AndroidService(
