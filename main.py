@@ -431,7 +431,7 @@ class PlanillaApp(App):
             's1': 'Sector1',
             's2': 'Sector2',
             's3': 'Sector3',
-            'alarmas': b64encode(dumps([]))})
+            'alarmas': b64encode(dumps({}))})
 
     def build_settings(self, settings):
         Logger.debug("%s: build_settings %s " % (APP, datetime.now()))
@@ -460,8 +460,7 @@ class PlanillaApp(App):
             Logger.debug("%s: on_new_intent - Bundle: calling sonar_alarma" %
                          APP)
             self.set_window_flags()  # Para que la alarma encienda el movil
-            self.sonar_alarma(
-                texto=bundle.getString('texto'))
+            self.sonar_alarma(id=bundle.get('id'))
 
     def on_keypress(self, window, keycode1, keycode2, text, modifiers):
         # Gestión del botón atrás.
@@ -657,9 +656,10 @@ class PlanillaApp(App):
             self.arrancar_servicio()
 
     def calculate_alarms(self):
-        alarmas = []
+        Logger.debug("%s: calculate_alarms" % APP)
+        alarmas = {}
         prev_sector = prev_task = ''
-        i = 0
+        i = 1
         margen_ejec = int(self.config.get('general', 'margen_ejec'))
         margen_ayud = int(self.config.get('general', 'margen_ayud'))
         for p in self.horario.pasadas:
@@ -677,13 +677,21 @@ class PlanillaApp(App):
                     'texto': "Quitar tarjeta sector %s" % prev_sector}
             else:
                 continue
-            a.update({'id': i, 'sector': p["sector"], 'task': p['task']})
-            alarmas.append(a)
+            a.update({'sector': p["sector"], 'task': p['task']})
+            alarmas[i] = a
             i += 1
             prev_task = p['task']
             prev_sector = p['sector']
 
-        alarmas = [a2 for a2 in alarmas if a2['hora'] > datetime.now()]
+        if False:
+            alarmas = {}
+            for i in range(1, 11):
+                a = {'hora': datetime.now()+timedelta(seconds=6*(i)),
+                     'texto': 'Alarma no. %s' % i}
+                alarmas[i] = a
+
+        alarmas = {k: v for k, v in alarmas.iteritems()
+                   if v['hora'] > datetime.now()}
         Logger.info("%s: %s" % (APP, pformat(alarmas)))
         return alarmas
 
@@ -767,9 +775,10 @@ class PlanillaApp(App):
             self._get_audiomanager().setRingerMode(self.ringer_mode)
             self._get_vibrator().cancel()
 
-    def sonar_alarma(self, texto='Alarma'):
+    def sonar_alarma(self, id):
         ltext = str(datetime.now())
-        Logger.debug("%s: sonar_alarma: %s %s" % (APP, texto, ltext))
+        Logger.debug("%s: sonar_alarma: %s %s" % (APP, id, ltext))
+        texto = self.alarmas[id]['texto']
 
         if self.scmgr.current == 'alarma':
             Logger.debug("%s: Alarma ya activa. Olvidar" % APP)

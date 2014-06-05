@@ -3,7 +3,7 @@ import os
 from pickle import loads
 from pprint import pformat
 from time import localtime, asctime, sleep
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from kivy.logger import Logger
 
@@ -82,16 +82,16 @@ def wake_app():
     activity.startActivity(intent)
 
 
-def sound_alarm(texto='default'):
-    Logger.info("%s: sound_alarm %s %s" % (APP, texto, datetime.now()))
+def sound_alarm(id=-1):
+    Logger.info("%s: sound_alarm %s %s" % (APP, id, datetime.now()))
 
     intent = Intent('org.jtc.planilla.ACTION_ALARM').putExtra(
-        "texto", String(texto)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        "id", id).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     Logger.debug("%s: Starting %s %s" % (APP, intent.toString(),
                  datetime.now()))
     activity.startActivity(intent)
     global pending_alarm
-    pending_alarm = ''
+    pending_alarm = False
     sleep(5)
     wl.release()
 
@@ -106,15 +106,15 @@ def process_broadcast(context, intent):
         return
 
     elif intent.getAction() == ('org.jtc.planilla.SERVICEALARM'):
-        texto = intent.getExtras().getString('texto')
+        id = intent.getExtras().get('id')
         global pending_alarm
-        pending_alarm = texto
+        pending_alarm = id
         wake_app()
         return
 
     elif intent.getAction() == ('org.jtc.planilla.APP_AWAKE'):
         if pending_alarm:
-            sound_alarm(texto=pending_alarm)
+            sound_alarm(id=pending_alarm)
 
 
 def schedule_alarms(alarmas):
@@ -141,22 +141,12 @@ def schedule_alarms(alarmas):
         pi = PendingIntent.getBroadcast(activity, i, intent, 0)
         am.cancel(pi)
 
-    if False:
-        for i in range(10):
-            intent = Intent(String('org.jtc.planilla.SERVICEALARM')).putExtra(
-                "texto", String("Alarma n. %s" % str(i)))
-            pi = PendingIntent.getBroadcast(
-                activity, i, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-            ms = 5 * i * 1000
-            am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                   SystemClock.elapsedRealtime()+ms, pi)
-        return
     # Fijar las nuevas alarmas
     i = 0
     now = datetime.now()
-    for alarma in alarmas:
+    for id, alarma in alarmas.iteritems():
         intent = Intent(String('org.jtc.planilla.SERVICEALARM')).putExtra(
-            "texto", String(alarma['texto']))
+            "id", id)
         pi = PendingIntent.getBroadcast(
             activity, i, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         ms = (alarma['hora']-now).seconds * 1000
@@ -194,7 +184,8 @@ if __name__ == '__main__':
 
     schedule_alarms(alarmas)
     if len(alarmas):
-        Logger.info("%s: Proxima alarma %s" % (APP, alarmas[0]))
+        Logger.info("%s: Proxima alarma %s" % (
+            APP, alarmas[alarmas.keys()[0]]))
 
     while True:
         now = datetime.now()
