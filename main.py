@@ -24,7 +24,7 @@ from kivy.graphics.vertex_instructions import Line, Rectangle
 from kivy.uix.screenmanager import Screen, RiseInTransition, FallOutTransition, \
     SlideTransition, NoTransition
 from kivy.utils import get_color_from_hex
-from kivy.properties import NumericProperty, ObjectProperty
+from kivy.properties import NumericProperty, ObjectProperty, StringProperty
 
 if platform == 'android':
     Logger.debug('PLANILLA: Importando %s' % datetime.now())
@@ -235,6 +235,9 @@ class AlarmScreen(Screen):
     ca = NumericProperty(1.0)   # Alfa de los círculos que se desplazan
     R = 0.08                    # Constante para calcular el tamaño
     motion_uid = None
+
+    text = StringProperty('Alarma!')
+    hora = ObjectProperty()
 
     def on_height(self, widget, height):
         self.r = height*self.R
@@ -778,7 +781,6 @@ class PlanillaApp(App):
     def sonar_alarma(self, id):
         ltext = str(datetime.now())
         Logger.debug("%s: sonar_alarma: %s %s" % (APP, id, ltext))
-        texto = self.alarmas[id]['texto']
 
         if self.scmgr.current == 'alarma':
             Logger.debug("%s: Alarma ya activa. Olvidar" % APP)
@@ -797,7 +799,10 @@ class PlanillaApp(App):
         self.scmgr.transition = NoTransition()
         self.scmgr.current = 'alarma'
         Logger.debug("%s: current 'alarma' - NoTransition" % APP)
-        self.alarmscreen.ids.alarmbutton.text = texto
+
+        a = self.alarmas[id]
+        self.alarmscreen.text = a['texto']
+        self.alarmscreen.time = a['hora']
 
     def cancelar_alarma(self, dt=None, source='Unknown', clock_date=None):
         # argumento dt viene del Clock

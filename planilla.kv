@@ -43,8 +43,7 @@
             circle: (self.center_x, self.height*.2, self.r2)
             width: 2.0
     Label:
-        id: alarmbutton
-        text: 'Alarma!'
+        text: self.parent.text
         font_size: '32sp'
         pos_hint: {'center_x': 0.5, 'center_y': 0.7}
         size_hint: (None, None)
