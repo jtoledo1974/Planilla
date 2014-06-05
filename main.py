@@ -237,7 +237,7 @@ class AlarmScreen(Screen):
     motion_uid = None
 
     text = StringProperty('Alarma!')
-    hora = ObjectProperty()
+    time = ObjectProperty()
 
     def on_height(self, widget, height):
         self.r = height*self.R
@@ -802,7 +802,7 @@ class PlanillaApp(App):
 
         a = self.alarmas[id]
         self.alarmscreen.text = a['texto']
-        self.alarmscreen.time = a['hora']
+        self.alarmscreen.time = copy(a['hora'])
 
     def cancelar_alarma(self, dt=None, source='Unknown', clock_date=None):
         # argumento dt viene del Clock
