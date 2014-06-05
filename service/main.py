@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
-import pickle
+from pickle import loads
+from base64 import b64decode
 from pprint import pformat
 from time import localtime, asctime, sleep
 from datetime import datetime, timedelta
@@ -117,28 +118,7 @@ def process_broadcast(context, intent):
             sound_alarm(texto=pending_alarm)
 
 
-def calculate_alarms():
-    global alarmas
-    prev_task = ''
-    prev_sector = ''
-    for p in pasadas:
-        if p['task'] == 'Ejecutivo':
-            alarmas.append({
-                'hora': p['inicio']-timedelta(minutes=margen_ejec),
-                'texto': p['task']+' '+p['sector']})
-        elif p['task'] == 'Ayudante':
-            alarmas.append({
-                'hora': p['inicio']-timedelta(minutes=margen_ayud),
-                'texto': p['task']+' '+p['sector']})
-        elif p['task'] == 'Libre' and prev_task == 'Ayudante':
-            alarmas.append({
-                'hora': p['inicio']-timedelta(minutes=margen_ayud),
-                'texto': "Quitar tarjeta sector %s" % prev_sector})
-        prev_task = p['task']
-        prev_sector = p['sector']
-
-    alarmas = [a for a in alarmas if a['hora'] > datetime.now()]
-    Logger.info("%s: %s" % (APP, pformat(alarmas)))
+def schedule_alarms(alarmas):
 
     from jnius import autoclass
     from android.broadcast import BroadcastReceiver
@@ -192,12 +172,11 @@ if __name__ == '__main__':
     # Por defecto se arranca foreground. Lo dejamos para que se no muera el
     # servicio activity.stopForeground(False)
 
-    arg = pickle.loads(os.getenv('PYTHON_SERVICE_ARGUMENT'))
+    arg = loads(b64decode(os.getenv('PYTHON_SERVICE_ARGUMENT')))
     Logger.debug("%s: PYTHON_SERVICE_ARGUMENT %s" % (APP, pformat(arg)))
 
     pasadas = arg['pasadas']
-    margen_ejec = arg['margen_ejec']
-    margen_ayud = arg['margen_ayud']
+    alarmas = arg['alarmas']
 
     # Misterios del python for android, sin el cast no funciona
     android_activity = cast('android.app.Activity', activity)
@@ -214,7 +193,7 @@ if __name__ == '__main__':
         PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
         0, "My tag")
 
-    calculate_alarms()
+    schedule_alarms(alarmas)
     if len(alarmas):
         Logger.info("%s: Proxima alarma %s" % (APP, alarmas[0]))
 

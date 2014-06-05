@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import pickle
 from datetime import datetime, time, timedelta
 from copy import copy
 from functools import partial
@@ -641,6 +640,32 @@ class PlanillaApp(App):
         if self.service:
             self.arrancar_servicio()
 
+    def calculate_alarms(self):
+        alarmas = []
+        prev_task = ''
+        prev_sector = ''
+        margen_ejec = int(self.config.get('general', 'margen_ejec'))
+        margen_ayud = int(self.config.get('general', 'margen_ayud'))
+        for p in self.horario.pasadas:
+            if p['task'] == 'Ejecutivo':
+                alarmas.append({
+                    'hora': p['inicio']-timedelta(minutes=margen_ejec),
+                    'texto': p['task']+' '+p['sector']})
+            elif p['task'] == 'Ayudante':
+                alarmas.append({
+                    'hora': p['inicio']-timedelta(minutes=margen_ayud),
+                    'texto': p['task']+' '+p['sector']})
+            elif p['task'] == 'Libre' and prev_task == 'Ayudante':
+                alarmas.append({
+                    'hora': p['inicio']-timedelta(minutes=margen_ayud),
+                    'texto': "Quitar tarjeta sector %s" % prev_sector})
+            prev_task = p['task']
+            prev_sector = p['sector']
+
+        alarmas = [a for a in alarmas if a['hora'] > datetime.now()]
+        Logger.info("%s: %s" % (APP, pformat(alarmas)))
+        return alarmas
+
     def parar_servicio(self):
         if platform == 'android' and self.service:
             Logger.debug("%s: parar_servicio - %s" % (APP, datetime.now()))
@@ -648,13 +673,13 @@ class PlanillaApp(App):
         self.service = None
 
     def arrancar_servicio(self):
+        from pickle import dumps
+        from base64 import b64encode
+
         self.parar_servicio()
-        margen_ejec = int(self.config.get('general', 'margen_ejec'))
-        margen_ayud = int(self.config.get('general', 'margen_ayud'))
-        arg = {'margen_ejec': margen_ejec,
-               'margen_ayud': margen_ayud,
-               'pasadas': self.horario.pasadas}
-        arg = pickle.dumps(arg)
+        arg = {'pasadas': self.horario.pasadas,
+               'alarmas': self.calculate_alarms()}
+        arg = b64encode(dumps(arg))
 
         if platform == 'android':
             self.service = android.AndroidService(
