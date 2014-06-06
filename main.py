@@ -921,7 +921,7 @@ class PlanillaApp(App):
             t.setGravity(Gravity.BOTTOM, 0, 0)
             t.show()
     else:
-        def toast(*args):
+        def toast(*args, **kwargs):
             pass
 
     def send_log(self):
@@ -951,8 +951,8 @@ class PlanillaApp(App):
             f.close()
             out.close()
 
-        texto = "%s\n%s\n%s\n\n" % (
-            Build.MANUFACTURER, Build.MODEL, BV.RELEASE)
+        texto = "%s\n%s\n%s\n%s\n\n" % (
+            Build.MANUFACTURER, Build.MODEL, BV.RELEASE, self.about())
 
         intent = Intent(Intent.ACTION_SEND).setType('message/rfc822')
         intent = intent.putExtra(Intent.EXTRA_TEXT, String(texto))
@@ -968,6 +968,14 @@ class PlanillaApp(App):
         except Exception as e:
             Logger.debug("%s: Log delivery failed %s" % (APP, str(e)))
 
+    def about(self):
+        try:
+            with open("version.txt") as f:
+                v = f.read()[:-1]
+        except:
+            v = "undefined"
+        self.toast(text="Planilla %s\nJuan Toledo" % v, short=False)
+        return v
 
 if __name__ == '__main__':
     Logger.debug("%s: End imports. %s PlanillaApp().run()" % (

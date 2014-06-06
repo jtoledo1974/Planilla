@@ -25,11 +25,11 @@ source.include_exts = py,png,jpg,kv,atlas,json,csv
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-#version.regex = __version__ = '(.*)'
-#version.filename = %(source.dir)s/main.py
+version.regex = (.*)
+version.filename = %(source.dir)s/version.txt
 
 # (str) Application versioning (method 2)
-version = 0.9.2
+# version = 0.9.2
 
 # (list) Application requirements
 requirements = kivy,plyer,pyjnius

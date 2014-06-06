@@ -97,6 +97,9 @@
                     ActionButton:
                         text: "Log"
                         on_release: app.send_log()
+                    ActionButton:
+                        text: "Acerca de"
+                        on_release: app.about()
         BoxLayout:
             orientation: "horizontal"
             FloatLayout:
@@ -134,6 +137,9 @@ ScreenManager:
                         ActionButton:
                             text: "Log"
                             on_release: app.send_log()
+                        ActionButton:
+                            text: "Acerca de"
+                            on_release: app.about()
             GridLayout:
                 cols: 3
                 MainButton:
