@@ -681,7 +681,8 @@ class PlanillaApp(App):
                     'texto': "Quitar tarjeta sector %s" % prev_sector}
             else:
                 continue
-            a.update({'sector': p["sector"], 'task': p['task']})
+            a.update({'sector': p["sector"], 'task': p['task'],
+                      'inicio': p['inicio']})
             alarmas[i] = a
             i += 1
             prev_task = p['task']
@@ -690,8 +691,8 @@ class PlanillaApp(App):
         if False:
             alarmas = {}
             for i in range(1, 11):
-                a = {'hora': datetime.now()+timedelta(seconds=6*(i)),
-                     'texto': 'Alarma no. %s' % i}
+                h = datetime.now()+timedelta(seconds=3*(i+1))
+                a = {'hora': h, 'texto': 'Alarma no. %s' % i, 'inicio': h}
                 alarmas[i] = a
 
         alarmas = {k: v for k, v in alarmas.iteritems()
@@ -803,7 +804,7 @@ class PlanillaApp(App):
 
         a = self.alarmas[id]
         self.alarmscreen.text = a['texto']
-        self.alarmscreen.time = copy(a['hora'])
+        self.alarmscreen.time = copy(a['inicio'])
 
     def cancelar_alarma(self, dt=None, source='Unknown', clock_date=None):
         # argumento dt viene del Clock
