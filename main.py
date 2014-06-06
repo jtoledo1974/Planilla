@@ -343,19 +343,21 @@ class PlanillaWidget(FloatLayout):
             pos = (self.x,
                    self.y + self.height - self.timepos*self.height - h/2)
             size = (self.width, h)
-            Color(1, .1, .1, self.alpha)
+            self.tpc = Color(1, .1, .1, self.alpha)
             # Color(self.alpha, self.alpha, self.alpha, 1)
-            Rectangle(pos=pos, size=size)
+            self.tp = Rectangle(pos=pos, size=size)
 
     def do_layout(self, *args):
         self.update_canvas()
         super(PlanillaWidget, self).do_layout(*args)
 
     def on_timepos(self, *args):
-        self.update_canvas()
+        pos = (self.x,
+               self.y + self.height - self.timepos*self.height - 5)
+        self.tp.pos = pos
 
     def on_alpha(self, *args):
-        self.update_canvas()
+        self.tpc.a = self.alpha
 
     def on_horario(self, *args):
         self.clear_widgets()
