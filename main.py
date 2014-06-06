@@ -656,6 +656,7 @@ class PlanillaApp(App):
         Logger.debug("%s: on_config_change key %s %s" % (
             APP, key, value))
         if self.service:
+            self.alarmas = self.calculate_alarms()
             self.arrancar_servicio()
 
     def calculate_alarms(self):
