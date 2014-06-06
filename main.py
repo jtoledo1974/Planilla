@@ -426,6 +426,7 @@ class ImageScreen(Screen):
             size = (w, self.height)
             self.tpc = Color(1, .1, .1, self.alpha)
             self.tp = Rectangle(pos=pos, size=size)
+        Clock.schedule_interval(self.update_timepos, 60)
         self.anim = Animation(alpha=0.7, d=1) + Animation(alpha=0.2, d=1)
         self.anim.repeat = True
         self.anim.start(self)
@@ -436,10 +437,16 @@ class ImageScreen(Screen):
         img = AsyncImage(source=path, keep_ratio=False, allow_stretch=True)
         self.add_widget(img)
 
+    def update_timepos(self, *args):
+        tp = self.app.horario.get_timepos()
+        Logger.debug("%s: update_img_timepos timepos=%s" % (APP, tp))
+        self.tp.pos = (self.width - tp*self.width - 5, 0)
+
     def on_alpha(self, *args):
         self.tpc.a = self.alpha
 
     def on_pre_leave(self, *args):
+        Clock.unschedule(self.update_timepos)
         self.anim.stop(self)
 
 
