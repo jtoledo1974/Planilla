@@ -13,7 +13,7 @@ package.domain = org.jtc
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,json,csv
+source.include_exts = py,png,jpg,kv,atlas,json,csv,txt
 
 # (list) Source files to exclude (let empty to not exclude anything)
 #source.exclude_exts = spec
@@ -25,7 +25,7 @@ source.include_exts = py,png,jpg,kv,atlas,json,csv
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version.regex = (.*)
+version.regex = v(.*)
 version.filename = %(source.dir)s/version.txt
 
 # (str) Application versioning (method 2)
