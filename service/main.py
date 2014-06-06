@@ -52,9 +52,11 @@ def tdformat(td):
     (hours, seconds) = divmod(td.seconds, 3600)
     (minutes, seconds) = divmod(seconds, 60)
     if hours > 0:
-        res = "%dh%d" % (hours, minutes)
-    else:
+        res = "%dh%dm" % (hours, minutes)
+    elif minutes > 3:
         res = "%dm" % minutes
+    else:
+        res = "%dm%d" % (minutes, seconds)
     return res
 
 
@@ -156,6 +158,21 @@ def schedule_alarms(alarmas):
                SystemClock.elapsedRealtime()+ms, pi)
         i += 1
 
+
+def seconds_to_update():
+    if not len(pasadas):
+        return 60
+
+    t = pasadas[0]['inicio']
+    (hours, seconds) = divmod((t-now).seconds, 3600)
+    (minutes, seconds) = divmod(seconds, 60)
+
+    if hours < 1 and minutes < 3:
+        return 1
+    else:
+        s = 59-datetime.now().second
+        return s if s else 60
+
 if __name__ == '__main__':
 
     # Por defecto se arranca foreground. Lo dejamos para que se no muera el
@@ -202,4 +219,4 @@ if __name__ == '__main__':
 
         update_notification()
 
-        sleep(60)
+        sleep(seconds_to_update())
