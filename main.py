@@ -54,6 +54,20 @@ class datetime(odt):
 APP = 'PLANILLA'
 
 
+def tdformat(td):
+    if td.days < 0:
+        tds = - td.seconds - td.days*3600*24
+    else:
+        tds = td.seconds
+    (hours, seconds) = divmod(tds, 3600)
+    (minutes, seconds) = divmod(seconds, 60)
+    if hours > 0:
+        res = "%dh%d" % (hours, minutes)
+    else:
+        res = "%dm%02d" % (minutes, seconds)
+    return res
+
+
 class Horario():
 
     pasadas = []
@@ -237,7 +251,8 @@ class AlarmScreen(Screen):
     motion_uid = None
 
     text = StringProperty('Alarma!')
-    time = ObjectProperty()
+    timetext = StringProperty('')
+    inicio = datetime.now()  # Se actualiza en sonar_alarma
 
     def on_height(self, widget, height):
         self.r = height*self.R
@@ -257,16 +272,21 @@ class AlarmScreen(Screen):
         self.anim.start(self)
 
         self.app.reproducir_sonido_alarma()
+
         self.app.clock_callback = partial(
             self.app.cancelar_alarma,
             source='Clock', clock_date=datetime.now())
         Clock.schedule_once(self.app.clock_callback, self.app.ACS)  # segundos
+
+        self.update_timetext()
+        Clock.schedule_interval(self.update_timetext, 1)
 
     def on_pre_leave(self, *args):
         self.anim.stop(self)
         Logger.debug("%s: AlarmScreen.on_pre_leave %s" % (APP, datetime.now()))
         if platform == 'android':
             self.app.reset_window_flags()  # Permitir apagado automático
+        Clock.unschedule(self.update_timetext)
 
     def on_touch_down(self, touch):
         if Vector(touch.pos).distance(
@@ -292,6 +312,10 @@ class AlarmScreen(Screen):
         if touch.uid == self.motion_uid:
             self.ra = 1
             self.r2a = 0
+
+    def update_timetext(self, *args):
+        self.timetext = "%s - %s" % (self.inicio.strftime("%H:%M"),
+                                     tdformat(self.inicio-datetime.now()))
 
 
 class PlanillaWidget(FloatLayout):
@@ -804,7 +828,7 @@ class PlanillaApp(App):
 
         a = self.alarmas[id]
         self.alarmscreen.text = a['texto']
-        self.alarmscreen.time = copy(a['inicio'])
+        self.alarmscreen.inicio = copy(a['inicio'])
 
     def cancelar_alarma(self, dt=None, source='Unknown', clock_date=None):
         # argumento dt viene del Clock
