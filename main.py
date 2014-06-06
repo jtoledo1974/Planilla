@@ -414,11 +414,33 @@ class PlanillaScreen(Screen):
 
 class ImageScreen(Screen):
 
+    timepos = NumericProperty(0.5)
+    alpha = NumericProperty(.8)
+
+    def on_enter(self, *args):
+        self.canvas.after.clear()
+        with self.canvas.after:
+            w = 10
+            tp = self.app.horario.get_timepos()
+            pos = (self.width - tp*self.width - w/2, 0)
+            size = (w, self.height)
+            self.tpc = Color(1, .1, .1, self.alpha)
+            self.tp = Rectangle(pos=pos, size=size)
+        self.anim = Animation(alpha=0.7, d=1) + Animation(alpha=0.2, d=1)
+        self.anim.repeat = True
+        self.anim.start(self)
+
     def load(self, path=''):
         assert path
         self.clear_widgets()
         img = AsyncImage(source=path, keep_ratio=False, allow_stretch=True)
         self.add_widget(img)
+
+    def on_alpha(self, *args):
+        self.tpc.a = self.alpha
+
+    def on_pre_leave(self, *args):
+        self.anim.stop(self)
 
 
 class MainButton(Button):
@@ -647,6 +669,7 @@ class PlanillaApp(App):
 
         if not self.imagescreen:
             self.imagescreen = ImageScreen()
+            self.imagescreen.app = self
             self.scmgr.add_widget(self.imagescreen)
 
         if self.horario.nucleo == 'TMA':
