@@ -17,7 +17,8 @@ PowerManager = autoclass('android.os.PowerManager')
 Drawable = autoclass("{}.R$drawable".format(activity.getPackageName()))
 NotificationBuilder = autoclass(
     'android.support.v4.app.NotificationCompat$Builder')
-PRIORITY_MIN = autoclass('android.app.Notification').PRIORITY_MIN
+PRIORITY_MIN = autoclass(
+    'android.support.v4.app.NotificationCompat').PRIORITY_MIN
 
 APP = 'SERVICIO'
 alarmas = []
