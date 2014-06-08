@@ -825,7 +825,7 @@ class PlanillaApp(App):
 
         if platform == 'android' and \
            int(self.config.get('general', 'vibration_alarm')):
-            self._get_vibrator().vibrate([0, 500.0, 500.0], 1)
+            self._get_vibrator().vibrate([0, 500, 500], 1)
 
     def cancelar_sonido_alarma(self):
         assert hasattr(self, 'ringer_mode')
