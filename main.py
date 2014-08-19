@@ -513,10 +513,12 @@ class PlanillaApp(App):
         activity.sendBroadcast(Intent("org.jtc.planilla.APP_AWAKE"))
         bundle = intent.getExtras()
         if bundle:
-            Logger.debug("%s: on_new_intent - Bundle: calling sonar_alarma" %
-                         APP)
-            self.set_window_flags()  # Para que la alarma encienda el movil
-            self.sonar_alarma(id=bundle.get('id'))
+            id = bundle.get('id')
+            if id:
+                Logger.debug(
+                    "%s: on_new_intent - Bundle: calling sonar_alarma" % APP)
+                self.set_window_flags()  # Para que la alarma encienda el movil
+                self.sonar_alarma(id=id)
 
     def on_keypress(self, window, keycode1, keycode2, text, modifiers):
         # Gestión del botón atrás.
