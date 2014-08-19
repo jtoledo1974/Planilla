@@ -1,20 +1,13 @@
 #!/bin/bash
-ANDROID_HOME=~/.buildozer/android/platform/android-sdk-21
-ADB=$ANDROID_HOME/platform-tools/adb
-CLASSPATH=$ANDROID_HOME/platforms/android-14/android.jar
+#ANDROID_HOME=~/.buildozer/android/platform/android-sdk-21
+#ADB=$ANDROID_HOME/platform-tools/adb
+#CLASSPATH=$ANDROID_HOME/platforms/android-14/android.jar
 set -x
 
-cd /media/JTC/planilla
 git describe --tags > version.txt
-# cd /media/JTC/java
+
 # javac -classpath $CLASSPATH  org/jtc/planilla/*.java
 # jar -cf PlanillaHelper.jar org/jtc/planilla/*.class
-
-cd ~/kivy/JTC/;
-cp /media/JTC/planilla/*.{py,kv,csv,json,xml} .
-cp /media/JTC/planilla/version.txt .
-cp /media/JTC/planilla/service/*.py service
-# cp /media/JTC/java/*.jar java
 
 python -OO -m compileall -f -l . service
 
@@ -34,5 +27,5 @@ else
 	echo Falta dirección del ssh
 fi
 
-$ADB shell am force-stop org.jtc.planilla
-$ADB shell am start -n org.jtc.planilla/org.renpy.android.PythonActivity -a org.renpy.android.PythonActivity
+adb shell am force-stop org.jtc.planilla
+adb shell am start -n org.jtc.planilla/org.renpy.android.PythonActivity -a org.renpy.android.PythonActivity
