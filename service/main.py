@@ -133,7 +133,6 @@ def schedule_alarms(alarmas):
         process_broadcast,
         ['org.jtc.planilla.SERVICEALARM', Intent.ACTION_USER_PRESENT,
          'org.jtc.planilla.APP_AWAKE'])
-    broadcast_receiver.context = activity
     broadcast_receiver.start()
 
     am = activity.getSystemService(Context.ALARM_SERVICE)
