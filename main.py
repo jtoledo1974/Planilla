@@ -75,6 +75,7 @@ class Horario():
     final = None
     s1 = 'S1'  # Así es como se carga inicialmente
     s2 = 'S2'
+    s3 = 'S3'
 
     def __init__(self, nucleo, numero):
 
