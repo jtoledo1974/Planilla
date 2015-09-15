@@ -536,7 +536,7 @@ class PlanillaApp(App):
                 self.close_settings()
                 return True
             if self.scmgr.current == 'sectores':
-                self.scmgr.transition.direction = 'up'
+                self.scmgr.transition.direction = 'down'
                 self.scmgr.current = 'principal'
                 return True
             elif self.scmgr.current == 'image':
@@ -633,7 +633,7 @@ class PlanillaApp(App):
         self.horario = Horario(nucleo=nucleo, numero=numero)
 
         if not self.restarting:
-            self.scmgr.transition = SlideTransition(direction='down')
+            self.scmgr.transition = SlideTransition(direction='up')
             self.scmgr.current = 'sectores'
             Logger.debug("%s: current 'sectores' - " % APP)
             self.sectoresscreen.add_sectors(
