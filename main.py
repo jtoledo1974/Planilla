@@ -35,7 +35,7 @@ if platform == 'android':
     Intent = autoclass('android.content.Intent')
     String = autoclass('java.lang.String')
 
-if platform == 'win':
+if platform in ('win', 'linux'):
     Config.set('graphics', 'width', 480)
     Config.set('graphics', 'height', 756)
 
