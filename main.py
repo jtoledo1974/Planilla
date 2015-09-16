@@ -26,6 +26,8 @@ from kivy.uix.screenmanager import Screen, RiseInTransition, FallOutTransition, 
 from kivy.utils import get_color_from_hex
 from kivy.properties import NumericProperty, ObjectProperty, StringProperty
 
+APP = 'PLANILLA'
+
 if platform == 'android':
     Logger.debug('%s: Importando clases de Android %s' % (APP,datetime.now()))
     import android
@@ -50,8 +52,6 @@ class datetime(odt):
     def now():
         return odt.now()
 #       return odt.now()-timedelta(hours=11)
-
-APP = 'PLANILLA'
 
 
 def tdformat(td):
