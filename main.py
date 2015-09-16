@@ -782,8 +782,10 @@ class PlanillaApp(App):
         arg = dumps(arg)
 
         if platform == 'android':
+            Logger.debug('%s: self.service = android.AndroidService(\'Planilla\', \'Alarmas activas\')\')' % APP)
             self.service = android.AndroidService(
                 'Planilla', 'Alarmas activas')
+            Logger.debug('%s: self.service.start(arg)' % APP)
             self.service.start(arg)
             Logger.debug("%s: Arrancando servicio" % APP)
 
