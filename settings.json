@@ -42,5 +42,13 @@
         "section": "general",
         "key": "vibration_alarm",
         "true": "auto"
+    },
+    {
+        "type": "options",
+        "title": "Mensajes de depuración",
+        "desc": "Nivel de mensajes de depuración a generar",
+        "section": "general",
+        "key": "log_level",
+        "options": ["debug", "info"]
     }
 ]

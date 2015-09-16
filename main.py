@@ -27,7 +27,7 @@ from kivy.utils import get_color_from_hex
 from kivy.properties import NumericProperty, ObjectProperty, StringProperty
 
 if platform == 'android':
-    Logger.debug('PLANILLA: Importando %s' % datetime.now())
+    Logger.debug('%s: Importando clases de Android %s' % (APP,datetime.now()))
     import android
     from plyer.platforms.android import activity
     from jnius import autoclass, cast
@@ -488,7 +488,8 @@ class PlanillaApp(App):
             's1': 'Sector1',
             's2': 'Sector2',
             's3': 'Sector3',
-            'alarmas': b64encode(dumps({}))})
+            'alarmas': b64encode(dumps({})),
+            'log_level': 'info'})
 
     def build_settings(self, settings):
         Logger.debug("%s: build_settings %s " % (APP, datetime.now()))
@@ -552,6 +553,7 @@ class PlanillaApp(App):
         return False
 
     def on_start(self):
+        Config.set('kivy', 'log_level', self.config.get('general', 'log_level'))
         Logger.debug("%s: on_start %s" % (APP, datetime.now()))
 
         self.scmgr = self.root.scmgr  # scmgr identificado con id en el kv
@@ -710,9 +712,12 @@ class PlanillaApp(App):
         self.scmgr.current = 'planilla'
 
     def on_config_change(self, config, section, key, value):
+        if key == "log_level":
+            Config.set('kivy', 'log_level', value)
         Logger.debug("%s: on_config_change key %s %s" % (
             APP, key, value))
-        if self.service:
+        if self.service and key in ('margen_ejec', 'margen_ayud'):
+            Logger.debug("%s: Cambiada configuración, recalculando alarmas" % key)
             self.alarmas = self.calculate_alarms()
             self.arrancar_servicio()
 
@@ -758,6 +763,7 @@ class PlanillaApp(App):
         return alarmas
 
     def parar_servicio(self):
+        Logger.debug('%s: arrancar_servicio %s' % (APP,datetime.now()))
         if platform == 'android' and self.service:
             Logger.debug("%s: parar_servicio - %s" % (APP, datetime.now()))
             self.service.stop()
@@ -767,6 +773,8 @@ class PlanillaApp(App):
         # Si el servicio ya estaba arrancado cuando la aplicación arranca,
         # volver a arrancarlo no tiene efecto, así que la lista de
         # alarmas del servicio sigue siendo la de la primera vez
+
+        Logger.debug('%s: arrancar_servicio %s' % (APP,datetime.now()))
 
         self.parar_servicio()
         arg = {'pasadas': self.horario.pasadas,
