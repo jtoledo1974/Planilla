@@ -9,7 +9,7 @@ Numero,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,
 7,15:00,15:38,Libre,15:38,16:34,ES1,16:34,17:30,AS1,17:30,18:08,Libre,18:08,19:04,ES2,19:04,20:00,AS2,20:00,20:38,Libre,20:38,21:34,ES3,21:34,22:30,AS3
 8,15:00,15:38,Libre,15:38,16:34,AS1,16:34,17:30,ES1,17:30,18:08,Libre,18:08,19:04,AS2,19:04,20:00,ES2,20:00,20:38,Libre,20:38,21:34,AS3,21:34,22:30,ES3
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Ruta,P1L,P1U,P1I,PPI,PP2,LVL,LGL,LVU,LGU,LVS,CCU,CCL,VNI,VVI,MNU,MNL,MNI,MMI,BAS,,,,,,,,
+Ruta,P1L,P1U,P1I,PPI,PP2,LVL,LGL,LVU,LGU,LVS,CCC,CCU,CCL,VNI,VVI,MNU,MNL,MNI,MMI,BAS,,,,,,,
 Numero,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado
 1,15:00,15:38,AS1,15:38,16:15,Libre,16:15,17:11,ES2,17:11,18:08,AS2,18:08,18:45,Libre,18:45,19:41,ES3,19:41,20:38,AS3,20:38,21:15,Libre,21:15,22:30,ES1
 2,15:00,15:38,ES1,15:38,16:15,Libre,16:15,17:11,AS2,17:11,18:08,ES2,18:08,18:45,Libre,18:45,19:41,AS3,19:41,20:38,ES3,20:38,21:15,Libre,21:15,22:30,AS1
