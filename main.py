@@ -780,7 +780,8 @@ class PlanillaApp(App):
 
         self.parar_servicio()
         arg = {'pasadas': self.horario.pasadas,
-               'alarmas': self.alarmas}
+               'alarmas': self.alarmas,
+               'log_level': Config.get('kivy', 'log_level')}
         arg = dumps(arg)
 
         if platform == 'android':

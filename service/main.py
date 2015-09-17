@@ -5,6 +5,7 @@ from pprint import pformat
 from time import localtime, asctime, sleep
 from datetime import datetime
 
+from kivy.config import Config
 from kivy.logger import Logger
 
 from jnius import autoclass, cast
@@ -122,6 +123,8 @@ def process_broadcast(context, intent):
 
 def schedule_alarms(alarmas):
 
+    Logger.debug("%s: schedule_alarms %s" % (APP, datetime.now()))
+
     from jnius import autoclass
     from android.broadcast import BroadcastReceiver
 
@@ -152,8 +155,8 @@ def schedule_alarms(alarmas):
         pi = PendingIntent.getBroadcast(
             activity, i, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         ms = (alarma['hora']-now).seconds * 1000
-        Logger.debug("Hora: %s - En %s" % (
-            alarma['hora'], tdformat(alarma['hora']-now)))
+        Logger.debug("%s: Hora: %s - En %s" % (
+            APP, alarma['hora'], tdformat(alarma['hora']-now)))
         am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                SystemClock.elapsedRealtime()+ms, pi)
         i += 1
@@ -177,12 +180,14 @@ if __name__ == '__main__':
 
     # Por defecto se arranca foreground. Lo dejamos para que se no muera el
     # servicio activity.stopForeground(False)
+    Logger.info("%s: service.__main__ %s" % (APP, datetime.now()))
 
     arg = loads(os.getenv('PYTHON_SERVICE_ARGUMENT'))
     Logger.debug("%s: PYTHON_SERVICE_ARGUMENT %s" % (APP, pformat(arg)))
 
     pasadas = arg['pasadas']
     alarmas = arg['alarmas']
+    Config.set('kivy', 'log_level', arg['log_level'])
 
     # Misterios del python for android, sin el cast no funciona
     android_activity = cast('android.app.Activity', activity)
@@ -191,6 +196,7 @@ if __name__ == '__main__':
     # No entiendo por qué no funciona con las tres primeras opciones
     # El uso de FULL_WAKE_LOCK y SCREEN BRIGHT es deprecated
     # pero si no no me rula.
+    Logger.debug("%s: Adquiriendo el wake lock %s" % (APP, datetime.now()))
     wl = pm.newWakeLock(
         # PowerManager.PARTIAL_WAKE_LOCK |
         PowerManager.ACQUIRE_CAUSES_WAKEUP |
