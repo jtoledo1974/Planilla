@@ -189,9 +189,8 @@ if __name__ == '__main__':
     alarmas = arg['alarmas']
     Config.set('kivy', 'log_level', arg['log_level'])
 
-    # Misterios del python for android, sin el cast no funciona
-    android_activity = cast('android.app.Activity', activity)
-    pm = android_activity.getSystemService(Context.POWER_SERVICE)
+    Logger.debug("%s: Adquiriendo el PowerManager %s" % (APP, datetime.now()))
+    pm = activity.getSystemService(Context.POWER_SERVICE)
 
     # No entiendo por qué no funciona con las tres primeras opciones
     # El uso de FULL_WAKE_LOCK y SCREEN BRIGHT es deprecated
