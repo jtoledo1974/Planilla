@@ -719,7 +719,7 @@ class PlanillaApp(App):
             APP, key, value))
         if self.service and key in ('margen_ejec', 'margen_ayud'):
             Logger.debug(
-                "%s: Cambiada configuración, recalculando alarmas" % key)
+                "%s: Cambiada configuracion, recalculando alarmas" % key)
             self.alarmas = self.calculate_alarms()
             self.arrancar_servicio()
 
