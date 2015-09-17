@@ -21,15 +21,15 @@ from kivy.animation import Animation
 from kivy.vector import Vector
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Line, Rectangle
-from kivy.uix.screenmanager import Screen, RiseInTransition, FallOutTransition, \
-    SlideTransition, NoTransition
+from kivy.uix.screenmanager import Screen, RiseInTransition, \
+    FallOutTransition, SlideTransition, NoTransition
 from kivy.utils import get_color_from_hex
 from kivy.properties import NumericProperty, ObjectProperty, StringProperty
 
 APP = 'PLANILLA'
 
 if platform == 'android':
-    Logger.debug('%s: Importando clases de Android %s' % (APP,datetime.now()))
+    Logger.debug('%s: Importando clases de Android %s' % (APP, datetime.now()))
     import android
     from plyer.platforms.android import activity
     from jnius import autoclass, cast
@@ -553,7 +553,8 @@ class PlanillaApp(App):
         return False
 
     def on_start(self):
-        Config.set('kivy', 'log_level', self.config.get('general', 'log_level'))
+        Config.set('kivy', 'log_level',
+                   self.config.get('general', 'log_level'))
         Logger.debug("%s: on_start %s" % (APP, datetime.now()))
 
         self.scmgr = self.root.scmgr  # scmgr identificado con id en el kv
@@ -717,7 +718,8 @@ class PlanillaApp(App):
         Logger.debug("%s: on_config_change key %s %s" % (
             APP, key, value))
         if self.service and key in ('margen_ejec', 'margen_ayud'):
-            Logger.debug("%s: Cambiada configuración, recalculando alarmas" % key)
+            Logger.debug(
+                "%s: Cambiada configuración, recalculando alarmas" % key)
             self.alarmas = self.calculate_alarms()
             self.arrancar_servicio()
 
@@ -763,7 +765,7 @@ class PlanillaApp(App):
         return alarmas
 
     def parar_servicio(self):
-        Logger.debug('%s: arrancar_servicio %s' % (APP,datetime.now()))
+        Logger.debug('%s: arrancar_servicio %s' % (APP, datetime.now()))
         if platform == 'android' and self.service:
             Logger.debug("%s: parar_servicio - %s" % (APP, datetime.now()))
             self.service.stop()
@@ -774,7 +776,7 @@ class PlanillaApp(App):
         # volver a arrancarlo no tiene efecto, así que la lista de
         # alarmas del servicio sigue siendo la de la primera vez
 
-        Logger.debug('%s: arrancar_servicio %s' % (APP,datetime.now()))
+        Logger.debug('%s: arrancar_servicio %s' % (APP, datetime.now()))
 
         self.parar_servicio()
         arg = {'pasadas': self.horario.pasadas,
@@ -782,7 +784,8 @@ class PlanillaApp(App):
         arg = dumps(arg)
 
         if platform == 'android':
-            Logger.debug('%s: self.service = android.AndroidService(\'Planilla\', \'Alarmas activas\')\')' % APP)
+            Logger.debug('%s: self.service = android.AndroidService(\
+                \'Planilla\', \'Alarmas activas\')\')' % APP)
             self.service = android.AndroidService(
                 'Planilla', 'Alarmas activas')
             Logger.debug('%s: self.service.start(arg)' % APP)
@@ -898,8 +901,8 @@ class PlanillaApp(App):
                     self.cancelar_alarma, source='Clock',
                     clock_date=clock_date)
                 Clock.schedule_once(self.clock_callback,
-                                    (clock_date + timedelta(seconds=self.ACS)
-                                     - now).seconds)
+                                    (clock_date + timedelta(seconds=self.ACS) -
+                                     now).seconds)
                 Logger.debug(
                     "%s: cancelar_alarma - Clock llamo antes de tiempo")
                 return
@@ -969,8 +972,10 @@ class PlanillaApp(App):
 
         intent = Intent(Intent.ACTION_SEND).setType('message/rfc822')
         intent = intent.putExtra(Intent.EXTRA_TEXT, String(texto))
-        intent = intent.putExtra(Intent.EXTRA_EMAIL, ["toledo+planilla@lazaro.es"])
-        intent = intent.putExtra(Intent.EXTRA_SUBJECT, String("Log de Planilla"))
+        intent = intent.putExtra(Intent.EXTRA_EMAIL,
+                                 ["toledo+planilla@lazaro.es"])
+        intent = intent.putExtra(Intent.EXTRA_SUBJECT,
+                                 String("Log de Planilla"))
         try:
             intent = intent.putExtra(
                 Intent.EXTRA_STREAM,
