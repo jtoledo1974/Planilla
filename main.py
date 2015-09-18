@@ -92,14 +92,14 @@ class Horario():
             csv = f.readlines()
         self._horarios['TMA'] = {
             int(l[0]): [c for c in l[1:].rstrip('\n').split(',') if c != '']
-            for l in csv[2:10]}
+            for l in csv[4:12]}
         self._horarios['Ruta'] = {
             int(l[0]): [c for c in l[1:].rstrip('\n').split(',') if c != '']
-            for l in csv[13:21]}
+            for l in csv[14:22]}
         self._sectores['TMA'] = [
             c for c in csv[0].rstrip('\n').split(',') if c != ''][1:]
         self._sectores['Ruta'] = [
-            c for c in csv[11].rstrip('\n').split(',') if c != ''][1:]
+            c for c in csv[1].rstrip('\n').split(',') if c != ''][1:]
 
         numero = int(numero)
         text = self._horarios[nucleo][numero]
