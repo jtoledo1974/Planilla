@@ -141,6 +141,7 @@ ScreenManager:
                             text: "Acerca de"
                             on_release: app.about()
             Carousel:
+                id: carousel
                 BoxLayout:
                     orientation: "vertical"
                     padding: dp(10)
@@ -152,9 +153,10 @@ ScreenManager:
                         BigLabel:
                             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                             text: "8x3"
-                        BigLabel:
+                        BigActionButton:
                             pos_hint: {'center_x': .9, 'center_y': 0.5}
                             text: ">"
+                            on_release: carousel.load_next()
                     GridLayout:
                         cols: 3
                         text: "8x3"
@@ -180,15 +182,17 @@ ScreenManager:
                     RelativeLayout:
                         height: dp(48)
                         size_hint_y: None
-                        BigLabel:
+                        BigActionButton:
                             pos_hint: {'center_x': .1, 'center_y': 0.5}
                             text: "<"
+                            on_release: carousel.load_previous()
                         BigLabel:
                             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                             text: "3x1 Eje/Ayu/Lib"
-                        BigLabel:
+                        BigActionButton:
                             pos_hint: {'center_x': .9, 'center_y': 0.5}
                             text: ">"
+                            on_release: carousel.load_next()                            
                     RelativeLayout:
                         GridLayout:
                             cols: 10
@@ -281,9 +285,10 @@ ScreenManager:
                     RelativeLayout:
                         height: dp(48)
                         size_hint_y: None
-                        BigLabel:
+                        BigActionButton:
                             pos_hint: {'center_x': .1, 'center_y': 0.5}
                             text: "<"
+                            on_release: carousel.load_previous()                            
                         BigLabel:
                             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                             text: "3x1 Ayu/Eje/Lib"
@@ -377,6 +382,11 @@ ScreenManager:
 <MainButton>:
     on_press: app.asigna_numero(self.parent.text, self.text)
 <BigLabel@Label>:
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    size_hint: (None, None)
+    size: self.texture_size
+    font_size: "32sp"
+<BigActionButton@ActionButton>:
     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
     size_hint: (None, None)
     size: self.texture_size
