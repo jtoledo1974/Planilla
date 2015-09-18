@@ -567,6 +567,7 @@ class PlanillaApp(App):
             self.pedir_nucleo()
 
         numero = int(self.config.get('general', 'numero'))
+        planilla = self.config.get('general', 'planilla')
         try:
             final = datetime.strptime(
                 self.config.get('general', 'final'), "%d/%m/%y %H:%M")
@@ -577,7 +578,7 @@ class PlanillaApp(App):
             # 0 indica que no estamos rearrancando
             # Evita que cambiar s1 y s2 arranque el servicio
             self.restarting = True
-            self.asigna_numero(numero)
+            self.asigna_numero(planilla, numero)
         else:
             self.toast(u"Escoge tu número de planilla")
 
@@ -696,6 +697,7 @@ class PlanillaApp(App):
 
         Logger.debug("%s: current 'planilla' - RiseIn" % APP)
         self.config.set('general', 'numero', self.numero)
+        self.config.set('general', 'planilla', self.horario.planilla)
         self.config.set(
             'general', 'final', self.horario.final.strftime("%d/%m/%y %H:%M"))
         self.config.write()
