@@ -27,9 +27,9 @@ Ruta-8x3,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Fina
 3,15:00,15:50,AS1,15:50,16:40,Libre,16:40,17:30,ES1,17:30,18:20,AS1,18:20,19:10,Libre,19:10,20:00,ES1,20:00,20:50,AS1,20:50,21:40,Libre,21:40,22:30,ES1
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,
 3x1-AEL,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio	Final	Estado	Inicio	Final	Estado	Inicio	Final	Estado,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado
-1,15:00,15:50,AS1,15:50,16:40,ES1,16:40,17:30,Libre,17:30,18:20,AS1,18:20,19:10,ES1,19:10,20:00,Libre,20:00,20:50,AS1,20:50,21:40,ES1,21:40,22:30,Libre
-2,15:00,15:50,Libre,15:50,16:40,AS1,16:40,17:30,ES1,17:30,18:20,Libre,18:20,19:10,AS1,19:10,20:00,ES1,20:00,20:50,Libre,20:50,21:40,AS1,21:40,22:30,ES1
-3,15:00,15:50,ES1,15:50,16:40,Libre,16:40,17:30,AS1,17:30,18:20,ES1,18:20,19:10,Libre,19:10,20:00,AS1,20:00,20:50,ES1,20:50,21:40,Libre,21:40,22:30,AS1
+1,15:00,15:50,ES1,15:50,16:40,Libre,16:40,17:30,AS1,17:30,18:20,ES1,18:20,19:10,Libre,19:10,20:00,AS1,20:00,20:50,ES1,20:50,21:40,Libre,21:40,22:30,AS1
+2,15:00,15:50,AS1,15:50,16:40,ES1,16:40,17:30,Libre,17:30,18:20,AS1,18:20,19:10,ES1,19:10,20:00,Libre,20:00,20:50,AS1,20:50,21:40,ES1,21:40,22:30,Libre
+3,15:00,15:50,Libre,15:50,16:40,AS1,16:40,17:30,ES1,17:30,18:20,Libre,18:20,19:10,AS1,19:10,20:00,ES1,20:00,20:50,Libre,20:50,21:40,AS1,21:40,22:30,ES1
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,
 "Sector 1 y sector 2 la primera y la segunda columna donde trabaje, creo que coincide con lo que tenemos en la hoja de firmas",,,,,,,,,,,,,,,,,,,,,,,,,,,
 "La idea es que en la hoja de firmas pone número 8, DDI, XAL",,,,,,,,,,,,,,,,,,,,,,,,,,,
