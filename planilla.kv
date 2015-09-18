@@ -188,25 +188,87 @@ ScreenManager:
                         BigLabel:
                             pos_hint: {'center_x': .9, 'center_y': 0.5}
                             text: ">"
-                    AsyncImage:
-                        canvas.before:
-                            PushMatrix
-                            Rotate: 
-                                angle: 90
-                                axis: 0,0,1
-                                origin: self.center
-                        canvas.after:
-                            PopMatrix
-                        height: self.parent.width*0.9
-                        size_hint_y: None
-                        source: "data/3x1-eal.png"
                     RelativeLayout:
                         GridLayout:
-                            anchor_y: "top"
-                            pos_hint: {'center_x': .5, 'center_y': 0.5}
+                            cols: 10
+                            row_default_height: dp(25)
+                            row_force_default: True
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.66}
                             size_hint_y: None
-                            height: dp(60)
+                            height: dp(75)
+                            Label:
+                                text: " Ejecutivo "
+                                width: self.texture_size[0]
+                                size_hint_x: None
+                            Cell:
+                                text: "C1"
+                            Cell:
+                                text: "C2"
+                            Cell:
+                                text: "C3"
+                            Cell:
+                                text: "C1"
+                            Cell:
+                                text: "C2"
+                            Cell:
+                                text: "C3"
+                            Cell:
+                                text: "C1"
+                            Cell:
+                                text: "C2"
+                            Cell:
+                                text: "C3"
+                            Label:
+                                text: " Ayudante "
+                                width: self.texture_size[0]
+                                size_hint_x: None
+                            Cell:
+                                text: "C3"
+                            Cell:
+                                text: "C1"
+                            Cell:
+                                text: "C2"
+                            Cell:
+                                text: "C3"
+                            Cell:
+                                text: "C1"
+                            Cell:
+                                text: "C2"
+                            Cell:
+                                text: "C3"
+                            Cell:
+                                text: "C1"
+                            Cell:
+                                text: "C2"
+                            Label:
+                                text: "Libre"
+                                width: self.texture_size[0]
+                                size_hint_x: None
+                            Label:
+                                text: "C2"
+                            Label:
+                                text: "C3"
+                            Label:
+                                text: "C1"
+                            Label:
+                                text: "C2"
+                            Label:
+                                text: "C3"
+                            Label:
+                                text: "C1"
+                            Label:
+                                text: "C2"
+                            Label:
+                                text: "C3"
+                            Label:
+                                text: "C1"
+                        GridLayout:
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.33}
+                            size_hint_y: None
+                            padding: dp(5)
+                            spacing: dp(5)
                             cols: 3
+                            height: self.width / 3
                             MainButton:
                                 text: "1"
                             MainButton:
@@ -225,25 +287,87 @@ ScreenManager:
                         BigLabel:
                             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                             text: "3x1 Ayu/Eje/Lib"
-                    AsyncImage:
-                        canvas.before:
-                            PushMatrix
-                            Rotate: 
-                                angle: 90
-                                axis: 0,0,1
-                                origin: self.center
-                        canvas.after:
-                            PopMatrix
-                        height: self.parent.width*0.9
-                        size_hint_y: None
-                        source: "data/3x1-ael.png"
                     RelativeLayout:
                         GridLayout:
-                            anchor_y: "top"
-                            pos_hint: {'center_x': .5, 'center_y': 0.5}
+                            cols: 10
+                            row_default_height: dp(25)
+                            row_force_default: True
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.66}
                             size_hint_y: None
-                            height: dp(60)
+                            height: dp(75)
+                            Label:
+                                text: " Ejecutivo "
+                                width: self.texture_size[0]
+                                size_hint_x: None
+                            Cell:
+                                text: "C1"
+                            Cell:
+                                text: "C2"
+                            Cell:
+                                text: "C3"
+                            Cell:
+                                text: "C1"
+                            Cell:
+                                text: "C2"
+                            Cell:
+                                text: "C3"
+                            Cell:
+                                text: "C1"
+                            Cell:
+                                text: "C2"
+                            Cell:
+                                text: "C3"
+                            Label:
+                                text: " Ayudante "
+                                width: self.texture_size[0]
+                                size_hint_x: None
+                            Cell:
+                                text: "C2"
+                            Cell:
+                                text: "C3"
+                            Cell:
+                                text: "C1"
+                            Cell:
+                                text: "C2"
+                            Cell:
+                                text: "C3"
+                            Cell:
+                                text: "C1"
+                            Cell:
+                                text: "C2"
+                            Cell:
+                                text: "C3"
+                            Cell:
+                                text: "C1"
+                            Label:
+                                text: "Libre"
+                                width: self.texture_size[0]
+                                size_hint_x: None
+                            Label:
+                                text: "C3"
+                            Label:
+                                text: "C1"
+                            Label:
+                                text: "C2"
+                            Label:
+                                text: "C3"
+                            Label:
+                                text: "C1"
+                            Label:
+                                text: "C2"
+                            Label:
+                                text: "C3"
+                            Label:
+                                text: "C1"
+                            Label:
+                                text: "C2"
+                        GridLayout:
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.33}
+                            size_hint_y: None
+                            padding: dp(5)
+                            spacing: dp(5)
                             cols: 3
+                            height: self.width / 3
                             MainButton:
                                 text: "1"
                             MainButton:
@@ -258,3 +382,7 @@ ScreenManager:
     size_hint: (None, None)
     size: self.texture_size
     font_size: "32sp"
+<Cell@Label>:
+    canvas.after:
+        Line:
+            rectangle: self.x+1,self.y+1,self.width-1,self.height-1
