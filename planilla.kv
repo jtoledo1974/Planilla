@@ -140,24 +140,121 @@ ScreenManager:
                         ActionButton:
                             text: "Acerca de"
                             on_release: app.about()
-            GridLayout:
-                cols: 3
-                MainButton:
-                    text: "1"
-                MainButton:
-                    text: "2"
-                MainButton:
-                    text: "3"
-                MainButton:
-                    text: "4"
-                MainButton:
-                    text: "5"
-                MainButton:
-                    text: "6"
-                MainButton:
-                    text: "7"
-                MainButton:
-                    text: "8"
+            Carousel:
+                BoxLayout:
+                    orientation: "vertical"
+                    padding: dp(10)
+                    spacing: dp(10)
+                    FloatLayout:
+                        orientation: "horizontal"
+                        height: dp(48)
+                        size_hint_y: None
+                        BigLabel:
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            text: "8x3"
+                        BigLabel:
+                            pos_hint: {'center_x': .9, 'center_y': 0.5}
+                            text: ">"
+                    GridLayout:
+                        cols: 3
+                        MainButton:
+                            text: "1"
+                        MainButton:
+                            text: "2"
+                        MainButton:
+                            text: "3"
+                        MainButton:
+                            text: "4"
+                        MainButton:
+                            text: "5"
+                        MainButton:
+                            text: "6"
+                        MainButton:
+                            text: "7"
+                        MainButton:
+                            text: "8"
+                BoxLayout:
+                    orientation: "vertical"
+                    padding: 10
+                    RelativeLayout:
+                        height: dp(48)
+                        size_hint_y: None
+                        BigLabel:
+                            pos_hint: {'center_x': .1, 'center_y': 0.5}
+                            text: "<"
+                        BigLabel:
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            text: "3x1 Eje/Ayu/Lib"
+                        BigLabel:
+                            pos_hint: {'center_x': .9, 'center_y': 0.5}
+                            text: ">"
+                    AsyncImage:
+                        canvas.before:
+                            PushMatrix
+                            Rotate: 
+                                angle: 90
+                                axis: 0,0,1
+                                origin: self.center
+                        canvas.after:
+                            PopMatrix
+                        height: self.parent.width*0.9
+                        size_hint_y: None
+                        source: "data/3x1-eal.png"
+                    RelativeLayout:
+                        GridLayout:
+                            anchor_y: "top"
+                            pos_hint: {'center_x': .5, 'center_y': 0.5}
+                            size_hint_y: None
+                            height: dp(60)
+                            cols: 3
+                            MainButton:
+                                text: "1"
+                            MainButton:
+                                text: "2"
+                            MainButton:
+                                text: "3"
+                BoxLayout:
+                    orientation: "vertical"
+                    padding: 10
+                    RelativeLayout:
+                        height: dp(48)
+                        size_hint_y: None
+                        BigLabel:
+                            pos_hint: {'center_x': .1, 'center_y': 0.5}
+                            text: "<"
+                        BigLabel:
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            text: "3x1 Ayu/Eje/Lib"
+                    AsyncImage:
+                        canvas.before:
+                            PushMatrix
+                            Rotate: 
+                                angle: 90
+                                axis: 0,0,1
+                                origin: self.center
+                        canvas.after:
+                            PopMatrix
+                        height: self.parent.width*0.9
+                        size_hint_y: None
+                        source: "data/3x1-ael.png"
+                    RelativeLayout:
+                        GridLayout:
+                            anchor_y: "top"
+                            pos_hint: {'center_x': .5, 'center_y': 0.5}
+                            size_hint_y: None
+                            height: dp(60)
+                            cols: 3
+                            MainButton:
+                                text: "1"
+                            MainButton:
+                                text: "2"
+                            MainButton:
+                                text: "3"
 
 <MainButton>:
     on_press: app.asigna_numero(self.text)
+<BigLabel@Label>:
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    size_hint: (None, None)
+    size: self.texture_size
+    font_size: "32sp"
