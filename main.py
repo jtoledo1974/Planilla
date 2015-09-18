@@ -95,13 +95,10 @@ class Horario():
             for l in csv[4:12]}
         self._horarios['3x1-EAL'] = {
             int(l[0]): [c for c in l[1:].rstrip('\n').split(',') if c != '']
-            for l in csv[24:27]}
+            for l in csv[14:17]}
         self._horarios['3x1-AEL'] = {
             int(l[0]): [c for c in l[1:].rstrip('\n').split(',') if c != '']
-            for l in csv[29:32]}
-        # self._horarios['Ruta'] = {
-        #     int(l[0]): [c for c in l[1:].rstrip('\n').split(',') if c != '']
-        #     for l in csv[14:22]}
+            for l in csv[19:22]}
         self._sectores['TMA'] = [
             c for c in csv[0].rstrip('\n').split(',') if c != ''][1:]
         self._sectores['Ruta'] = [
