@@ -77,7 +77,7 @@ class Horario():
     s2 = 'S2'
     s3 = 'S3'
 
-    def __init__(self, nucleo, numero):
+    def __init__(self, nucleo, planilla, numero):
 
         self.pasadas = []
         self._horarios = {}
@@ -90,19 +90,25 @@ class Horario():
         # Cargamos la planilla del csv
         with open("Planilla.csv", "r") as f:
             csv = f.readlines()
-        self._horarios['TMA'] = {
+        self._horarios['8x3'] = {
             int(l[0]): [c for c in l[1:].rstrip('\n').split(',') if c != '']
             for l in csv[4:12]}
-        self._horarios['Ruta'] = {
+        self._horarios['3x1-EAL'] = {
             int(l[0]): [c for c in l[1:].rstrip('\n').split(',') if c != '']
-            for l in csv[14:22]}
+            for l in csv[24:27]}
+        self._horarios['3x1-AEL'] = {
+            int(l[0]): [c for c in l[1:].rstrip('\n').split(',') if c != '']
+            for l in csv[29:32]}
+        # self._horarios['Ruta'] = {
+        #     int(l[0]): [c for c in l[1:].rstrip('\n').split(',') if c != '']
+        #     for l in csv[14:22]}
         self._sectores['TMA'] = [
             c for c in csv[0].rstrip('\n').split(',') if c != ''][1:]
         self._sectores['Ruta'] = [
             c for c in csv[1].rstrip('\n').split(',') if c != ''][1:]
 
         numero = int(numero)
-        text = self._horarios[nucleo][numero]
+        text = self._horarios[planilla][numero]
 
         while True:
             if len(text) == 0:
@@ -623,7 +629,7 @@ class PlanillaApp(App):
                 LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 LayoutParams.FLAG_TURN_SCREEN_ON)
 
-    def asigna_numero(self, numero):
+    def asigna_numero(self, planilla, numero):
         Logger.debug("%s: asigna_numero %s" % (APP, numero))
 
         if not self.sectoresscreen:
@@ -633,7 +639,7 @@ class PlanillaApp(App):
         nucleo = self.config.get('general', 'nucleo')
 
         self.numero = int(numero)
-        self.horario = Horario(nucleo=nucleo, numero=numero)
+        self.horario = Horario(nucleo=nucleo, planilla=planilla, numero=numero)
 
         if not self.restarting:
             self.scmgr.transition = SlideTransition(direction='up')

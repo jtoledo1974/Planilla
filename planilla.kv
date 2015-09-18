@@ -157,6 +157,7 @@ ScreenManager:
                             text: ">"
                     GridLayout:
                         cols: 3
+                        text: "8x3"
                         MainButton:
                             text: "1"
                         MainButton:
@@ -267,6 +268,7 @@ ScreenManager:
                             size_hint_y: None
                             cols: 3
                             height: self.width / 3
+                            text: "3x1-EAL"
                             MainButton:
                                 text: "1"
                             MainButton:
@@ -364,6 +366,7 @@ ScreenManager:
                             size_hint_y: None
                             cols: 3
                             height: self.width / 3
+                            text: "3x1-AEL"
                             MainButton:
                                 text: "1"
                             MainButton:
@@ -372,7 +375,7 @@ ScreenManager:
                                 text: "3"
 
 <MainButton>:
-    on_press: app.asigna_numero(self.text)
+    on_press: app.asigna_numero(self.parent.text, self.text)
 <BigLabel@Label>:
     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
     size_hint: (None, None)
