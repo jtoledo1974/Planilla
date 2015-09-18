@@ -83,6 +83,7 @@ class Horario():
         self._horarios = {}
         self._sectores = {}
         self.nucleo = nucleo
+        self.planilla = planilla
         self.numero = numero
 
         now = datetime.now()
@@ -688,10 +689,7 @@ class PlanillaApp(App):
             self.imagescreen.app = self
             self.scmgr.add_widget(self.imagescreen)
 
-        if self.horario.nucleo == 'TMA':
-            self.imagescreen.load("data/tma.png")
-        elif self.horario.nucleo == 'Ruta':
-            self.imagescreen.load("data/ruta.png")
+        self.imagescreen.load("data/%s.png" % self.horario.planilla)
 
         self.scmgr.transition = RiseInTransition()
         self.scmgr.current = 'planilla'
