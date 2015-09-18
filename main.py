@@ -567,14 +567,17 @@ class PlanillaApp(App):
             self.pedir_nucleo()
 
         numero = int(self.config.get('general', 'numero'))
-        planilla = self.config.get('general', 'planilla')
+        try:
+            planilla = self.config.get('general', 'planilla')
+        except:
+            planilla = ""  # failsafe
         try:
             final = datetime.strptime(
                 self.config.get('general', 'final'), "%d/%m/%y %H:%M")
         except Exception:
             final = None
         Logger.debug("Final %s" % final)
-        if numero != 0 and final and final > datetime.now():
+        if numero != 0 and final and final > datetime.now() and planilla != "":
             # 0 indica que no estamos rearrancando
             # Evita que cambiar s1 y s2 arranque el servicio
             self.restarting = True
