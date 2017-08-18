@@ -1,0 +1,22 @@
+2017-08-18
+Problemas al intentar empaquetar
+
+Usando el target android de buildozer:
+  Hay que añadir las requirements hostpython2 y android a buildozer.spec, pero...
+  - El servicio de android no arranca. https://github.com/tshirtman/kivy_service_osc/issues/1
+  - android.map_key no es un atributo del módulo (!?!)
+
+Usando el target android_old
+
+
+08-18 17:00:06.675 18485 18507 I python  :  Traceback (most recent call last):
+08-18 17:00:06.675 18485 18507 I python  :    File "/home/toledo/Planilla/.buildozer/android/app/service/main.py", line
+208, in <module> 08-18 17:00:06.676 18485 18507 I python  :    File
+"/home/toledo/Planilla/.buildozer/android/app/service/main.py", line
+162, in schedule_alarms
+08-18 17:00:06.676 18485 18507 I python  :    File
+"jnius/jnius_export_class.pxi", line 900, in
+jnius.jnius.JavaMultipleMethod.__call__ (jnius/jnius.c:25560)
+08-18 17:00:06.677 18485 18507 I python  :  jnius.jnius.JavaException:
+No methods matching your arguments
+08-18 17:00:06.700 18485 18507 I python  : Python for android ended.
