@@ -10,13 +10,16 @@ Usando el target android_old
 
 
 08-18 17:00:06.675 18485 18507 I python  :  Traceback (most recent call last):
-08-18 17:00:06.675 18485 18507 I python  :    File "/home/toledo/Planilla/.buildozer/android/app/service/main.py", line
-208, in <module> 08-18 17:00:06.676 18485 18507 I python  :    File
-"/home/toledo/Planilla/.buildozer/android/app/service/main.py", line
-162, in schedule_alarms
-08-18 17:00:06.676 18485 18507 I python  :    File
-"jnius/jnius_export_class.pxi", line 900, in
-jnius.jnius.JavaMultipleMethod.__call__ (jnius/jnius.c:25560)
-08-18 17:00:06.677 18485 18507 I python  :  jnius.jnius.JavaException:
-No methods matching your arguments
+08-18 17:00:06.675 18485 18507 I python  :    File "/home/toledo/Planilla/.buildozer/android/app/service/main.py", line 208, in <module> 08-18 17:00:06.676 18485 18507 I python  :    File "/home/toledo/Planilla/.buildozer/android/app/service/main.py", line 162, in schedule_alarms
+08-18 17:00:06.676 18485 18507 I python  :    File "jnius/jnius_export_class.pxi", line 900, in jnius.jnius.JavaMultipleMethod.__call__ (jnius/jnius.c:25560)
+08-18 17:00:06.677 18485 18507 I python  :  jnius.jnius.JavaException: No methods matching your arguments
 08-18 17:00:06.700 18485 18507 I python  : Python for android ended.
+
+El problema es con la llamada a https://developer.android.com/reference/android/app/AlarmManager.html#set(int, long, android.app.PendingIntent)
+El segundo parámetro son los milisegundos. Cuando el valor es demasiado alto parece que hay un problema de conversión.
+Se supone que pyjnius ha hecho correciones con el tratamiento de longs, pero no me funciona.
+
+2017-08-19
+
+Debería ser más sencillo hacerlo funcionar arreglando el problema de la longitud del entero que permitir que el servicio arranque
+No sé si tendré que patchear pyjnius o si puedo hacer el casting desde Planilla

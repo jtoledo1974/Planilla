@@ -1,4 +1,4 @@
-from jnius import autoclass, cast
+from jnius import autoclass
 from plyer.platforms.android import activity
 String = autoclass('java.lang.String')
 Context = autoclass('android.content.Context')
@@ -10,7 +10,8 @@ AlarmManager = autoclass('android.app.AlarmManager')
 
 am = activity.getSystemService(Context.ALARM_SERVICE)
 intent = Intent(String('org.jtc.planilla.SERVICEALARM')).putExtra("id", 0)
-pi = PendingIntent.getBroadcast(activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+pi = PendingIntent.getBroadcast(
+    activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
 ms = 10  # ms anadidos al elapsed real time del movil
 ert = SystemClock.elapsedRealtime()
