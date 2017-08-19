@@ -23,3 +23,6 @@ Se supone que pyjnius ha hecho correciones con el tratamiento de longs, pero no 
 
 Debería ser más sencillo hacerlo funcionar arreglando el problema de la longitud del entero que permitir que el servicio arranque
 No sé si tendré que patchear pyjnius o si puedo hacer el casting desde Planilla
+
+He intentado hacer un cast('java/lang/long', ert), pero pyjnius dice que no se puede.
+
