@@ -65,10 +65,10 @@ def tdformat(td):
 def update_notification():
     p = pasadas[0]
     title = "en %s %s %s" % (
-        tdformat(p['inicio']-now),
+        tdformat(p['inicio'] - now),
         'Libre' if p['task'] == 'Libre' else p['task'][:4],
         p['sector'])
-    message = tdformat(p['final']-p['inicio'])
+    message = tdformat(p['final'] - p['inicio'])
 
     # Darle una id diferente de la por defecto para actualizar siempre la misma
     # y diferente de si ponemos otra notificación
@@ -82,7 +82,7 @@ def wake_app():
     intent = activity.getPackageManager().getLaunchIntentForPackage(
         'org.jtc.planilla')
     Logger.debug("%s: Starting %s %s" % (APP, intent.toString(),
-                 datetime.now()))
+                                         datetime.now()))
     activity.startActivity(intent)
 
 
@@ -92,7 +92,7 @@ def sound_alarm(id=-1):
     intent = Intent('org.jtc.planilla.ACTION_ALARM').putExtra(
         "id", id).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     Logger.debug("%s: Starting %s %s" % (APP, intent.toString(),
-                 datetime.now()))
+                                         datetime.now()))
     activity.startActivity(intent)
     global pending_alarm
     pending_alarm = False
@@ -154,11 +154,11 @@ def schedule_alarms(alarmas):
             "id", id)
         pi = PendingIntent.getBroadcast(
             activity, i, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        ms = (alarma['hora']-now).seconds * 1000
+        ms = (alarma['hora'] - now).seconds * 1000
         Logger.debug("%s: Hora: %s - En %s" % (
-            APP, alarma['hora'], tdformat(alarma['hora']-now)))
+            APP, alarma['hora'], tdformat(alarma['hora'] - now)))
         am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-               SystemClock.elapsedRealtime()+ms, pi)
+               SystemClock.elapsedRealtime() + ms, pi)
         i += 1
 
 
@@ -167,14 +167,15 @@ def seconds_to_update():
         return 60
 
     t = pasadas[0]['inicio']
-    (hours, seconds) = divmod((t-now).seconds, 3600)
+    (hours, seconds) = divmod((t - now).seconds, 3600)
     (minutes, seconds) = divmod(seconds, 60)
 
     if hours < 1 and minutes < 3:
         return 1
     else:
-        s = 59-datetime.now().second
+        s = 59 - datetime.now().second
         return s if s else 60
+
 
 if __name__ == '__main__':
 
