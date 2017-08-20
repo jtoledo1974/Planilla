@@ -83,3 +83,8 @@ proguard/
 
 #Log Files
 *.log
+
+# Jed edits
+*.py~
+*.txt~
+*.spec~
