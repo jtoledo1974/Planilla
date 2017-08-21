@@ -46,6 +46,10 @@ icon.filename = %(source.dir)s/data/icon.png
 # (str) Supported orientation (one of landscape, portrait or all)
 orientation = portrait
 
+# (list) List of service to declare
+#services = NAME:ENTRYPOINT_TO_PY,NAME2:ENTRYPOINT2_TO_PY
+services = service:./service/main.py
+
 # (bool) Indicate if the application should be fullscreen or not
 fullscreen = 0
 
