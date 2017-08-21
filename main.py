@@ -534,7 +534,7 @@ class PlanillaApp(App):
             self.cancelar_alarma(source="on_keypress")
             return True
         elif self.scmgr.current == 'alarma'\
-                and keycode1 == 1001:  # Back button
+                and keycode1 == 27:  # Back button
             return True  # Backbutton no hace nada durante la alarma
         elif keycode1 in [27, 1001]:
             if self._app_settings in self._app_window.children:
@@ -589,8 +589,6 @@ class PlanillaApp(App):
         Window.bind(on_keyboard=self.on_keypress)
 
         if platform == 'android':
-            android.map_key(android.KEYCODE_BACK, 1001)
-
             import android.activity as python_activity
             python_activity.bind(on_new_intent=self.on_new_intent)
             # on_new_intent sólo se llama cuando la aplicación ya está
