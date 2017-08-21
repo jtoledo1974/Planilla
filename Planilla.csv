@@ -1,5 +1,5 @@
 TMA,FINAL,T1,T2,T3,T4,TGR,XAR,XAL,DDI,DDN,DDS,,,,,,,,,,,,,,,,
-Ruta,P1L,P1U,P1I,PPI,PP2,LVL,LGL,LVU,LGU,LVS,CCC,CCU,CCL,VNI,VVI,MNU,MNL,MNI,MMI,BAS,,,,,,,
+Ruta,GO1,GO2,GO3,GO12,GO23,GOI,PPI,P2R,LVL,LGL,LVU,LGU,LVS,CCC,CCU,CCL,CVN,MUS,MVS,VNI,VVI,MNU,MNL,MNI,MMI,BAS,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,
 8x3,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado
 1,15:00,15:38,AS1,15:38,16:15,Libre,16:15,17:11,ES2,17:11,18:08,AS2,18:08,18:45,Libre,18:45,19:41,ES3,19:41,20:38,AS3,20:38,21:15,Libre,21:15,22:30,ES1
@@ -21,10 +21,13 @@ Ruta,P1L,P1U,P1I,PPI,PP2,LVL,LGL,LVU,LGU,LVS,CCC,CCU,CCL,VNI,VVI,MNU,MNL,MNI,MMI
 2,15:00,15:50,AS1,15:50,16:40,ES1,16:40,17:30,Libre,17:30,18:20,AS1,18:20,19:10,ES1,19:10,20:00,Libre,20:00,20:50,AS1,20:50,21:40,ES1,21:40,22:30,Libre
 3,15:00,15:50,Libre,15:50,16:40,AS1,16:40,17:30,ES1,17:30,18:20,Libre,18:20,19:10,AS1,19:10,20:00,ES1,20:00,20:50,Libre,20:50,21:40,AS1,21:40,22:30,ES1
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,
+3x1-Salir antes,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado,Inicio	Final	Estado	Inicio	Final	Estado	Inicio	Final	Estado,Final,Estado,Inicio,Final,Estado,Inicio,Final,Estado
+1,15:00,16:30,ES1,16:30,17:00,Libre,17:00,18:30,AS1,18:30,19:00,Libre,19:00,20:00,AS1,20:00,21:00,ES1,21:00,22:30,Libre,,,,,,
+2,15:00,16:30,Libre,16:30,18:00,ES1,18:00,18:30,Libre,18:30,19:00,AS1,19:00,20:00,ES1,20:00,20:30,Libre,20:30,22:30,AS1,,,,,,
+3,15:00,17:00,AS1,17:00,18:00,Libre,18:00,19:00,ES1,19:00,20:00,Libre,20:00,20:30,AS1,20:30,21:00,Libre,21:00,22:30,ES1,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,
 "Sector 1 y sector 2 la primera y la segunda columna donde trabaje, creo que coincide con lo que tenemos en la hoja de firmas",,,,,,,,,,,,,,,,,,,,,,,,,,,
 "La idea es que en la hoja de firmas pone número 8, DDI, XAL",,,,,,,,,,,,,,,,,,,,,,,,,,,
 "Si no me equivoco el primer sector que pone es la primera columna donde trabajas, y el segundo la segunda columna",,,,,,,,,,,,,,,,,,,,,,,,,,,
 "Sólo tendremos que poner el número y los dos sectores, sin tener ni que mirar a la plantilla",,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,
-"Si hay un TL, tiene que tener el número 3",,,,,,,,,,,,,,,,,,,,,,,,,,,
