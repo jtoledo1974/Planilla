@@ -128,6 +128,9 @@ android.manifest.intent_filters = intent_filters.xml
 # project.properties automatically.)
 #android.library_references =
 
+android.logcat_filters = *:S python:D
+
+
 #
 # iOS specific
 #
