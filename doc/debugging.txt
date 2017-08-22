@@ -26,3 +26,8 @@ No sé si tendré que patchear pyjnius o si puedo hacer el casting desde Planill
 
 He intentado hacer un cast('java/lang/long', ert), pero pyjnius dice que no se puede.
 
+2017-08-21
+
+Resuelto el problema de la biblioteca subyacente cuando se aceptó mi pull request https://github.com/kivy/pyjnius/pull/291. Con esto se arregla el problema de AlarmManager.set.
+Aún está por ver que funcione con el nuevo tipo de servicio.
+
