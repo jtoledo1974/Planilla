@@ -31,3 +31,13 @@ He intentado hacer un cast('java/lang/long', ert), pero pyjnius dice que no se p
 Resuelto el problema de la biblioteca subyacente cuando se aceptó mi pull request https://github.com/kivy/pyjnius/pull/291. Con esto se arregla el problema de AlarmManager.set.
 Aún está por ver que funcione con el nuevo tipo de servicio.
 
+2017-08-22
+
+No he tenido éxito aún ejecutando con el target android (android_new). Aunque incluyo android en los requirements no parece que los esté incluyendo, y es necesario para run_on_ui_thread decorator.
+
+2017-08-23
+
+Hoy ha funcionado sin más con el android (android_new). Se conoce que tenía que compilar una vez más o algo.
+Fallaba el self.service.stop, y aunque no he encontrado documentación ni dónde está definido he conseguido que se ejecute poniendo mActivity como argumento, igual que el arranque.
+
+El servicio se depura en logcat con python:D service:D. Corre, pero no parece que las alarmas estén funcionando.
