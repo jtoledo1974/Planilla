@@ -772,7 +772,7 @@ class PlanillaApp(App):
         Logger.debug('%s: arrancar_servicio %s' % (APP, datetime.now()))
         if platform == 'android' and self.service:
             Logger.debug("%s: parar_servicio - %s" % (APP, datetime.now()))
-            self.service.stop()
+            self.service.stop(autoclass('org.kivy.android.PythonActivity').mActivity)
         self.service = None
 
     def arrancar_servicio(self):
