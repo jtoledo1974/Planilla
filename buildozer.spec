@@ -56,19 +56,7 @@ orientation = portrait
 
 # (list) List of service to declare
 #services = NAME:ENTRYPOINT_TO_PY,NAME2:ENTRYPOINT2_TO_PY
-
-#
-# OSX Specific
-#
-
-#
-# author = © Copyright Info
-
-# change the major version of python used by the app
-# osx.python_version = 3
-
-# Kivy version to use
-# osx.kivy_version = 1.9.1
+services = service:./service/main.py
 
 #
 # Android specific

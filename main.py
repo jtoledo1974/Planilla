@@ -780,7 +780,7 @@ class PlanillaApp(App):
         Logger.debug('%s: arrancar_servicio %s' % (APP, datetime.now()))
         if platform == 'android' and self.service:
             Logger.debug("%s: parar_servicio - %s" % (APP, datetime.now()))
-            self.service.stop()
+            self.service.stop(autoclass('org.kivy.android.PythonActivity').mActivity)
         self.service = None
 
     def arrancar_servicio(self):
@@ -797,13 +797,10 @@ class PlanillaApp(App):
         arg = dumps(arg)  # Arguments are passed in environment and must be a string
 
         if platform == 'android':
-            Logger.debug('%s: self.service = android.AndroidService(\
-                \'Planilla\', \'Alarmas activas\')\')' % APP)
-            self.service = android.AndroidService(
-                b'Planilla', b'Alarmas activas')
+            self.service = autoclass('org.jtc.planilla.ServiceService')
+            mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
             Logger.debug('%s: self.service.start(arg)' % APP)
-            # Appartenly service start expects bytes and not a str
-            self.service.start(arg)
+            self.service.start(mActivity, arg)
             Logger.debug("%s: Arrancando servicio" % APP)
 
     def _get_audiomanager(self):
