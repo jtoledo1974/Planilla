@@ -41,3 +41,15 @@ Hoy ha funcionado sin más con el android (android_new). Se conoce que tenía qu
 Fallaba el self.service.stop, y aunque no he encontrado documentación ni dónde está definido he conseguido que se ejecute poniendo mActivity como argumento, igual que el arranque.
 
 El servicio se depura en logcat con python:D service:D. Corre, pero no parece que las alarmas estén funcionando.
+
+2017-08-24
+
+Parece que en el inicio se ejecuta este intent 
+on_new_intent 2017-08-24 13:17:42.081550 Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 pkg=org.jtc.planilla cmp=org.jtc.planilla/org.kivy.android.PythonActivity }
+Y ese funciona
+
+Pero con la alarma se ejecuta
+Intent { act=org.jtc.planilla.ACTION_ALARM flg=0x10000000 (has extras) }
+
+Y con ese intent no encuentra nada. Y sin embargo si se deja correr a la segunda o tercera alarma sí que arranca el cliente, pero da el error. Creo que abandono android_new para depurar en android_old.
+
