@@ -10,7 +10,6 @@ from kivy.app import App
 from kivy.config import Config
 from kivy.uix.button import Button
 from kivy.uix.label import Label
-from kivy.uix.image import Image
 from kivy.uix.image import AsyncImage
 from kivy.uix.floatlayout import FloatLayout
 from kivy import platform
@@ -20,7 +19,7 @@ from kivy.uix.popup import Popup
 from kivy.animation import Animation
 from kivy.vector import Vector
 from kivy.graphics.context_instructions import Color
-from kivy.graphics.vertex_instructions import Line, Rectangle
+from kivy.graphics.vertex_instructions import Rectangle
 from kivy.uix.screenmanager import Screen, RiseInTransition, \
     FallOutTransition, SlideTransition, NoTransition
 from kivy.utils import get_color_from_hex
@@ -56,7 +55,7 @@ class datetime(odt):
 
 def tdformat(td):
     if td.days < 0:
-        tds = - td.seconds - td.days*3600*24
+        tds = - td.seconds - td.days * 3600 * 24
     else:
         tds = td.seconds
     (hours, seconds) = divmod(tds, 3600)
@@ -142,10 +141,10 @@ class Horario():
         # Ajustar cada bloque al turno que vamos a hacer, de mañana de hoy o
         # tarde de hoy self.pasadas.sort(). Para garantizar que el primer
         # elemento es el más temprano
-        start = (self.pasadas[0])['inicio']-datetime.combine(now, time(0, 0))
+        start = (self.pasadas[0])['inicio'] - datetime.combine(now, time(0, 0))
         self.pasadas = [{
-                        'inicio': b['inicio']-start+offset,
-                        'final': b['final']-start+offset,
+                        'inicio': b['inicio'] - start + offset,
+                        'final': b['final'] - start + offset,
                         'task': b['task'],
                         'sector': b['sector']} for b in self.pasadas]
         self.inicio = (self.pasadas[0])['inicio']
@@ -165,18 +164,18 @@ class Horario():
     def __str__(self):
         str = ""
         for b in self.pasadas:
-            str = str+"\n%02d:%02d\n  %s%s" % (b['inicio'].hour,
-                                               b['inicio'].minute,
-                                               b['task'],
-                                               ' '+b['sector'])
-        str = str+"\n%02d:%02d" % (self.pasadas[-1]['final'].hour,
-                                   self.pasadas[-1]['final'].minute)
+            str = str + "\n%02d:%02d\n  %s%s" % (b['inicio'].hour,
+                                                 b['inicio'].minute,
+                                                 b['task'],
+                                                 ' ' + b['sector'])
+        str = str + "\n%02d:%02d" % (self.pasadas[-1]['final'].hour,
+                                     self.pasadas[-1]['final'].minute)
         return str
 
     def pasadas_pendientes(self, margen):
         now = datetime.now()
         return [p for p in self.pasadas
-                if p['inicio'] > (now+timedelta(minutes=margen))]
+                if p['inicio'] > (now + timedelta(minutes=margen))]
 
     def sectores(self, nucleo=''):
         assert nucleo
@@ -187,22 +186,23 @@ class Horario():
         return len(d.keys())
 
     def pasadas_widget(self):
-        duracion = (self.final-self.inicio).seconds
+        duracion = (self.final - self.inicio).seconds
         res = copy(self.pasadas)
         for p in res:
             p['start_t'] = "%02d:%02d" % (p['inicio'].hour, p['inicio'].minute)
             p['end_t'] = "%02d:%02d" % (p['final'].hour, p['final'].minute)
-            p['start'] = float((p['inicio']-self.inicio).seconds)/duracion
-            p['len'] = float((p['final']-p['inicio']).seconds)/duracion
-            p['end'] = float((p['final']-self.inicio).seconds)/duracion
+            p['start'] = float((p['inicio'] - self.inicio).seconds) / duracion
+            p['len'] = float((p['final'] - p['inicio']).seconds) / duracion
+            p['end'] = float((p['final'] - self.inicio).seconds) / duracion
             p['texto'] = "%s%s" % (
                 'Libre' if p['task'] == 'Libre' else p['task'][:4],
-                ' '+p['sector'] if p['sector'] else '')
+                ' ' + p['sector'] if p['sector'] else '')
         return res
 
     def get_timepos(self):
         now = datetime.now()
-        res = float((now-self.inicio).seconds)/(self.final-self.inicio).seconds
+        res = float((now - self.inicio).seconds) / (
+            self.final - self.inicio).seconds
         return res
 
 
@@ -260,8 +260,8 @@ class AlarmScreen(Screen):
     inicio = datetime.now()  # Se actualiza en sonar_alarma
 
     def on_height(self, widget, height):
-        self.r = height*self.R
-        self.r2 = height*self.R
+        self.r = height * self.R
+        self.r2 = height * self.R
 
     def on_enter(self, *args):
         Logger.debug("%s: AlarmScreen.on_enter self.width=%s %s" % (
@@ -271,7 +271,7 @@ class AlarmScreen(Screen):
         else:
             width = self.width
         self.r2a = self.ca = self.cd = 0
-        self.anim = Animation(cd=width/2, ca=1, d=1, t='in_quad') \
+        self.anim = Animation(cd=width / 2, ca=1, d=1, t='in_quad') \
             + Animation(cd=0, ca=0, d=0)
         self.anim.repeat = True
         self.anim.start(self)
@@ -295,19 +295,19 @@ class AlarmScreen(Screen):
 
     def on_touch_down(self, touch):
         if Vector(touch.pos).distance(
-           Vector(self.center_x, self.height*0.2)) < 2*self.r:
+           Vector(self.center_x, self.height * 0.2)) < 2 * self.r:
             self.motion_uid = touch.uid
             self.r2a = .2
-            self.r2 = self.height*self.R
+            self.r2 = self.height * self.R
             anim = Animation(
-                r2=self.height*self.R*2.3, t='in_quad', d=0.3)
+                r2=self.height * self.R * 2.3, t='in_quad', d=0.3)
             anim.start(self)
 
     def on_touch_move(self, touch):
         if touch.uid == self.motion_uid:
             # Cancelar si de desplaza más de la mitad de la distancia al borde
-            self.ra = 1-3.3*Vector(touch.pos).distance(
-                Vector(self.center_x, self.height*0.2))/self.width
+            self.ra = 1 - 3.3 * Vector(touch.pos).distance(
+                Vector(self.center_x, self.height * 0.2)) / self.width
             self.r2a = 1 - self.ra * 0.8
             if self.ra < 0.05:
                 self.ra = 1
@@ -320,7 +320,7 @@ class AlarmScreen(Screen):
 
     def update_timetext(self, *args):
         self.timetext = "%s - %s" % (self.inicio.strftime("%H:%M"),
-                                     tdformat(self.inicio-datetime.now()))
+                                     tdformat(self.inicio - datetime.now()))
 
 
 class PlanillaWidget(FloatLayout):
@@ -343,7 +343,7 @@ class PlanillaWidget(FloatLayout):
             self.add_widget(l)
             l = Label(text=p['texto'], size_hint=(None, None))
             l.pos_hint = {'x': 0.4,
-                          'center_y': 1 - p['start']-p['len']/2}
+                          'center_y': 1 - p['start'] - p['len'] / 2}
             l.texture_update()
             l.size = l.texture_size
             self.add_widget(l)
@@ -354,8 +354,8 @@ class PlanillaWidget(FloatLayout):
         for p in self.horario.pasadas_widget():
             with self.canvas.before:
                 y = self.y + self.height \
-                    - p['start']*self.height - p['len']*self.height
-                h = p['len']*self.height
+                    - p['start'] * self.height - p['len'] * self.height
+                h = p['len'] * self.height
                 pos = (self.x, y)
                 size = (self.width, h)
                 if p['task'] == 'Ejecutivo':
@@ -373,7 +373,7 @@ class PlanillaWidget(FloatLayout):
         with self.canvas.before:
             h = 10
             pos = (self.x,
-                   self.y + self.height - self.timepos*self.height - h/2)
+                   self.y + self.height - self.timepos * self.height - h / 2)
             size = (self.width, h)
             self.tpc = Color(1, .1, .1, self.alpha)
             # Color(self.alpha, self.alpha, self.alpha, 1)
@@ -385,7 +385,7 @@ class PlanillaWidget(FloatLayout):
 
     def on_timepos(self, *args):
         pos = (self.x,
-               self.y + self.height - self.timepos*self.height - 5)
+               self.y + self.height - self.timepos * self.height - 5)
         self.tp.pos = pos
 
     def on_alpha(self, *args):
@@ -427,7 +427,7 @@ class ImageScreen(Screen):
         with self.canvas.after:
             w = 10
             tp = self.app.horario.get_timepos()
-            pos = (self.width - tp*self.width - w/2, 0)
+            pos = (self.width - tp * self.width - w / 2, 0)
             size = (w, self.height)
             self.tpc = Color(1, .1, .1, self.alpha)
             self.tp = Rectangle(pos=pos, size=size)
@@ -445,7 +445,7 @@ class ImageScreen(Screen):
     def update_timepos(self, *args):
         tp = self.app.horario.get_timepos()
         Logger.debug("%s: update_img_timepos timepos=%s" % (APP, tp))
-        self.tp.pos = (self.width - tp*self.width - 5, 0)
+        self.tp.pos = (self.width - tp * self.width - 5, 0)
 
     def on_alpha(self, *args):
         self.tpc.a = self.alpha
@@ -739,15 +739,15 @@ class PlanillaApp(App):
         for p in self.horario.pasadas:
             if p['task'] == 'Ejecutivo':
                 a = {
-                    'hora': p['inicio']-timedelta(minutes=margen_ejec),
-                    'texto': p['task']+' '+p['sector']}
+                    'hora': p['inicio'] - timedelta(minutes=margen_ejec),
+                    'texto': p['task'] + ' ' + p['sector']}
             elif p['task'] == 'Ayudante':
                 a = {
-                    'hora': p['inicio']-timedelta(minutes=margen_ayud),
-                    'texto': p['task']+' '+p['sector']}
+                    'hora': p['inicio'] - timedelta(minutes=margen_ayud),
+                    'texto': p['task'] + ' ' + p['sector']}
             elif p['task'] == 'Libre' and prev_task == 'Ayudante':
                 a = {
-                    'hora': p['inicio']-timedelta(minutes=margen_ayud),
+                    'hora': p['inicio'] - timedelta(minutes=margen_ayud),
                     'texto': "Quitar tarjeta sector %s" % prev_sector}
             else:
                 continue
@@ -761,7 +761,7 @@ class PlanillaApp(App):
         if False:
             alarmas = {}
             for i in range(1, 11):
-                h = datetime.now()+timedelta(seconds=3*(i+1))
+                h = datetime.now() + timedelta(seconds=3 * (i + 1))
                 a = {'hora': h, 'texto': 'Alarma no. %s' % i, 'inicio': h}
                 alarmas[i] = a
 
@@ -906,7 +906,7 @@ class PlanillaApp(App):
             # se quede encendida. Enviamos la task al background
             Logger.debug("%s: cancelar alarma clock_date=%s dt=%s" % (
                 APP, clock_date, dt))
-            if (now-clock_date).seconds < self.ACS:
+            if (now - clock_date).seconds < self.ACS:
                 # No sé por qué a veces el Clock llama inmediatamente en
                 # lugar de esperar los segundos que tocan. Si es el caso
                 # volver a intentarlo con lo que falta
@@ -1003,10 +1003,11 @@ class PlanillaApp(App):
         try:
             with open("version.txt") as f:
                 v = f.read()[:-1]
-        except:
+        except OSError:
             v = "undefined"
         self.toast(text="Planilla %s\nJuan Toledo" % v, short=False)
         return v
+
 
 if __name__ == '__main__':
     Logger.debug("%s: End imports. %s PlanillaApp().run()" % (
