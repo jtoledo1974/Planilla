@@ -837,6 +837,8 @@ class PlanillaApp(App):
         if platform == 'android':
                 AudioManager = autoclass('android.media.AudioManager')
                 am = self._get_audiomanager()
+                self.previous_volume = \
+                    am.getStreamVolume(AudioManager.STREAM_ALARM)
                 am.setStreamVolume(
                     AudioManager.STREAM_ALARM,
                     am.getStreamMaxVolume(AudioManager.STREAM_ALARM), 0)
@@ -854,7 +856,11 @@ class PlanillaApp(App):
         assert hasattr(self, 'ringer_mode')
         self._get_ringtone().stop()
         if platform == 'android':
-            self._get_audiomanager().setRingerMode(self.ringer_mode)
+            AudioManager = autoclass('android.media.AudioManager')
+            am = self._get_audiomanager()
+            am.setStreamVolume(
+                AudioManager.STREAM_ALARM, self.previous_volume, 0)
+            am.setRingerMode(self.ringer_mode)
             self._get_vibrator().cancel()
 
     def sonar_alarma(self, id):
