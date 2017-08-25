@@ -741,7 +741,7 @@ class PlanillaApp(App):
                 a = {
                     'hora': p['inicio'] - timedelta(minutes=margen_ejec),
                     'texto': p['task'] + ' ' + p['sector']}
-            elif p['task'] == 'Ayudante':
+            elif p['task'] == 'Ayudante' and prev_task != 'Ejecutivo':
                 a = {
                     'hora': p['inicio'] - timedelta(minutes=margen_ayud),
                     'texto': p['task'] + ' ' + p['sector']}
@@ -750,6 +750,8 @@ class PlanillaApp(App):
                     'hora': p['inicio'] - timedelta(minutes=margen_ayud),
                     'texto': "Quitar tarjeta sector %s" % prev_sector}
             else:
+                prev_task = p['task']
+                prev_sector = p['sector']
                 continue
             a.update({'sector': p["sector"], 'task': p['task'],
                       'inicio': p['inicio']})
