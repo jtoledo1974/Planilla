@@ -149,7 +149,7 @@ def schedule_alarms(alarmas):
     # Fijar las nuevas alarmas
     i = 0
     now = datetime.now()
-    for id, alarma in alarmas.iteritems():
+    for id, alarma in alarmas.items():
         intent = Intent(String('org.jtc.planilla.SERVICEALARM')).putExtra(
             "id", id)
         pi = PendingIntent.getBroadcast(
@@ -207,9 +207,10 @@ if __name__ == '__main__':
 
     schedule_alarms(alarmas)
     if len(alarmas):
+        # Humm, no es correcto. No está garantizado que la siguiente clave
+        # sea la siguiente alarma.
         Logger.info("%s: Proxima alarma %s" % (
-            APP, alarmas[alarmas.keys()[0]]))
-
+            APP, alarmas[next(iter(alarmas))]))
     while True:
         now = datetime.now()
         Logger.debug("%s: %s" % (APP, asctime(localtime())))

@@ -32,16 +32,14 @@
         "title": "Alarma sonora",
         "desc": "Usar el tono de alarma",
         "section": "general",
-        "key": "sound_alarm",
-        "true": "auto"
+        "key": "sound_alarm"
     },
     {
         "type": "bool",
         "title": "Alarma vibratoria",
         "desc": "Usar el vibrador del teléfono",
         "section": "general",
-        "key": "vibration_alarm",
-        "true": "auto"
+        "key": "vibration_alarm"
     },
     {
         "type": "options",

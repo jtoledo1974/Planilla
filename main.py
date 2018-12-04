@@ -209,7 +209,7 @@ class Horario():
 
 class NucleoPopup(Popup):
     def __init__(self, **kwargs):
-        super(Popup, self).__init__(**kwargs)
+        super(Popup, self).__init__()
         self.ids.ruta.bind(on_press=self.fija_nucleo)
         self.ids.tma.bind(on_press=self.fija_nucleo)
         self.config = kwargs['config']
@@ -766,7 +766,7 @@ class PlanillaApp(App):
                 a = {'hora': h, 'texto': 'Alarma no. %s' % i, 'inicio': h}
                 alarmas[i] = a
 
-        alarmas = {k: v for k, v in alarmas.iteritems()
+        alarmas = {k: v for k, v in alarmas.items()
                    if v['hora'] > datetime.now()}
         Logger.info("%s: %s" % (APP, pformat(alarmas)))
         return alarmas
