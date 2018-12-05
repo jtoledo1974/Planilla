@@ -1001,13 +1001,8 @@ class PlanillaApp(App):
             Logger.debug("%s: Log delivery failed %s" % (APP, str(e)))
 
     def about(self):
-        try:
-            with open("version.txt") as f:
-                v = f.read()[:-1]
-        except OSError:
-            v = "undefined"
-        self.toast(text="Planilla %s\nJuan Toledo" % v, short=False)
-        return v
+        self.toast(text="Planilla %s\nJuan Toledo" % __version__, short=False)
+        return __version__
 
 
 if __name__ == '__main__':
