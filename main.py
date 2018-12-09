@@ -677,11 +677,11 @@ class PlanillaApp(App):
             # en el archivo. Utilizamos la codifiación en base64 para evitarlo
             string = self.config.get('general', 'alarmas')
             # Logger.debug("%s: String %s" % (APP, str(string)))
-            self.alarmas = loads(b64decode(string))
+            self.alarmas = loads(eval(string))
         else:
             self.alarmas = self.calculate_alarms()
-            self.config.set('general', 'alarmas', b64encode(
-                dumps(self.alarmas)))
+            self.config.set('general', 'alarmas',
+                            dumps(self.alarmas))
         Logger.debug("%s: alarmas: %s" % (APP, pformat(self.alarmas)))
 
         # Necesitamos un copy para que los observadores reaccionen
