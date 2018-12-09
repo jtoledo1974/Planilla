@@ -36,7 +36,7 @@ version.filename = %(source.dir)s/main.py
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = kivy,plyer,pyjnius,android
+requirements = python3crystax,kivy==1.10.0,plyer,pyjnius,android
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -65,10 +65,10 @@ orientation = portrait
 # author = © Copyright Info
 
 # change the major version of python used by the app
-osx.python_version = 3
+# osx.python_version = 3
 
 # Kivy version to use
-osx.kivy_version = 1.9.1
+# osx.kivy_version = 1.9.1
 
 #
 # Android specific
@@ -91,20 +91,19 @@ android.permissions = VIBRATE,WAKE_LOCK
 #android.api = 19
 
 # (int) Minimum API required
-android.minapi = 19
+# android.minapi = 19
 
 # (int) Android SDK version to use
-android.sdk = 20
+# android.sdk = 20
 
 # (str) Android NDK version to use
-android.ndk = 13b
+# android.ndk = 13b
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
 #android.private_storage = True
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
-#android.ndk_path =
-
+android.ndk_path = /home/toledo/.buildozer/android/platform/crystax-ndk-10.3.2/
 # (str) Android SDK directory (if empty, it will be automatically downloaded.)
 #android.sdk_path =
 
