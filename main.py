@@ -89,7 +89,7 @@ class Horario():
         now = datetime.now()
 
         # Cargamos la planilla del csv
-        with open("Planilla.csv", "r") as f:
+        with open("Planilla.csv", "r", encoding='utf-8') as f:
             csv = f.readlines()
         self._horarios['8x3'] = {
             int(l[0]): [c for c in l[1:].rstrip('\n').split(',') if c != '']
