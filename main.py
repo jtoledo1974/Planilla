@@ -217,8 +217,13 @@ class NucleoPopup(Popup):
     def fija_nucleo(self, instance):
         Logger.debug('En el Popup callback con value %s' % instance.text)
         self.config.set('general', 'nucleo', instance.text)
-        self.dismiss()
+        self.dismiss(guardado=True)
         self.config.write()
+
+    def on_dismiss(self, guardado=False, **kwargs):
+        if self.config.get('general', 'nucleo') not in ('Ruta', 'TMA'):
+            # Si no se ha clickado en una opción, no se cierra la ventana
+            return True
 
 
 class SectoresScreen(Screen):
