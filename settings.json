@@ -37,14 +37,14 @@
     {
         "type": "bool",
         "title": "Alarma vibratoria",
-        "desc": "Usar el vibrador del teléfono",
+        "desc": "Usar el vibrador del telefono",
         "section": "general",
         "key": "vibration_alarm"
     },
     {
         "type": "options",
-        "title": "Mensajes de depuración",
-        "desc": "Nivel de mensajes de depuración a generar",
+        "title": "Mensajes de depuracion",
+        "desc": "Nivel de mensajes de depuracion a generar",
         "section": "general",
         "key": "log_level",
         "options": ["debug", "info"]
