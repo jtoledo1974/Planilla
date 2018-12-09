@@ -794,14 +794,15 @@ class PlanillaApp(App):
         arg = {'pasadas': self.horario.pasadas,
                'alarmas': self.alarmas,
                'log_level': Config.get('kivy', 'log_level')}
-        arg = dumps(arg)
+        arg = dumps(arg)  # Arguments are passed in environment and must be a string
 
         if platform == 'android':
             Logger.debug('%s: self.service = android.AndroidService(\
                 \'Planilla\', \'Alarmas activas\')\')' % APP)
             self.service = android.AndroidService(
-                'Planilla', 'Alarmas activas')
+                b'Planilla', b'Alarmas activas')
             Logger.debug('%s: self.service.start(arg)' % APP)
+            # Appartenly service start expects bytes and not a str
             self.service.start(arg)
             Logger.debug("%s: Arrancando servicio" % APP)
 
