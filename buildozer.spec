@@ -36,7 +36,7 @@ version.filename = %(source.dir)s/main.py
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3crystax,kivy==1.10.0,plyer,pyjnius,android
+requirements = python3,kivy,plyer,pyjnius,android
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -88,16 +88,16 @@ fullscreen = 0
 android.permissions = VIBRATE,WAKE_LOCK
 
 # (int) Android API to use
-#android.api = 19
+android.api = 24
 
 # (int) Minimum API required
-# android.minapi = 19
+android.minapi = 21
 
 # (int) Android SDK version to use
-# android.sdk = 20
+android.sdk = 20
 
 # (str) Android NDK version to use
-# android.ndk = 13b
+android.ndk = 14b
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
 #android.private_storage = True
@@ -150,7 +150,7 @@ android.add_jars = lib/*.jar
 #android.add_activites = com.example.ExampleActivity
 
 # (str) python-for-android branch to use, defaults to stable
-#p4a.branch = stable
+p4a.branch = master
 
 # (str) OUYA Console category. Should be one of GAME or APP
 # If you leave this blank, OUYA support will not be enabled
@@ -196,7 +196,7 @@ android.arch = armeabi-v7a
 #
 
 # (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
-p4a.source_dir =
+#p4a.source_dir =
 
 # (str) The directory in which python-for-android should look for your own build recipes (if any)
 #p4a.local_recipes =

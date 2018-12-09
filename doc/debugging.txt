@@ -43,3 +43,11 @@ Varios días tratando de producir un apk de planilla con los entornos actuales. 
 
 * Hay que ser exquisito con la versión de cython que se usa en función de la versión de kivy que se esté instalando. Ver https://kivy.org/doc/stable/installation/deps-cython.html. Pero ni siquiera lo que ponía ahí es correcto! Para compilar kivy 1.10.1 he tenido que usar cython 0.25.2. Usar pip3 install cython==0.25.2
 
+2018-12-10
+
+Las versiones compiladas con python3crystax parece que fuerzan la lectura de los archivos como ascii, en lugar de utf-8. En lugar de pelearme o de un workaround vuelvo a intentar que buildozer utilice un python3 nativo como se supone que puede hacer.
+
+Para ello y para descartar otros errores empiezo de cero con una máquina docker que sólo tiene python 3.7.1. Instalo los paquetes como se indica en https://github.com/tshirtman/Buildozer-docker/blob/master/Dockerfile, pero produzco mi propio container basado en python y debian stretch.
+
+Según la documentación buildozer debería usar python3 por defecto, pero siempre proponía recipes de pythonforandroid que bien usaban python2 o python3crystax. Finalmente he tenido que forzar la rama master de p4a en el buildozer.spec para que pythonforandroid se comportara.
+
