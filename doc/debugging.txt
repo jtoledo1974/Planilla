@@ -31,3 +31,15 @@ He intentado hacer un cast('java/lang/long', ert), pero pyjnius dice que no se p
 Resuelto el problema de la biblioteca subyacente cuando se aceptó mi pull request https://github.com/kivy/pyjnius/pull/291. Con esto se arregla el problema de AlarmManager.set.
 Aún está por ver que funcione con el nuevo tipo de servicio.
 
+2018-12-05
+
+Varios días tratando de producir un apk de planilla con los entornos actuales. Algunas conclusiones:
+
+* El problema del servicio de los servicios establecidos a la antigua al que me refería en 2017 está resuelto en 2018, pero no en la versión de python4android disponible en pip, sino sólo en el master de github. Para que se descargue esta hay que descomentar "p4a.source_dir =" en buildozer.spec, pero dejarlo en blanco.
+
+* Los errores de buildozer llevan a error. Al menos a mí durante días. Lo que parece inicialmente un error de buildozer o python-for-android es un error que está escondido en los logs previos. Tratar de ejecutar el comando fallido en rojo genera errores diferentes a los iniciales. Probablemente porque la versión del SDK y del NDK se pasan por entorno y no por línea de comandos.
+
+* En python2 hay un error gordo en hostpython que hay que corregir en la fuente para que buildozer pueda correr. Véase https://github.com/kivy/python-for-android/issues/1297 y el patch al que se refiere: https://github.com/python/cpython/commit/e348c8d154cf6342c79d627ebfe89dfe9de23817#diff-fb41bdaf12f733cf6ab8a82677d03adc
+
+* Hay que ser exquisito con la versión de cython que se usa en función de la versión de kivy que se esté instalando. Ver https://kivy.org/doc/stable/installation/deps-cython.html. Pero ni siquiera lo que ponía ahí es correcto! Para compilar kivy 1.10.1 he tenido que usar cython 0.25.2. Usar pip3 install cython==0.25.2
+
