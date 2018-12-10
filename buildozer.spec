@@ -85,7 +85,7 @@ fullscreen = 0
 #android.presplash_color = #FFFFFF
 
 # (list) Permissions
-android.permissions = VIBRATE,WAKE_LOCK
+android.permissions = VIBRATE,WAKE_LOCK,WRITE_EXTERNAL_STORAGE
 
 # (int) Android API to use
 android.api = 24
@@ -103,7 +103,7 @@ android.ndk = 14b
 #android.private_storage = True
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
-android.ndk_path = /home/toledo/.buildozer/android/platform/crystax-ndk-10.3.2/
+# android.ndk_path = /home/toledo/.buildozer/android/platform/crystax-ndk-10.3.2/
 # (str) Android SDK directory (if empty, it will be automatically downloaded.)
 #android.sdk_path =
 
