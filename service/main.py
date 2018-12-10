@@ -183,7 +183,7 @@ if __name__ == '__main__':
     # servicio activity.stopForeground(False)
     Logger.info("%s: service.__main__ %s" % (APP, datetime.now()))
 
-    arg = loads(os.getenv('PYTHON_SERVICE_ARGUMENT'))
+    arg = loads(eval(os.getenv('PYTHON_SERVICE_ARGUMENT')))
     Logger.debug("%s: PYTHON_SERVICE_ARGUMENT %s" % (APP, pformat(arg)))
 
     pasadas = arg['pasadas']

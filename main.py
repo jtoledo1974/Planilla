@@ -794,7 +794,7 @@ class PlanillaApp(App):
         arg = {'pasadas': self.horario.pasadas,
                'alarmas': self.alarmas,
                'log_level': Config.get('kivy', 'log_level')}
-        arg = dumps(arg)  # Arguments are passed in environment and must be a string
+        arg = repr(dumps(arg))  # Arguments are passed in environment and must be a string
 
         if platform == 'android':
             self.service = autoclass('org.jtc.planilla.ServiceService')
